@@ -1,0 +1,21 @@
+.text-danger {
+  color: rgb(236, 70, 70);
+}
+
+.shoppingCartAndHeaderBackground {
+  background: $color-primary-1;
+}
+
+.shoppingCartCardFooter {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.text404 {
+  font-size: 6vh;
+  color: #777;
+  font-weight: 500;
+  margin-bottom: 50px;
+}

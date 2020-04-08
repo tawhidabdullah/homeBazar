@@ -1,0 +1,114 @@
+{
+  "alpha": {
+    "categoryList": {
+      "id": "",
+      "name": "",
+      "description": "",
+      "productCount": "",
+      "image": ""
+    },
+    "categoryProducts": {
+      "id": "",
+      "name": "",
+      "description": "",
+      "price": "",
+      "image": []
+    },
+    "categoryDetail": {
+      "id": "",
+      "name": "",
+      "description": "",
+      "productCount": "",
+      "image": ""
+    },
+    "productDetail": {
+      "id": "",
+      "name": "",
+      "description": "",
+      "price": "",
+      "image": []
+    },
+    "productSearch": {
+      "id": "",
+      "name": "",
+      "description": "",
+      "price": "",
+      "image": []
+    }
+  },
+  "wooCommerce": {
+    "categoryList": {
+      "id": "",
+      "name": "",
+      "description": "",
+      "productCount": "",
+      "image": ""
+    },
+    "categoryProducts": {
+      "id": "",
+      "name": "",
+      "description": "",
+      "price": "",
+      "image": []
+    },
+    "categoryDetail": {
+      "id": "",
+      "name": "",
+      "description": "",
+      "productCount": "",
+      "image": ""
+    },
+    "productDetail": {
+      "id": "",
+      "name": "",
+      "description": "",
+      "price": "",
+      "image": []
+    },
+    "productSearch": {
+      "id": "",
+      "name": "",
+      "description": "",
+      "price": "",
+      "image": []
+    },
+    "createOrder": {
+      "id": "",
+      "total": ""
+    },
+    "signup": {
+      "status": "",
+      "user_id": "",
+      "username": "",
+      "cookie": ""
+    },
+    "signin": {
+      "status": "",
+      "cookie": "",
+      "user": {}
+    },
+    "currentUserOrders": {
+      "id": "",
+      "status": "",
+      "total": "",
+      "line_items": "",
+      "date_created": ""
+    },
+    "getCurrentCustomerData": {
+      "id": "",
+      "name": "",
+      "phone": "",
+      "email": "",
+      "address": "",
+      "created": ""
+    },
+    "updateCurrentCustomerData": {
+      "id": "",
+      "name": "",
+      "phone": "",
+      "email": "",
+      "address": "",
+      "created": ""
+    }
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "alpha": {
+    "logo": {
+      "url": "/api/component/logo",
+      "method": "get"
+    },
+    "welcome": {
+      "url": "/api/component/welcome",
+      "method": "get"
+    },
+
+    "hotline": {
+      "url": "/api/component/hotline",
+      "method": "get"
+    },
+    "navLinks": {
+      "url": "/api/component/navLinks",
+      "method": "get"
+    },
+    "slider": {
+      "url": "/api/component/slider",
+      "method": "get"
+    },
+    "sliderRight": {
+      "url": "/api/component/sliderRight",
+      "method": "get"
+    },
+    "address": {
+      "url": "/api/component/address",
+      "method": "get"
+    },
+    "Services": {
+      "url": "/api/component/Services",
+      "method": "get"
+    },
+    "Account": {
+      "url": "/api/component/Account",
+      "method": "get"
+    },
+    "About Us": {
+      "url": "/api/component/About Us",
+      "method": "get"
+    },
+    "categoryList": {
+      "url": "/api/category?subCategory=isSubCategory",
+      "method": "get"
+    },
+
+    "categoryProducts": {
+      "url": "/api/category/:id/product?limit=limitNumber&page=pageNumber",
+      "method": "get"
+    },
+    "categoryDetail": {
+      "url": "/api/category/:id?limit=limitNumber&page=pageNumber",
+      "method": "get"
+    },
+    "tagProducts": {
+      "url": "/api/tag/:id/product?limit=limitNumber&page=pageNumber",
+      "method": "get"
+    },
+    "brandProducts": {
+      "url": "/api/brand/:id/product",
+      "method": "get"
+    },
+    "productSearch": {
+      "url": "/api/search?searchCategory=searchCategoryValue&query=queryValue&sort=sortValue&sortOrder=sortOrderValue&limit=limitNumber&page=pageNumber",
+      "method": "get"
+    },
+    "productDetail": {
+      "url": "/api/product/:categoryName/:productName",
+      "method": "get"
+    },
+    "productDetailById": {
+      "url": "/api/product/:id",
+      "method": "get"
+    },
+    "productList": {
+      "url": "/api/product?limit=limitNumber&page=pageNumber",
+      "mehod": "get"
+    },
+    "tagList": {
+      "url": "/api/tag",
+      "method": "get"
+    },
+    "brandList": {
+      "url": "/api/brand",
+      "method": "get"
+    },
+    "countryList": {
+      "url": "/api/geo/country",
+      "method": "get"
+    },
+    "cityList": {
+      "url": "/api/geo/:country/city",
+      "method": "get"
+    },
+    "getDeliveryCharge": {
+      "url": "/api/delivery/:country/:city",
+      "method": "get"
+    },
+    "signup": {
+      "url": "/customer/api/auth/register",
+      "method": "post"
+    },
+    "signin": {
+      "url": "/customer/api/auth/login",
+      "method": "post"
+    },
+    "getCurrentCustomerData": {
+      "url": "/customer/api/profile",
+      "method": "get"
+    },
+    "updateCurrentCustomerData": {
+      "url": "/customer/api/profile/update",
+      "method": "post"
+    },
+    "createOrder": {
+      "url": "/api/cart/checkout",
+      "method": "post"
+    },
+    "getCurrentUserOrders": {
+      "url": "/customer/api/order?limit=limitNumber&page=pageNumber",
+      "method": "get"
+    },
+    "getCart": {
+      "url": "/api/cart",
+      "method": "get"
+    },
+    "addtoCart": {
+      "url": "/api/cart/add/:id",
+      "method": "post"
+    },
+    "removeFromCart": {
+      "url": "/api/cart/update/remove/:cartKey",
+      "method": "get"
+    },
+    "updateCartItem": {
+      "url": "/api/cart/update/item/:cartKey",
+      "method": "post"
+    },
+    "clearCart": {
+      "url": "/api/cart/update/clear",
+      "method": "get"
+    },
+    "logout": {
+      "url": "/customer/api/auth/logout",
+      "method": "get"
+    }
+  }
+}

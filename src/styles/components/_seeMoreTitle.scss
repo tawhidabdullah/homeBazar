@@ -1,0 +1,27 @@
+.seeMore-title-box {
+  display: flex;
+  align-items: center;
+  transition: all 0.4s;
+  cursor: pointer;
+}
+
+.seeMore-title {
+  font-weight: normal;
+  font-size: 15px;
+  top: 5px;
+  color: #666;
+  text-transform: none;
+  font-size: 14px !important;
+}
+
+.seeMore-title:hover {
+  color: $color-primary-1;
+}
+
+.seeMore-title-box .fa-chevron-right {
+  font-size: 12px;
+  color: #666;
+  top: 5px;
+  margin-left: 10px;
+  margin-top: 3px;
+}

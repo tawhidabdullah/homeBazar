@@ -1,0 +1,81 @@
+.form {
+  // max-width: 600px;
+  text-align: center;
+  margin: 20px 0;
+}
+.form input {
+  border: 0;
+  outline: 0;
+  padding: 0.9em;
+  border: 1px solid #ced4da;
+  border-radius: 3px;
+  display: block;
+  width: 100%;
+  margin-top: 0.6em;
+  resize: none;
+  font-size: 15px;
+  color: $color-dark-1;
+}
+
+.form .label {
+  font-size: 15px;
+  color: $color-dark-1;
+  text-align: left;
+  width: 100%;
+  color: #555;
+}
+
+.form input:disabled {
+  border-radius: 3px;
+  background-color: #f9f9f9;
+  border: 1px solid #ced4da;
+  cursor: not-allowed;
+}
+
+.form .invalid-feedback {
+  text-align: left;
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  .half {
+    width: 100%;
+    float: none;
+    margin-bottom: 0;
+  }
+}
+/* Clearfix */
+.cf:before,
+.cf:after {
+  content: ' ';
+  /* 1 */
+  display: table;
+  /* 2 */
+}
+
+.cf:after {
+  clear: both;
+}
+
+.formContainerOfTwo {
+  display: flex;
+}
+
+.formContainerOfTwo .formContainerOfTwoItem:first-child {
+  width: 48% !important;
+  margin-right: 2%;
+}
+
+.formContainerOfTwo .formContainerOfTwoItem:last-child {
+  width: 48% !important;
+  margin-left: 2%;
+}
+
+.formLabel {
+  font-size: 15px;
+  color: $color-dark-1;
+  text-align: left;
+  width: 100%;
+  color: #555;
+  margin-bottom: 0.6em;
+}

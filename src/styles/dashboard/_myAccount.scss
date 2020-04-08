@@ -1,0 +1,32 @@
+.myAccount {
+  margin: 10px;
+  padding: 10px;
+  // width: 100%;
+  background-color: #fff;
+  border-radius: 3px;
+  border-top: 1px solid $color-primary-1;
+}
+
+.myAccount .myAccountSectionHeader {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 50px;
+  border-bottom: 1px solid #ced4da;
+  display: flex;
+
+  &-main {
+    color: #222;
+  }
+
+  &-button {
+    color: $color-primary-1;
+    margin-left: 20px;
+    font-size: 17px;
+    cursor: pointer;
+  }
+}
+
+.myAccount .myAccountSectionForm {
+  padding: 0px 0 20px 0;
+  border-bottom: 1px solid #ced4da;
+}
