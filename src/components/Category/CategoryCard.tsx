@@ -17,7 +17,7 @@ const CategoryCard = ({ category, history }: Props) => {
           onClick={() => {
             history.push({
               pathname: `/productList/${id}`,
-              state: { isCategory: true }
+              state: { isCategory: true },
             });
           }}
         ></div>

@@ -1,11 +1,13 @@
 .carousleImage {
-  height: 50vh;
+  height: 70vh;
   object-fit: cover;
   border-radius: 5px;
 }
 
 .image-slider-section {
-  margin: 0 37px;
+  padding: 0 37px;
+  padding-top: 15px;
+  background-color: #fff;
 }
 
 .image-slider-section-carousel {

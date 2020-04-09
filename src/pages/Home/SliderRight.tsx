@@ -88,7 +88,7 @@ const SliderRight = ({ windowWidth, cache, addItemToCache }: Props) => {
         <div
           className='col-md-3 col-sm-12 image-slider-section-carousel'
           style={{
-            height: '50vh',
+            height: '70vh',
           }}
         >
           <div

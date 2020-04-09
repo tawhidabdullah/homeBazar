@@ -71,13 +71,13 @@ const Home = ({
         </div>
       </section>
       <Categories category={category} />
-      <CategoryProducts
+      {/* <CategoryProducts
         history={history}
         windowWidth={windowWidth}
         category={category}
         cache={cache}
         addItemToCache={addItemToCache}
-      />
+      /> */}
     </>
   );
 };

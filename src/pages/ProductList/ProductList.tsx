@@ -689,7 +689,7 @@ const ProductList = ({
 
   return (
     <>
-      <div className='Bcak-bg'>
+      <div className='productList'>
         <div
           className={`${windowWidth < 1000 ? 'container-fluid' : 'container'}`}
           style={{

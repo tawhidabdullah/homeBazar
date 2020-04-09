@@ -328,7 +328,11 @@ const ProductSearch = ({
   return (
     <>
       <div
-        className={windowWidth < 770 ? 'container-fluid' : 'container'}
+        className={
+          windowWidth < 770
+            ? 'container-fluid productSearch'
+            : 'container productSearch'
+        }
         style={{
           padding: windowWidth < 770 ? '15px' : '0 0 20px 0',
         }}
