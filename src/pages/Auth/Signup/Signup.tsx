@@ -386,9 +386,6 @@ const Signup = ({ addItemToCache, cache, history, alert }: Props) => {
                 }
               />
 
-              {console.log('touched', touched)}
-              {console.log('errors', errors)}
-
               <TextFeildGroup
                 label='Confirm Password'
                 name='passwordConfirmation'

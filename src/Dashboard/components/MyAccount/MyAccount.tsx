@@ -144,7 +144,6 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
       },
     });
 
-    console.log('changePasswordRes', changePasswordRes);
     // @ts-ignore
     if (changePasswordRes['status'] === 'ok') {
       alert.success('Password has been changed successfully');

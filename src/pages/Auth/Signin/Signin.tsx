@@ -91,8 +91,6 @@ const Signin = (props: Props) => {
             handleReset,
           }) => (
             <>
-              {console.log('touched', touched)}
-              {console.log('errors', errors)}
               <TextFeildGroup
                 label='Username'
                 name='username'

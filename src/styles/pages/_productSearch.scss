@@ -81,7 +81,6 @@
 @media screen and (max-width: 575px) {
   .showResultHeader {
     margin-top: 15px;
-    // flex-direction: ;
     flex-wrap: wrap;
     justify-content: space-between;
   }
@@ -105,5 +104,19 @@
     margin-bottom: 5px;
     font-weight: 400 !important;
     font-size: 15px;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .showResultHeader {
+    flex-direction: column;
+  }
+
+  .sortBySelectorsContainer {
+    width: 100%;
+  }
+  .sortBySelectorsSelects {
+    min-width: 100% !important;
+    max-width: 100% !important;
   }
 }

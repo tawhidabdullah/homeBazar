@@ -26,7 +26,6 @@ const TextFeildGroup = ({
   label,
   onInput,
 }: Props) => {
-  console.log('eror', errors);
   return (
     <div className='form'>
       {label ? <label className='label'>{label}</label> : ''}

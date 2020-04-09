@@ -58,6 +58,7 @@ const ProductSearch = ({
 
   const handleSelectCategoryChange = (value) => {
     setSelectedCategoryValueForSort(value);
+    setPageNumberOfCategoryProduct(1);
 
     history.push({
       pathname: '/productSearch',
@@ -196,7 +197,8 @@ const ProductSearch = ({
 
   React.useEffect(() => {
     const getProducts = async () => {
-      if (!(pageNumberOfCategoryProduct > 1)) {
+      if (pageNumberOfCategoryProduct === 1) {
+        setProducts([]);
         setIsLoading(true);
       }
 
@@ -253,7 +255,7 @@ const ProductSearch = ({
             `productSearch/${selectedValueForSort.value}/${searchCategoryValue}/${queryValue}`,
             cache
           ) &&
-          !(pageNumberOfCategoryProduct > 1)
+          pageNumberOfCategoryProduct === 1
         ) {
           const products =
             cache[
@@ -269,13 +271,13 @@ const ProductSearch = ({
             },
           });
 
-          if (pageNumberOfCategoryProduct === 1 && newProducts) {
+          if (pageNumberOfCategoryProduct === 1) {
             addItemToCache({
               [`productSearch/${selectedValueForSort.value}/${searchCategoryValue}/${queryValue}`]: newProducts,
             });
           }
 
-          if (products.length > 0) {
+          if (products.length > 0 && pageNumberOfCategoryProduct > 1) {
             // @ts-ignore
             if (newProducts.length > 0) {
               if (pageNumberOfCategoryProduct > 1) {
@@ -308,7 +310,6 @@ const ProductSearch = ({
           setIsLoading(false);
         }
       } catch (err) {
-        console.log(err);
         setIsLoading(false);
       }
     };

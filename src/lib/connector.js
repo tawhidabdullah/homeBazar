@@ -63,7 +63,6 @@ class Connector {
         return convertedData;
       } else {
         let error = await res[format]();
-        console.log('error', error);
 
         throw error;
       }
