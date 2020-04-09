@@ -41,6 +41,8 @@ const ProductDetailContent = ({
     id,
     cover,
     url,
+    availableStock,
+    minimumStock,
   } = product;
 
   const [addToCartState, handleAddtoCartFetch] = useHandleFetch(
@@ -204,19 +206,26 @@ const ProductDetailContent = ({
             <p>{description}</p>
           </div>
           <div className='product-options-bottom'>
-            <div className='box-tocart'>
-              <div className='actions'>
-                <a
-                  className='btn-add withbackground'
-                  onClick={handleOnClickAddToCart}
-                  href='##'
-                >
-                  {(checkIfItemExistsInCartItemById(cartItems, id) &&
-                    'Added') ||
-                    'Add to Cart'}
-                </a>
+            {parseInt(availableStock) > 0 ? (
+              <div className='box-tocart'>
+                <div className='actions'>
+                  <a
+                    className='btn-add withbackground'
+                    onClick={handleOnClickAddToCart}
+                    href='##'
+                  >
+                    {(checkIfItemExistsInCartItemById(cartItems, id) &&
+                      'Added') ||
+                      'Add to Cart'}
+                  </a>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className='alertText'>
+                <i className='fa fa-exclamation-circle'></i>
+                <h3>This product is out of stock</h3>
+              </div>
+            )}
           </div>
         </div>
       </div>

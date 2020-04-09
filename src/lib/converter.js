@@ -384,6 +384,8 @@ class Converter {
         offerPrice: data.price && data.price['offer'],
         url: data.url,
         cover: `${config['baseURL']}${data.cover.medium}`,
+        availableStock: data.availableStock,
+        minimumStock: data.minimumStock,
         category:
           (data.category &&
             data.category.length > 0 &&
