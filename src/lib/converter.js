@@ -616,6 +616,22 @@ class Converter {
 
   /**
    * @public
+   * @method changePassword convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async changePassword(data) {
+    if (data['success']) {
+      return {
+        status: 'ok',
+      };
+    }
+
+    return data;
+  }
+
+  /**
+   * @public
    * @method currentUserOrders convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data

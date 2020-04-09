@@ -122,6 +122,10 @@
       "url": "/customer/api/order?limit=limitNumber&page=pageNumber",
       "method": "get"
     },
+    "changePassword": {
+      "url": "/customer/api/profile/changePassword",
+      "method": "post"
+    },
     "getCart": {
       "url": "/api/cart",
       "method": "get"

@@ -8,6 +8,7 @@ import { useHandleFetch } from '../../../hooks';
 import { AuthButton } from '../../../components/Button';
 import { checkIfItemExistsInCache } from '../../../utils';
 import { cacheOperations } from '../../../state/ducks/cache';
+import { withAlert } from 'react-alert';
 
 const personalInfoInitialValues = {
   firstName: '',
@@ -19,6 +20,12 @@ const personalInfoInitialValues = {
 const contactInfoInitialValues = {
   phone: '',
   email: '',
+};
+
+const changePasswordInitialValues = {
+  password: '',
+  newPassword: '',
+  newPassword2: '',
 };
 
 const personalInfoValidationSchema = Yup.object().shape({
@@ -45,20 +52,45 @@ const contactInfoSchema = Yup.object().shape({
   email: Yup.string().label('Email').email('Enter a valid email'),
 });
 
+const changePasswordSchema = Yup.object().shape({
+  password: Yup.string()
+    .label('Old Password')
+    .required('Old Password must have at least 6 characters'),
+  newPassword: Yup.string()
+    .label('New Password')
+    .required()
+    .min(6, 'New Password must have at least 6 characters'),
+  newPassword2: Yup.string()
+    .label('Confirm New password')
+    .required()
+    .min(6, 'Confirm New password must have at least 6 characters')
+    .oneOf(
+      [Yup.ref('newPassword'), null],
+      'Confirm new password must match to new password'
+    ),
+});
+
 interface Props {
   customerDetail: any;
-  cache: any;
-  addItemToCache: (any) => void;
+  cache?: any;
+  addItemToCache?: (any) => void;
+  alert?: any;
 }
 
-const MyAccount = ({ customerDetail, cache, addItemToCache }: Props) => {
+const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
   const [isPersonalInfoEdit, setIsPersonalInfoEdit] = useState(false);
   const [iscontactInfoEdit, setIsContactInfoEdit] = useState(false);
+  const [isChangePasswordEdit, setIsChangePasswordEdit] = useState(false);
   const [customerData, setCustomerData] = useState(customerDetail);
   const [
     updateCurrentCustomerData,
     handleUpdateCurrentUserData,
   ] = useHandleFetch({}, 'updateCurrentCustomerData');
+
+  const [changePasswordState, handleChangePasswordFetch] = useHandleFetch(
+    {},
+    'changePassword'
+  );
 
   const [selectedCountryValue, setSelectedCountryValue] = React.useState({
     value: 'Bangladesh',
@@ -90,7 +122,6 @@ const MyAccount = ({ customerDetail, cache, addItemToCache }: Props) => {
     });
 
     if (updatedCustomerRes['status'] === 'ok') {
-      actions.setSubmitting(false);
       setCustomerData({
         ...updatedValues,
         country: selectedCountryValue.value,
@@ -102,6 +133,26 @@ const MyAccount = ({ customerDetail, cache, addItemToCache }: Props) => {
         setIsContactInfoEdit(false);
       }
     }
+
+    actions.setSubmitting(false);
+  };
+
+  const handleChangePassword = async (values, actions) => {
+    const changePasswordRes = await handleChangePasswordFetch({
+      body: {
+        ...values,
+      },
+    });
+
+    console.log('changePasswordRes', changePasswordRes);
+    // @ts-ignore
+    if (changePasswordRes['status'] === 'ok') {
+      alert.success('Password has been changed successfully');
+
+      setIsChangePasswordEdit(false);
+    }
+
+    actions.setSubmitting(false);
   };
 
   useEffect(() => {
@@ -115,9 +166,10 @@ const MyAccount = ({ customerDetail, cache, addItemToCache }: Props) => {
         if (countryList) {
           // @ts-ignore
           setCountryList(countryList);
-          addItemToCache({
-            countryList: countryList,
-          });
+          addItemToCache &&
+            addItemToCache({
+              countryList: countryList,
+            });
         }
       };
 
@@ -156,9 +208,10 @@ const MyAccount = ({ customerDetail, cache, addItemToCache }: Props) => {
             value: cityValue['name'],
             label: cityValue['name'],
           });
-          addItemToCache({
-            [`cityList/${selectedCountryValue.value}`]: cityList,
-          });
+          addItemToCache &&
+            addItemToCache({
+              [`cityList/${selectedCountryValue.value}`]: cityList,
+            });
         }
       };
 
@@ -452,6 +505,7 @@ const MyAccount = ({ customerDetail, cache, addItemToCache }: Props) => {
           />
         )}
       </div>
+
       <div className='myAccountSectionHeader'>
         <h2 className='myAccountSectionHeader-main'>Contact Information</h2>
         <h2
@@ -561,6 +615,113 @@ const MyAccount = ({ customerDetail, cache, addItemToCache }: Props) => {
           </>
         )}
       </div>
+
+      <div className='myAccountSectionHeader'>
+        <h2 className='myAccountSectionHeader-main'>Change Password</h2>
+        <h2
+          className='myAccountSectionHeader-button'
+          onClick={() => setIsChangePasswordEdit((value) => !value)}
+        >
+          {isChangePasswordEdit ? 'Remove Edit' : 'Change Password'}
+        </h2>
+      </div>
+
+      {isChangePasswordEdit && (
+        <Formik
+          initialValues={
+            isChangePasswordEdit && Object.keys(customerData).length > 0
+              ? customerData
+              : changePasswordInitialValues
+          }
+          onSubmit={(values, actions) => handleChangePassword(values, actions)}
+          validationSchema={changePasswordSchema}
+          validateOnBlur={false}
+          enableReinitialize={true}
+        >
+          {({
+            handleChange,
+            values,
+            handleSubmit,
+            errors,
+            isValid,
+            isSubmitting,
+            touched,
+            handleBlur,
+            setFieldTouched,
+          }) => (
+            <>
+              <TextFeildGroup
+                label='Old Password'
+                name='password'
+                placeholder='old password'
+                type='text'
+                value={values.password}
+                onChange={(e) => {
+                  handleChange(e);
+                  setFieldTouched('password');
+                }}
+                errors={
+                  (touched.password && errors.password) ||
+                  (!isSubmitting &&
+                    changePasswordState.error['error']['password'])
+                }
+              />
+
+              <TextFeildGroup
+                label='New Password'
+                name='newPassword'
+                placeholder='New Password'
+                type='text'
+                value={values.newPassword}
+                onChange={(e) => {
+                  handleChange(e);
+                  setFieldTouched('newPassword');
+                }}
+                errors={
+                  (touched.newPassword && errors.newPassword) ||
+                  (!isSubmitting &&
+                    changePasswordState.error['error']['newPassword'])
+                }
+              />
+
+              <TextFeildGroup
+                label='Confirm New Password'
+                name='newPassword2'
+                placeholder='Confirm New Password'
+                type='text'
+                value={values.newPassword2}
+                onChange={(e) => {
+                  handleChange(e);
+                  setFieldTouched('newPassword2');
+                }}
+                errors={
+                  (touched.newPassword2 && errors.newPassword2) ||
+                  (!isSubmitting &&
+                    changePasswordState.error['error']['newPassword2'])
+                }
+              />
+
+              <div
+                style={{
+                  width: '100px',
+                }}
+              >
+                <AuthButton
+                  onclick={handleSubmit}
+                  disabled={
+                    !isValid ||
+                    !values.password ||
+                    !values.newPassword ||
+                    !values.newPassword2
+                  }
+                >
+                  {isSubmitting ? 'Saving...' : 'Save'}
+                </AuthButton>
+              </div>
+            </>
+          )}
+        </Formik>
+      )}
     </div>
   );
 };
@@ -578,4 +739,4 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
   // @ts-ignore
-)(MyAccount);
+)(withAlert()(MyAccount));
