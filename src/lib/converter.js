@@ -20,7 +20,9 @@ class Converter {
           description: category.description && category.description,
           cover: `${config['baseURL']}${category.cover.medium}`,
           ...(category.subCategory &&
-            category.subCategory.length > 0 && {
+            category.subCategory.length > 0 &&
+            category.subCategory[0] &&
+            category.subCategory[0]['name'] && {
               subCategory: category.subCategory.map((subCat) => {
                 return {
                   id: subCat._id || '',
@@ -46,6 +48,7 @@ class Converter {
    */
   async categoryProducts(resData) {
     const data = resData.data || [];
+    const isNext = resData.page.next;
 
     const convertedData =
       data.length > 0 &&
@@ -54,14 +57,22 @@ class Converter {
           id: product._id || '',
           name: product.name && product.name,
           description: product.description && product.description,
-          cover: `${config['baseURL']}${product.cover.medium}`,
+          cover: `${config['baseURL']}${product.cover && product.cover['medium'] || ''}`,
           regularPrice: product.price && product.price['regular'],
           offerPrice: product.price && product.price['offer'],
+          price:
+            parseInt(product.price['offer']) >
+            parseInt(product.price['regular'])
+              ? product.price['offer']
+              : product.price['regular'],
           url: product.url,
         };
       });
 
-    return convertedData;
+    return {
+      data: convertedData,
+      isNext: isNext,
+    };
   }
 
   /**
@@ -172,23 +183,31 @@ class Converter {
    */
   async tagProducts(resData) {
     const data = resData.data || [];
+    const isNext = resData.page.next;
 
     const convertedData =
-      (data.length > 0 &&
-        data.map((product) => {
-          return {
-            id: product._id || '',
-            name: product.name && product.name,
-            description: product.description && product.description,
-            cover: `${config['baseURL']}${product.cover.medium}`,
-            regularPrice: product.price && product.price['regular'],
-            offerPrice: product.price && product.price['offer'],
-            url: product.url,
-          };
-        })) ||
-      [];
+      data.length > 0 &&
+      data.map((product) => {
+        return {
+          id: product._id || '',
+          name: product.name && product.name,
+          description: product.description && product.description,
+          cover: `${config['baseURL']}${product.cover && product.cover['medium'] || ''}`,
+          regularPrice: product.price && product.price['regular'],
+          offerPrice: product.price && product.price['offer'],
+          price:
+            parseInt(product.price['offer']) >
+            parseInt(product.price['regular'])
+              ? product.price['offer']
+              : product.price['regular'],
+          url: product.url,
+        };
+      });
 
-    return convertedData;
+    return {
+      data: convertedData,
+      isNext: isNext,
+    };
   }
 
   /**
@@ -199,6 +218,7 @@ class Converter {
    */
   async brandProducts(resData) {
     const data = resData.data || [];
+    const isNext = resData.page.next;
 
     const convertedData =
       data.length > 0 &&
@@ -207,14 +227,22 @@ class Converter {
           id: product._id || '',
           name: product.name && product.name,
           description: product.description && product.description,
-          cover: `${config['baseURL']}${product.cover.medium}`,
+          cover: `${config['baseURL']}${product.cover && product.cover['medium'] || ''}`,
           regularPrice: product.price && product.price['regular'],
           offerPrice: product.price && product.price['offer'],
+          price:
+            parseInt(product.price['offer']) >
+            parseInt(product.price['regular'])
+              ? product.price['offer']
+              : product.price['regular'],
           url: product.url,
         };
       });
 
-    return convertedData;
+    return {
+      data: convertedData,
+      isNext: isNext,
+    };
   }
 
   /**
@@ -225,6 +253,7 @@ class Converter {
    */
   async productSearch(resData) {
     const data = resData.data || [];
+    const isNext = resData.page.next;
 
     const convertedData =
       (data.length > 0 &&
@@ -241,7 +270,10 @@ class Converter {
         })) ||
       [];
 
-    return convertedData;
+    return {
+      data: convertedData, 
+      isNext
+    };
   }
 
   /**
@@ -252,6 +284,7 @@ class Converter {
    */
   async productList(resData) {
     const data = resData.data || [];
+    const isNext = resData.page.next;
 
     const convertedData =
       data.length > 0 &&
@@ -267,7 +300,10 @@ class Converter {
         };
       });
 
-    return convertedData;
+    return {
+      data: convertedData, 
+      isNext
+    };
   }
 
   /**
@@ -488,32 +524,40 @@ class Converter {
 
   /**
    * @public
-   * @method categoryList convert api data from API to general format based on config server
+   * @method categoryDetail convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data
    */
   async categoryDetail(data) {
-    //map props
-    let generalFormat = dataMap[config['server']]['categoryDetail']; //get genereal format from dataMap
-
-    const formatedData = {
-      ...generalFormat,
+    const convertedData = {
       id: data.id || data._id || '',
       name: data.name && data.name,
       description: data.description && data.description,
       productCount: data.count || data.productCount,
+      subCategory:
+        data.subCategory.length > 0 &&
+        data.subCategory[0] &&
+        data.subCategory[0]['name']
+          ? data.subCategory.map((subCat) => {
+              return {
+                id: subCat._id || '',
+                name: subCat.name && subCat.name,
+                description: subCat.description && subCat.description,
+                cover: subCat.cover
+                  ? `${config['baseURL']}${subCat.cover.medium}`
+                  : '',
+              };
+            })
+          : [],
       image:
-        config['server'] !== 'wooCommerce'
-          ? (data.image &&
-              data.image.length > 0 &&
-              data.image.map((img) => `${config.baseURL}${img.medium}`)) ||
-            []
-          : (data.image && [data.image.src]) || [],
+        (data.image &&
+          data.image.length > 0 &&
+          data.image.map((img) => `${config.baseURL}${img.medium}`)) ||
+        [],
     };
 
-    return formatedData;
+    return convertedData;
   }
-
   /**
    * @public
    * @method createOrder convert api data from API to general format based on config server

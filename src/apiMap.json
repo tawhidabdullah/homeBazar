@@ -51,7 +51,7 @@
       "method": "get"
     },
     "categoryDetail": {
-      "url": "/api/category/:id?limit=limitNumber&page=pageNumber",
+      "url": "/api/category/:id",
       "method": "get"
     },
     "tagProducts": {

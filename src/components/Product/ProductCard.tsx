@@ -85,19 +85,17 @@ const ProductCard = ({
         <img src={cover} alt='product img' />
         <div
           className='product-top-overlay'
-          onClick={() => history.push(url)}
         ></div>
 
         <div className='overlay-right'>
-          <Link to={url} className='product__link'>
-            <button
+           <button
+             onClick={() => history.push(url)}
               type='button'
               className='btn btn-secondary'
               title='Quick Shop'
             >
               <i className='fa fa-eye'></i>
             </button>
-          </Link>
           <button
             type='button'
             className='btn btn-secondary'

@@ -38,6 +38,7 @@ const ProductSearch = ({
   const [isLoading, setIsLoading] = React.useState(false);
   const [categories, setCategories] = React.useState([]);
   const [activeCategoryName, setActiveCategoryName] = React.useState('');
+  const [isNext,setIsNext] = React.useState(true); 
   const [selectedValueForSort, setSelectedValueForSort] = React.useState({
     value: 'Relevance',
     label: 'Relevance',
@@ -257,23 +258,38 @@ const ProductSearch = ({
           ) &&
           pageNumberOfCategoryProduct === 1
         ) {
-          const products =
+          const productsRes =
             cache[
               `productSearch/${selectedValueForSort.value}/${searchCategoryValue}/${queryValue}`
             ];
+
+              // @ts-ignore
+            const products = productsRes.data || [];
+            // @ts-ignore
+            const isNext = productsRes.isNext || null;
+            setIsNext(isNext);
+
           // @ts-ignore
           setProducts(products);
           setIsLoading(false);
         } else {
-          const newProducts = await handleProductSearchFetch({
+          const newProductsRes = await handleProductSearchFetch({
             urlOptions: {
               params,
             },
           });
 
+             // @ts-ignore
+            const newProducts = newProductsRes.data || [];
+            // @ts-ignore
+            const isNext = newProductsRes.isNext || null;
+            setIsNext(isNext);
+
+
+
           if (pageNumberOfCategoryProduct === 1) {
             addItemToCache({
-              [`productSearch/${selectedValueForSort.value}/${searchCategoryValue}/${queryValue}`]: newProducts,
+              [`productSearch/${selectedValueForSort.value}/${searchCategoryValue}/${queryValue}`]: newProductsRes,
             });
           }
 
@@ -455,8 +471,10 @@ const ProductSearch = ({
                 }}
                 dataLength={products.length}
                 next={fetchMoreProductsData}
-                hasMore={true}
-                loader={<h4></h4>}
+                hasMore={isNext !== null}
+                loader={<div style={{width: '100%', textAlign: 'center', margin: '10px 0'}}><h4 style={{
+            textAlign: "center"
+          }}>Loading...</h4> </div>}
               >
                 <div
                   style={{

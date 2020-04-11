@@ -10,6 +10,7 @@ interface Props {
   isLoading: boolean;
   fetchMoreProductsData: any;
   productOf: string;
+  isNext: any;
 }
 
 const Products = ({
@@ -17,18 +18,21 @@ const Products = ({
   isLoading,
   fetchMoreProductsData,
   productOf,
+  isNext,
 }: Props) => {
   return (
     <>
-      {products.length > 0 && (
+      {!isLoading && products.length > 0 && (
         <InfiniteScroll
           style={{
             overflow: 'hidden',
           }}
           dataLength={products.length}
           next={fetchMoreProductsData}
-          hasMore={true}
-          loader={<h4></h4>}
+          hasMore={isNext !== null}
+          loader={<div style={{width: '100%', textAlign: 'center', margin: '10px 0'}}><h4 style={{
+            textAlign: "center"
+          }}>Loading...</h4> </div>}
         >
           <div className='row productListingProductsContainer'>
             {products.map((product) => {

@@ -20,56 +20,56 @@ const SideFilterBar = ({
   handleSelectBrand,
   brands,
   windowWidth,
-  history
+  history,
 }: Props) => {
   const [
     selectedCategoryValueForSort,
-    setSelectedCategoryValueForSort
+    setSelectedCategoryValueForSort,
   ] = React.useState({
     value: 'all',
-    label: 'All Categories'
+    label: 'All Categories',
   });
 
   const [selectedTagValueForSort, setSelectedTagValueForSort] = React.useState({
     value: 'all',
-    label: 'All Tags'
+    label: 'All Tags',
   });
 
   const [
     selectedBrandValueForSort,
-    setSelectedBrandValueForSort
+    setSelectedBrandValueForSort,
   ] = React.useState({
     value: 'all',
-    label: 'All Brands'
+    label: 'All Brands',
   });
 
-  const handleSelectCategoryChange = value => {
+  const handleSelectCategoryChange = (value) => {
     setSelectedCategoryValueForSort(value);
 
     const categoryId = value.value;
     history.push({
       pathname: `/productList/${categoryId}`,
-      state: { isCategory: true }
+      state: { isCategory: true },
     });
   };
 
-  const handleSelectTagChange = value => {
+  const handleSelectTagChange = (value) => {
     setSelectedTagValueForSort(value);
 
     const tagId = value.value;
     history.push({
       pathname: `/productList/${tagId}`,
-      state: { isTag: true }
+      state: { isTag: true },
     });
   };
 
-  const handleSelectBrandChange = value => {
+  const handleSelectBrandChange = (value) => {
     setSelectedBrandValueForSort(value);
 
     const brandId = value.value;
     history.push({
       pathname: `/productList/${brandId}`,
-      state: { isBrand: true }
+      state: { isBrand: true },
     });
   };
 
@@ -77,17 +77,17 @@ const SideFilterBar = ({
     <div className='col-sm-4 col-md-3 filterbar'>
       {windowWidth < 581 ? (
         <>
-          <div className='sortBySelectorsContainer'>
+          <div className='filterBySelectorsContainer'>
             {categories && categories.length > 0 && (
               <>
-                <h2 className='sortBySelectorsContainer-title'>Categories</h2>
-                <div className='sortBySelectorsSelects'>
+                <h2 className='filterBySelectorsContainer-title'>Categories</h2>
+                <div className='filterBySelectorsSelects'>
                   <Select
                     value={selectedCategoryValueForSort}
-                    onChange={value => handleSelectCategoryChange(value)}
-                    options={categories.map(cat => ({
+                    onChange={(value) => handleSelectCategoryChange(value)}
+                    options={categories.map((cat) => ({
                       value: cat.id,
-                      label: cat.name
+                      label: cat.name,
                     }))}
                   />
                 </div>
@@ -95,17 +95,17 @@ const SideFilterBar = ({
             )}{' '}
           </div>
 
-          <div className='sortBySelectorsContainer'>
+          <div className='filterBySelectorsContainer'>
             {tags && tags.length > 0 && (
               <>
-                <h2 className='sortBySelectorsContainer-title'>Tags</h2>
-                <div className='sortBySelectorsSelects'>
+                <h2 className='filterBySelectorsContainer-title'>Tags</h2>
+                <div className='filterBySelectorsSelects'>
                   <Select
                     value={selectedTagValueForSort}
-                    onChange={value => handleSelectTagChange(value)}
-                    options={tags.map(cat => ({
+                    onChange={(value) => handleSelectTagChange(value)}
+                    options={tags.map((cat) => ({
                       value: cat.id,
-                      label: cat.name
+                      label: cat.name,
                     }))}
                   />
                 </div>
@@ -113,17 +113,17 @@ const SideFilterBar = ({
             )}{' '}
           </div>
 
-          <div className='sortBySelectorsContainer'>
+          <div className='filterBySelectorsContainer'>
             {brands && brands.length > 0 && (
               <>
-                <h2 className='sortBySelectorsContainer-title'>Brands</h2>
-                <div className='sortBySelectorsSelects'>
+                <h2 className='filterBySelectorsContainer-title'>Brands</h2>
+                <div className='filterBySelectorsSelects'>
                   <Select
                     value={selectedBrandValueForSort}
-                    onChange={value => handleSelectBrandChange(value)}
-                    options={brands.map(cat => ({
+                    onChange={(value) => handleSelectBrandChange(value)}
+                    options={brands.map((cat) => ({
                       value: cat.id,
-                      label: cat.name
+                      label: cat.name,
                     }))}
                   />
                 </div>
@@ -133,131 +133,137 @@ const SideFilterBar = ({
         </>
       ) : (
         <>
-          <div className='category-block'>
-            <div className='product-detail'>
-              <h2
-                className='category-title'
-                style={{
-                  marginBottom: '10px'
-                }}
-              >
-                Categories
-              </h2>
-              <ul>
-                {categories &&
-                  categories.map((cat, i) => {
-                    return (
-                      <li key={i}>
-                        <span
-                          className={
-                            cat.id !== 'all'
-                              ? `${
-                                  cat[`is${cat.id}`]
-                                    ? 'category-text active'
-                                    : 'category-text'
-                                }`
-                              : `${
-                                  cat[`is${cat.id}`]
-                                    ? 'category-header-all active'
-                                    : 'category-header-all'
-                                }`
-                          }
-                          onClick={() => {
-                            handleSelectCategory(cat.id);
-                          }}
-                        >
-                          {cat.name}
-                        </span>
-                      </li>
-                    );
-                  })}
-              </ul>
+          {categories.length > 0 && (
+            <div className='category-block'>
+              <div className='product-detail'>
+                <h2
+                  className='category-title'
+                  style={{
+                    marginBottom: '10px',
+                  }}
+                >
+                  Categories
+                </h2>
+                <ul>
+                  {categories.length > 0 &&
+                    categories.map((cat, i) => {
+                      return (
+                        <li key={i}>
+                          <span
+                            className={
+                              cat.id !== 'all'
+                                ? `${
+                                    cat[`is${cat.id}`]
+                                      ? 'category-text active'
+                                      : 'category-text'
+                                  }`
+                                : `${
+                                    cat[`is${cat.id}`]
+                                      ? 'category-header-all active'
+                                      : 'category-header-all'
+                                  }`
+                            }
+                            onClick={() => {
+                              handleSelectCategory(cat.id);
+                            }}
+                          >
+                            {cat.name}
+                          </span>
+                        </li>
+                      );
+                    })}
+                </ul>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className='category-block'>
-            <div className='product-detail'>
-              <h2
-                className='category-title'
-                style={{
-                  marginBottom: '10px'
-                }}
-              >
-                Tags
-              </h2>
-              <ul>
-                {tags &&
-                  tags.map((tag, i) => {
-                    return (
-                      <li key={i}>
-                        <span
-                          className={
-                            tag.id !== 'all'
-                              ? `${
-                                  tag[`is${tag.id}`]
-                                    ? 'category-text active'
-                                    : 'category-text'
-                                }`
-                              : `${
-                                  tag[`is${tag.id}`]
-                                    ? 'category-header-all active'
-                                    : 'category-header-all'
-                                }`
-                          }
-                          onClick={() => {
-                            handleSelectTag(tag.id);
-                          }}
-                        >
-                          {tag.name}
-                        </span>
-                      </li>
-                    );
-                  })}
-              </ul>
+          {tags.length > 0 && (
+            <div className='category-block'>
+              <div className='product-detail'>
+                <h2
+                  className='category-title'
+                  style={{
+                    marginBottom: '10px',
+                  }}
+                >
+                  Tags
+                </h2>
+                <ul>
+                  {tags.length > 0 &&
+                    tags.map((tag, i) => {
+                      return (
+                        <li key={i}>
+                          <span
+                            className={
+                              tag.id !== 'all'
+                                ? `${
+                                    tag[`is${tag.id}`]
+                                      ? 'category-text active'
+                                      : 'category-text'
+                                  }`
+                                : `${
+                                    tag[`is${tag.id}`]
+                                      ? 'category-header-all active'
+                                      : 'category-header-all'
+                                  }`
+                            }
+                            onClick={() => {
+                              handleSelectTag(tag.id);
+                            }}
+                          >
+                            {tag.name}
+                          </span>
+                        </li>
+                      );
+                    })}
+                </ul>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className='category-block'>
-            <div className='product-detail'>
-              <h2
-                className='category-title'
-                style={{
-                  marginBottom: '10px'
-                }}
-              >
-                Brands
-              </h2>
-              <ul>
-                {brands &&
-                  brands.map((brand, i) => {
-                    return (
-                      <li key={i}>
-                        <span
-                          className={
-                            brand.id !== 'all'
-                              ? `${
-                                  brand[`is${brand.id}`]
-                                    ? 'category-text active'
-                                    : 'category-text'
-                                }`
-                              : `${
-                                  brand[`is${brand.id}`]
-                                    ? 'category-header-all active'
-                                    : 'category-header-all'
-                                }`
-                          }
-                          onClick={() => {
-                            handleSelectBrand(brand.id);
-                          }}
-                        >
-                          {brand.name}
-                        </span>
-                      </li>
-                    );
-                  })}
-              </ul>
+          {brands.length > 0 && (
+            <div className='category-block'>
+              <div className='product-detail'>
+                <h2
+                  className='category-title'
+                  style={{
+                    marginBottom: '10px',
+                  }}
+                >
+                  Brands
+                </h2>
+                <ul>
+                  {brands.length > 0 &&
+                    brands.map((brand, i) => {
+                      return (
+                        <li key={i}>
+                          <span
+                            className={
+                              brand.id !== 'all'
+                                ? `${
+                                    brand[`is${brand.id}`]
+                                      ? 'category-text active'
+                                      : 'category-text'
+                                  }`
+                                : `${
+                                    brand[`is${brand.id}`]
+                                      ? 'category-header-all active'
+                                      : 'category-header-all'
+                                  }`
+                            }
+                            onClick={() => {
+                              handleSelectBrand(brand.id);
+                            }}
+                          >
+                            {brand.name}
+                          </span>
+                        </li>
+                      );
+                    })}
+                </ul>
+              </div>
             </div>
-          </div>
+          )}
         </>
       )}
     </div>
