@@ -1,6 +1,5 @@
 .form {
   // max-width: 600px;
-  text-align: center;
   margin: 20px 0;
 }
 .form input {
@@ -20,7 +19,7 @@
 .form .label {
   font-size: 15px;
   color: $color-dark-1;
-  text-align: left;
+  text-align: left !important;
   width: 100%;
   color: #555;
 }
@@ -71,11 +70,32 @@
   margin-left: 2%;
 }
 
+@media screen and (max-width: 380px) {
+  .formContainerOfTwo {
+    display: block;
+  }
+
+  .formContainerOfTwo .formContainerOfTwoItem:first-child {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .formContainerOfTwo .formContainerOfTwoItem:last-child {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .formContainerOfTwo .formContainerOfTwoItem.formContainterSelect {
+    margin-top: 20px !important;
+  }
+}
+
 .formLabel {
   font-size: 15px;
   color: $color-dark-1;
   text-align: left;
   width: 100%;
   color: #555;
-  margin-bottom: 0.6em;
 }

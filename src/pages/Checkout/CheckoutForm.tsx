@@ -103,7 +103,7 @@ const CheckoutForm = ({
             </div>
           )}
         </div>
-        <div className='formContainerOfTwoItem'>
+        <div className='formContainerOfTwoItem formContainterSelect'>
           {cityList && (
             <div>
               <label className='formLabel'>City</label>

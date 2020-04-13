@@ -48,6 +48,6 @@
 }
 
 .authButton.disabled {
-  background-color: rgba(107, 33, 172, 0.5);
+  background-color: $color-primary-overlay;
   cursor: not-allowed;
 }

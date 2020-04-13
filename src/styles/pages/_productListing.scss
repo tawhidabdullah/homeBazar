@@ -78,8 +78,8 @@
 .productListingSubCategooryContainer {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   align-items: center;
+  padding: 0 6px;
 }
 
 .subcat-card {
@@ -127,7 +127,6 @@
   width: 100%;
   height: 100%;
   object-fit: center;
-  // border-radius: 5px;
   display: block;
 }
 
@@ -221,5 +220,30 @@
     line-height: 1.6;
     font-weight: 600;
     text-align: center;
+  }
+}
+
+@media screen and (max-width: 355px) {
+  .subcat-card {
+    min-width: 120px;
+    max-width: 120px;
+  }
+
+  .subcat-top {
+    height: 100px;
+    width: 100px;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  .subcat-card {
+    min-width: 120px;
+    max-width: 120px;
+    margin: 5px;
+  }
+
+  .subcat-top {
+    height: 100px;
+    width: 100px;
   }
 }

@@ -83,19 +83,19 @@ const ProductCard = ({
     <div className='product-card'>
       <div className='product-top'>
         <img src={cover} alt='product img' />
-        <div
-          className='product-top-overlay'
-        ></div>
+        <div className='product-top-overlay'></div>
 
         <div className='overlay-right'>
-           <button
-             onClick={() => history.push(url)}
-              type='button'
-              className='btn btn-secondary'
-              title='Quick Shop'
-            >
-              <i className='fa fa-eye'></i>
-            </button>
+          <button
+            onClick={() => {
+              history.push(url);
+            }}
+            type='button'
+            className='btn btn-secondary'
+            title={`see ${name}`}
+          >
+            <i className='fa fa-eye'></i>
+          </button>
           <button
             type='button'
             className='btn btn-secondary'
@@ -110,8 +110,17 @@ const ProductCard = ({
       <div className='product-bottom text-center'>
         <div className='cart-btn' onClick={handleOnClickAddToCart}>
           <button className='primary-btn'>
-            {(checkIfItemExistsInCartItemById(cartItems, id) && 'Added') ||
-              'Add to Cart'}
+            {(checkIfItemExistsInCartItemById(cartItems, id) && (
+              <span className='product-bottom-iconText'>
+                <i className='fa fa-shopping-cart'></i>
+                Added
+              </span>
+            )) || (
+              <span className='product-bottom-iconText'>
+                <i className='fa fa-cart-plus'></i>
+                Add to cart
+              </span>
+            )}
           </button>
         </div>
 

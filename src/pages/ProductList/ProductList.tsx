@@ -116,7 +116,7 @@ const ProductList = ({
     if (checkIfItemExistsInCache(`product`, cache) && pageNumber === 1) {
       const productsRes = cache[`product`];
 
-       // @ts-ignore
+      // @ts-ignore
       const products = productsRes.data || [];
       // @ts-ignore
       const isNext = productsRes.isNext || null;
@@ -126,9 +126,8 @@ const ProductList = ({
       setProductOf('product');
       setIsLoading(false);
     } else {
-
-      console.log('pageNumberOfProduct',pageNumberOfProduct); 
-      console.log('pageNumber',pageNumber); 
+      console.log('pageNumberOfProduct', pageNumberOfProduct);
+      console.log('pageNumber', pageNumber);
       const newProductsRes = await handleProductListFetch({
         urlOptions: {
           params: {
@@ -138,21 +137,19 @@ const ProductList = ({
         },
       });
 
-       // @ts-ignore
+      // @ts-ignore
       const newProducts = newProductsRes.data || [];
       // @ts-ignore
       const isNext = newProductsRes.isNext || null;
       setIsNext(isNext);
 
-
-      if(pageNumber === 1){
+      if (pageNumber === 1) {
         addItemToCache({
-              [`product`]: newProductsRes,
+          [`product`]: newProductsRes,
         });
       }
-    
 
-     if (products.length > 0 && pageNumber && pageNumber > 1) {
+      if (products.length > 0 && pageNumber && pageNumber > 1) {
         // @ts-ignore
         if (newProducts.length > 0) {
           // @ts-ignore
@@ -274,7 +271,7 @@ const ProductList = ({
         },
       });
 
-        // @ts-ignore
+      // @ts-ignore
       const newProducts = newProductsRes.data || [];
       // @ts-ignore
       const isNext = newProductsRes.isNext || null;
@@ -319,7 +316,7 @@ const ProductList = ({
       !pageNumber
     ) {
       const productsRes = cache[`brandProducts/${brandId}`];
-       // @ts-ignore
+      // @ts-ignore
       const products = productsRes.data || [];
       // @ts-ignore
       const isNext = productsRes.isNext || null;
@@ -340,8 +337,7 @@ const ProductList = ({
         },
       });
 
-      
-        // @ts-ignore
+      // @ts-ignore
       const newProducts = newProductsRes.data || [];
       // @ts-ignore
       const isNext = newProductsRes.isNext || null;
@@ -500,8 +496,8 @@ const ProductList = ({
         setBrands(b);
       }
       if (id === 'all') {
-        setIsNext(true); 
-        setPageNumberOfProduct(1)
+        setIsNext(true);
+        setPageNumberOfProduct(1);
         // if the id is all get all the products
         getProducts(1);
       } else if (location.state && location.state.isCategory) {
@@ -629,22 +625,6 @@ const ProductList = ({
     }
   };
 
-  const handleUiSelectSubCategory = (subCatId: string) => {
-    const newSubCategories = [...subcategories];
-    newSubCategories &&
-      newSubCategories.forEach((subCat) => {
-        if (subCat['id'] === subCatId) {
-          // @ts-ignore
-          subCat[`is${subCat['id']}`] = true;
-        } else {
-          // @ts-ignore
-          subCat[`is${subCat['id']}`] = false;
-        }
-      });
-
-    setSubcategories(newSubCategories);
-  };
-
   const setUiSelectItemActive = (type: string, id: string) => {
     if (type === 'category') {
       if (categories.length > 0) {
@@ -664,6 +644,7 @@ const ProductList = ({
           } else cat[`is${cat['id']}`] = false;
         });
         setCategories(newCategories);
+        console.log('mySubCategory', subCategories);
         setSubcategories(subCategories);
       }
       setUiSelectItemDeactive('tag');
@@ -706,6 +687,29 @@ const ProductList = ({
     }
   };
 
+  const handleUiSelectSubCategory = (subCatId: string) => {
+    let newSubCategories = [...subcategories];
+    // newSubCategories &&
+    //   newSubCategories.forEach((subCat) => {
+    //     if (subCat['id'] === subCatId) {
+    //       // @ts-ignore
+    //       subCat[`is${subCat['id']}`] = true;
+    //     } else {
+    //       // @ts-ignore
+    //       subCat[`is${subCat['id']}`] = false;
+    //     }
+    //   });
+
+    newSubCategories = newSubCategories.filter(
+      (subCat) => subCat['id'] === subCatId
+    );
+
+    setSubcategories(newSubCategories);
+
+    setPageNumberOfCategoryProduct(1);
+    setIsNext(true);
+  };
+
   const handleSelectCategory = (categoryId) => {
     history.push({
       pathname: `/productList/${categoryId}`,
@@ -713,7 +717,7 @@ const ProductList = ({
     });
 
     setPageNumberOfCategoryProduct(1);
-    setIsNext(true); 
+    setIsNext(true);
 
     setUiSelectItemActive('category', categoryId);
   };
@@ -724,8 +728,8 @@ const ProductList = ({
       state: { isTag: true },
     });
 
-    setPageNumberOfTagProduct(1)
-     setIsNext(true); 
+    setPageNumberOfTagProduct(1);
+    setIsNext(true);
     setUiSelectItemActive('tag', tagId);
   };
 
@@ -734,8 +738,8 @@ const ProductList = ({
       pathname: `/productList/${brandId}`,
       state: { isBrand: true },
     });
-   setPageNumberOfBrandProduct(1)
-   setIsNext(true); 
+    setPageNumberOfBrandProduct(1);
+    setIsNext(true);
     setUiSelectItemActive('brand', brandId);
   };
 
@@ -776,7 +780,13 @@ const ProductList = ({
               history={history}
             />
             <div className='col-sm-8 col-md-9'>
-              <div className='row productListingSubCategooryContainer'>
+              <div
+                className='row productListingSubCategooryContainer'
+                style={{
+                  justifyContent:
+                    subcategories.length > 1 ? 'center' : 'flex-start',
+                }}
+              >
                 {!isLoading &&
                   subcategories.length > 0 &&
                   subcategories.map((subCat) => {

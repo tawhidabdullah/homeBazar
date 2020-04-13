@@ -450,6 +450,12 @@
   }
 }
 
+.product-bottom .product-bottom-iconText .fa {
+  color: #fff !important;
+  font-size: 18px !important;
+  margin-right: 7px !important;
+}
+
 @media screen and (max-width: 452px) {
   .product-card {
     min-width: 150px;
@@ -483,6 +489,18 @@
 
   .product-slider-section {
     margin: 5px 5px !important;
+  }
+}
+
+@media screen and (max-width: 343px) {
+  .product-bottom .product-bottom-iconText .fa {
+    color: #fff !important;
+    font-size: 13px !important;
+    margin-right: 5px !important;
+  }
+
+  .product-bottom-iconText {
+    font-size: 12px !important;
   }
 }
 

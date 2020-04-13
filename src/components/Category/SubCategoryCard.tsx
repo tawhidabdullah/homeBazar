@@ -9,7 +9,7 @@ interface Props {
 const SubCategoryCard = ({
   subCat,
   history,
-  handleUiSelectSubCategory
+  handleUiSelectSubCategory,
 }: Props) => {
   const { cover, id, name } = subCat;
   return (
@@ -21,7 +21,7 @@ const SubCategoryCard = ({
           onClick={() => {
             history.push({
               pathname: `/productList/${id}`,
-              state: { isCategory: true }
+              state: { isCategory: true },
             });
             handleUiSelectSubCategory && handleUiSelectSubCategory(id);
           }}

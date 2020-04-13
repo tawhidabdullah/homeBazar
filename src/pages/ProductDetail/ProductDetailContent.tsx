@@ -214,9 +214,31 @@ const ProductDetailContent = ({
                     onClick={handleOnClickAddToCart}
                     href='##'
                   >
-                    {(checkIfItemExistsInCartItemById(cartItems, id) &&
-                      'Added') ||
-                      'Add to Cart'}
+                    {(checkIfItemExistsInCartItemById(cartItems, id) && (
+                      <span>
+                        <i
+                          className='fa fa-shopping-cart'
+                          style={{
+                            color: '#fff',
+                            fontSize: '18px',
+                            marginRight: '7px',
+                          }}
+                        ></i>
+                        Added
+                      </span>
+                    )) || (
+                      <span>
+                        <i
+                          className='fa fa-cart-plus'
+                          style={{
+                            color: '#fff',
+                            fontSize: '18px',
+                            marginRight: '7px',
+                          }}
+                        ></i>
+                        Add to cart
+                      </span>
+                    )}
                   </a>
                 </div>
               </div>
