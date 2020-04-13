@@ -653,7 +653,7 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
                 label='Old Password'
                 name='password'
                 placeholder='old password'
-                type='text'
+                type='password'
                 value={values.password}
                 onChange={(e) => {
                   handleChange(e);
@@ -670,7 +670,7 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
                 label='New Password'
                 name='newPassword'
                 placeholder='New Password'
-                type='text'
+                type='password'
                 value={values.newPassword}
                 onChange={(e) => {
                   handleChange(e);
@@ -687,7 +687,7 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
                 label='Confirm New Password'
                 name='newPassword2'
                 placeholder='Confirm New Password'
-                type='text'
+                type='password'
                 value={values.newPassword2}
                 onChange={(e) => {
                   handleChange(e);

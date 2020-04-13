@@ -1,6 +1,14 @@
 .form {
   // max-width: 600px;
   margin: 20px 0;
+  position: relative;
+}
+
+.form .password-eye {
+  position: absolute;
+  right: 10px;
+  top: 56%;
+  cursor: pointer;
 }
 .form input {
   border: 0;

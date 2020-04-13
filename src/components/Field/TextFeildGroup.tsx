@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classnames from 'classnames';
 
 interface Props {
@@ -26,12 +26,13 @@ const TextFeildGroup = ({
   label,
   onInput,
 }: Props) => {
+  const [fieldType, setfieldType] = useState(type);
   return (
     <div className='form'>
       {label ? <label className='label'>{label}</label> : ''}
 
       <input
-        type={type ? type : 'text'}
+        type={fieldType ? fieldType : 'text'}
         className={classnames('form-control form-control-lg', {
           'is-invalid': errors,
         })}
@@ -43,6 +44,21 @@ const TextFeildGroup = ({
         id='inputFeild'
         onInput={onInput}
       />
+
+      {type === 'password' && (
+        <span
+          className='password-eye'
+          onClick={() =>
+            setfieldType((fieldType) =>
+              fieldType === 'text' ? 'password' : 'text'
+            )
+          }
+        >
+          <i
+            className={fieldType === 'text' ? 'fa fa-eye-slash' : 'fa fa-eye'}
+          ></i>
+        </span>
+      )}
       {info && (
         <small
           className='form-text text-muted'

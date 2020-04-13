@@ -374,7 +374,7 @@ const Signup = ({ addItemToCache, cache, history, alert }: Props) => {
                 label='Password'
                 name='password'
                 placeholder='******'
-                type='text'
+                type='password'
                 value={values.password}
                 onChange={(e) => {
                   handleChange(e);
@@ -390,7 +390,7 @@ const Signup = ({ addItemToCache, cache, history, alert }: Props) => {
                 label='Confirm Password'
                 name='passwordConfirmation'
                 placeholder='******'
-                type='text'
+                type='password'
                 value={values.passwordConfirmation}
                 onChange={(e) => {
                   handleChange(e);
