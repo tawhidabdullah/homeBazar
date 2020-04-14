@@ -41,10 +41,6 @@ const personalInfoValidationSchema = Yup.object().shape({
     .label('Address line 1')
     .required()
     .min(3, 'Address line 1 must have at least 3 characters '),
-  address2: Yup.string()
-    .label('Address line 2')
-    .required()
-    .min(3, 'Address line 2 must have at least 3 characters '),
 });
 
 const contactInfoSchema = Yup.object().shape({
@@ -241,7 +237,9 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
         {isPersonalInfoEdit && (
           <Formik
             initialValues={
-              isPersonalInfoEdit && Object.keys(customerData).length > 0
+              isPersonalInfoEdit &&
+              customerData &&
+              Object.keys(customerData).length > 0
                 ? customerData
                 : personalInfoInitialValues
             }
@@ -404,87 +402,89 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
           </Formik>
         )}
 
-        {!isPersonalInfoEdit && Object.keys(customerData).length > 0 && (
-          <>
-            {customerData['firstName'] && !customerData['lastName'] && (
-              <TextFeildGroup
-                label='Firstname'
-                name='firstName'
-                value={customerData['firstName']}
-                disabled={true}
-              />
-            )}
+        {!isPersonalInfoEdit &&
+          customerData &&
+          Object.keys(customerData).length > 0 && (
+            <>
+              {customerData['firstName'] && !customerData['lastName'] && (
+                <TextFeildGroup
+                  label='Firstname'
+                  name='firstName'
+                  value={customerData['firstName']}
+                  disabled={true}
+                />
+              )}
 
-            {customerData['lastName'] && !customerData['firstName'] && (
-              <TextFeildGroup
-                label='Lastname'
-                name='lastname'
-                value={customerData['lastName']}
-                disabled={true}
-              />
-            )}
+              {customerData['lastName'] && !customerData['firstName'] && (
+                <TextFeildGroup
+                  label='Lastname'
+                  name='lastname'
+                  value={customerData['lastName']}
+                  disabled={true}
+                />
+              )}
 
-            {customerData['country'] && !customerData['city'] && (
-              <TextFeildGroup
-                label='Country'
-                name='country'
-                value={customerData['country']}
-                disabled={true}
-              />
-            )}
+              {customerData['country'] && !customerData['city'] && (
+                <TextFeildGroup
+                  label='Country'
+                  name='country'
+                  value={customerData['country']}
+                  disabled={true}
+                />
+              )}
 
-            {customerData['city'] && !customerData['country'] && (
-              <TextFeildGroup
-                label='City'
-                name='city'
-                value={customerData['city']}
-                disabled={true}
-              />
-            )}
+              {customerData['city'] && !customerData['country'] && (
+                <TextFeildGroup
+                  label='City'
+                  name='city'
+                  value={customerData['city']}
+                  disabled={true}
+                />
+              )}
 
-            {customerData['firstName'] && customerData['lastName'] && (
-              <div className='formContainerOfTwo'>
-                <div className='formContainerOfTwoItem'>
-                  <TextFeildGroup
-                    label='Firstname'
-                    name='firstName'
-                    value={customerData['firstName']}
-                    disabled={true}
-                  />
+              {customerData['firstName'] && customerData['lastName'] && (
+                <div className='formContainerOfTwo'>
+                  <div className='formContainerOfTwoItem'>
+                    <TextFeildGroup
+                      label='Firstname'
+                      name='firstName'
+                      value={customerData['firstName']}
+                      disabled={true}
+                    />
+                  </div>
+                  <div className='formContainerOfTwoItem'>
+                    <TextFeildGroup
+                      label='Lastname'
+                      name='lastname'
+                      value={customerData['lastName']}
+                      disabled={true}
+                    />
+                  </div>
                 </div>
-                <div className='formContainerOfTwoItem'>
-                  <TextFeildGroup
-                    label='Lastname'
-                    name='lastname'
-                    value={customerData['lastName']}
-                    disabled={true}
-                  />
-                </div>
-              </div>
-            )}
+              )}
 
-            {customerData['country'] && customerData['city'] && (
-              <div className='formContainerOfTwo'>
-                <div className='formContainerOfTwoItem'>
-                  <TextFeildGroup
-                    label='Country'
-                    name='country'
-                    value={customerData['country']}
-                    disabled={true}
-                  />
+              {customerData['country'] && customerData['city'] && (
+                <div className='formContainerOfTwo'>
+                  <div className='formContainerOfTwoItem'>
+                    <TextFeildGroup
+                      label='Country'
+                      name='country'
+                      value={customerData['country']}
+                      disabled={true}
+                    />
+                  </div>
+                  <div className='formContainerOfTwoItem'>
+                    <TextFeildGroup
+                      label='City'
+                      name='city'
+                      value={customerData['city']}
+                      disabled={true}
+                    />
+                  </div>
                 </div>
-                <div className='formContainerOfTwoItem'>
-                  <TextFeildGroup
-                    label='City'
-                    name='city'
-                    value={customerData['city']}
-                    disabled={true}
-                  />
-                </div>
-              </div>
-            )}
-          </>
-        )}
+              )}
+            </>
+          )}
 
         {customerData['address1'] && (
           <TextFeildGroup

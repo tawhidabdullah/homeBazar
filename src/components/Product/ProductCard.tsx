@@ -3,7 +3,11 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withAlert } from 'react-alert';
 import { cartOperations } from '../../state/ducks/cart';
-import { numberWithCommas, checkIfItemExistsInCartItemById } from '../../utils';
+import {
+  numberWithCommas,
+  checkIfItemExistsInCartItemById,
+  getCartKeyFromCartItems,
+} from '../../utils';
 import { useHandleFetch } from '../../hooks';
 
 interface Props {
@@ -38,18 +42,21 @@ const ProductCard = ({
 
   const handleOnClickAddToCart = async () => {
     if (checkIfItemExistsInCartItemById(cartItems, id)) {
-      const removeFromCartRes = await handleRemoveFromCartFetch({
-        urlOptions: {
-          placeHolders: {
-            id,
+      const cartKey = getCartKeyFromCartItems(cartItems, id);
+      if (cartKey) {
+        const removeFromCartRes = await handleRemoveFromCartFetch({
+          urlOptions: {
+            placeHolders: {
+              cartKey,
+            },
           },
-        },
-      });
+        });
 
-      // @ts-ignore
-      if (removeFromCartRes) {
-        removeFromCart && removeFromCart(product);
-        alert.success('Product Has Been Removed From the Cart');
+        // @ts-ignore
+        if (removeFromCartRes) {
+          removeFromCart && removeFromCart(product);
+          alert.success('Product Has Been Removed From the Cart');
+        }
       }
     } else {
       const addToCartRes = await handleAddtoCartFetch({
@@ -110,17 +117,20 @@ const ProductCard = ({
       <div className='product-bottom text-center'>
         <div className='cart-btn' onClick={handleOnClickAddToCart}>
           <button className='primary-btn'>
-            {(checkIfItemExistsInCartItemById(cartItems, id) && (
-              <span className='product-bottom-iconText'>
-                <i className='fa fa-shopping-cart'></i>
-                Added
-              </span>
-            )) || (
-              <span className='product-bottom-iconText'>
-                <i className='fa fa-cart-plus'></i>
-                Add to cart
-              </span>
+            {!addToCartState.isLoading && !removeFromCartState.isLoading && (
+              <>
+                {(checkIfItemExistsInCartItemById(cartItems, id) && (
+                  <span className='product-bottom-iconText'>🐎 Added</span>
+                )) || (
+                  <span className='product-bottom-iconText'>
+                    🐎 Add to cart
+                  </span>
+                )}
+              </>
             )}
+
+            {addToCartState.isLoading && '🐎 Adding...'}
+            {removeFromCartState.isLoading && '🐎 Removing...'}
           </button>
         </div>
 

@@ -367,12 +367,12 @@ const Checkout = ({
   useEffect(() => {
     if (
       checkIfItemExistsInCache(
-        `cityList/${selectedShippingCountryValue.value}`,
+        `shippingCityList/${selectedShippingCountryValue.value}`,
         cache
       )
     ) {
       const shippingCityList =
-        cache[`cityList/${selectedShippingCountryValue.value}`];
+        cache[`shippingCityList/${selectedShippingCountryValue.value}`];
       setShippingCityList(shippingCityList);
       // @ts-ignore
       const cityValue = shippingCityList.length > 0 && shippingCityList[0];
@@ -527,7 +527,7 @@ const Checkout = ({
     setPaymentMethod(value);
   };
 
-  const handleOrder = async (values, actions) => {
+  const handleCheckout = async (values, actions) => {
     if (values) {
       if (paymentMethod !== 'cod') {
         const createOrderData = {
@@ -731,7 +731,7 @@ const Checkout = ({
           enableReinitialize={isShipToDifferentAddress ? false : true}
           initialValues={getUltimateInitialValue()}
           // @ts-ignore
-          onSubmit={(values, actions) => handleOrder(values, actions)}
+          onSubmit={(values, actions) => handleCheckout(values, actions)}
           validationSchema={getUltimateValidationSchema()}
           validateOnBlur={false}
         >

@@ -57,7 +57,9 @@ class Converter {
           id: product._id || '',
           name: product.name && product.name,
           description: product.description && product.description,
-          cover: `${config['baseURL']}${product.cover && product.cover['medium'] || ''}`,
+          cover: `${config['baseURL']}${
+            (product.cover && product.cover['medium']) || ''
+          }`,
           regularPrice: product.price && product.price['regular'],
           offerPrice: product.price && product.price['offer'],
           price:
@@ -192,7 +194,9 @@ class Converter {
           id: product._id || '',
           name: product.name && product.name,
           description: product.description && product.description,
-          cover: `${config['baseURL']}${product.cover && product.cover['medium'] || ''}`,
+          cover: `${config['baseURL']}${
+            (product.cover && product.cover['medium']) || ''
+          }`,
           regularPrice: product.price && product.price['regular'],
           offerPrice: product.price && product.price['offer'],
           price:
@@ -227,7 +231,9 @@ class Converter {
           id: product._id || '',
           name: product.name && product.name,
           description: product.description && product.description,
-          cover: `${config['baseURL']}${product.cover && product.cover['medium'] || ''}`,
+          cover: `${config['baseURL']}${
+            (product.cover && product.cover['medium']) || ''
+          }`,
           regularPrice: product.price && product.price['regular'],
           offerPrice: product.price && product.price['offer'],
           price:
@@ -271,8 +277,8 @@ class Converter {
       [];
 
     return {
-      data: convertedData, 
-      isNext
+      data: convertedData,
+      isNext,
     };
   }
 
@@ -286,24 +292,28 @@ class Converter {
     const data = resData.data || [];
     const isNext = resData.page.next;
 
-    const convertedData =
+    let convertedData =
       data.length > 0 &&
       data.map((product) => {
         return {
           id: product._id || '',
           name: product.name && product.name,
           description: product.description && product.description,
-          cover: `${config['baseURL']}${product.cover.medium}`,
+          cover: `${config['baseURL']}${
+            (product.cover && product.cover['medium']) || ''
+          }`,
           regularPrice: product.price && product.price['regular'],
           offerPrice: product.price && product.price['offer'],
           url: product.url,
         };
       });
 
-    return {
-      data: convertedData, 
-      isNext
+    convertedData = {
+      data: convertedData,
+      isNext,
     };
+
+    return convertedData;
   }
 
   /**
@@ -581,9 +591,6 @@ class Converter {
    * @returns {Object}  converted data
    */
   async signup(data) {
-    //map props
-    let generalFormat = dataMap[config['server']]['signup']; //get genereal format from dataMap
-
     return {
       status: 'ok',
     };
@@ -678,76 +685,15 @@ class Converter {
 
   /**
    * @public
-   * @method currentUserOrders convert api data from API to general format based on config server
+   * @method getCurrentUserOrders convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data
    */
   async getCurrentUserOrders(resData) {
-    //map props
-    // let generalFormat = dataMap[config['server']]['currentUserOrders']; //get genereal format from dataMap
-
-    // const x = {
-    //   page: {
-    //     totalIndex: 1,
-    //     startingIndex: 1,
-    //     endingIndex: 1,
-    //     total: 1,
-    //     current: 1,
-    //     next: null,
-    //     previous: null,
-    //     limit: 50,
-    //     items: 1,
-    //   },
-    //   data: [
-    //     {
-    //       _id: '5e8a1d90943b41413c7a415a',
-    //       date: '2020-04-05T18:04:00.066Z',
-    //       products: [
-    //         {
-    //           _id: '5e50db8580e719cc127bdbd0',
-    //           quantity: 1,
-    //           unitPrice: '550',
-    //           price: 550,
-    //         },
-    //       ],
-    //       billingAddress: {
-    //         firstName: 'Tawhid',
-    //         lastName: 'Abdullah',
-    //         country: 'Albania',
-    //         city: 'Arrën',
-    //         address1: 'useruser',
-    //         address2: null,
-    //         zipCode: null,
-    //         phone: 179534506417,
-    //         email: '333@gmail.com',
-    //         additionalInfo: null,
-    //       },
-    //       shippingAddress: {
-    //         firstName: 'Tawhid',
-    //         lastName: 'Abdullah',
-    //         country: 'Albania',
-    //         city: 'Arrën',
-    //         address1: 'useruser',
-    //         address2: null,
-    //         zipCode: null,
-    //         phone: 179534506417,
-    //         email: '333@gmail.com',
-    //         additionalInfo: null,
-    //       },
-    //       payment: {
-    //         paymentMethod: 'cod',
-    //         paymentAccountNumber: null,
-    //         transactionId: null,
-    //       },
-    //       status: 'pending',
-    //       totalPrice: 550,
-    //       customer: '5e8a1d90943b41413c7a4159',
-    //     },
-    //   ],
-    // };
-
     const data = resData.data || [];
-    const convertedData =
+    const isNext = resData.page.next;
+
+    let convertedData =
       (data.length > 0 &&
         data.map((item) => {
           return {
@@ -761,6 +707,11 @@ class Converter {
           };
         })) ||
       [];
+
+    convertedData = {
+      data: convertedData,
+      isNext,
+    };
 
     return convertedData;
   }

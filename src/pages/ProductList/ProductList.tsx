@@ -126,12 +126,10 @@ const ProductList = ({
       setProductOf('product');
       setIsLoading(false);
     } else {
-      console.log('pageNumberOfProduct', pageNumberOfProduct);
-      console.log('pageNumber', pageNumber);
       const newProductsRes = await handleProductListFetch({
         urlOptions: {
           params: {
-            limitNumber: 3,
+            limitNumber: 15,
             pageNumber: pageNumber ? pageNumber : pageNumberOfProduct,
           },
         },
@@ -175,8 +173,6 @@ const ProductList = ({
       setIsLoading(true);
     }
 
-    console.log('myPageNumber', pageNumber);
-
     if (
       checkIfItemExistsInCache(`categoryProducts/${categoryId}`, cache) &&
       pageNumberOfCategoryProduct === 1 &&
@@ -199,7 +195,7 @@ const ProductList = ({
             id: categoryId,
           },
           params: {
-            limitNumber: 3,
+            limitNumber: 15,
             pageNumber: pageNumber ? pageNumber : pageNumberOfCategoryProduct,
           },
         },
@@ -644,7 +640,6 @@ const ProductList = ({
           } else cat[`is${cat['id']}`] = false;
         });
         setCategories(newCategories);
-        console.log('mySubCategory', subCategories);
         setSubcategories(subCategories);
       }
       setUiSelectItemDeactive('tag');
@@ -688,23 +683,7 @@ const ProductList = ({
   };
 
   const handleUiSelectSubCategory = (subCatId: string) => {
-    let newSubCategories = [...subcategories];
-    // newSubCategories &&
-    //   newSubCategories.forEach((subCat) => {
-    //     if (subCat['id'] === subCatId) {
-    //       // @ts-ignore
-    //       subCat[`is${subCat['id']}`] = true;
-    //     } else {
-    //       // @ts-ignore
-    //       subCat[`is${subCat['id']}`] = false;
-    //     }
-    //   });
-
-    newSubCategories = newSubCategories.filter(
-      (subCat) => subCat['id'] === subCatId
-    );
-
-    setSubcategories(newSubCategories);
+    setSubcategories([]);
 
     setPageNumberOfCategoryProduct(1);
     setIsNext(true);

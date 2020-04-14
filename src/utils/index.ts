@@ -44,6 +44,15 @@ export const checkIfItemExistsInCartItemById: (
   return (!isObjectEmpty(item) && true) || false;
 };
 
+export const getCartKeyFromCartItems = (cartItems, productId: string) => {
+  const cartItem = cartItems.find(({ product }) => product.id === productId);
+  if (!cartItem) {
+    return false;
+  }
+  const cartKey = cartItem['product']['cartKey'];
+  return cartKey;
+};
+
 export const checkIfItemExistsInCache = (key: string, cache: any) => {
   if (cache[key]) {
     return true;

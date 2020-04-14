@@ -62,11 +62,6 @@ const Signin = (props: Props) => {
     actions.setSubmitting(false);
   };
 
-  console.log(
-    'errors',
-    signinState.error['error'] && signinState.error['error']
-  );
-
   return (
     <div className='auth'>
       <h1 className='display-4 text-center auth_title'>Signin</h1>

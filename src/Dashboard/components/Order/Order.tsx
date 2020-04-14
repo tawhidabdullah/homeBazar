@@ -16,18 +16,25 @@ const Order = (props) => {
   const [isLoading, setIsLoading] = useState(1);
 
   const [orders, setOrders] = useState([]);
+  const [isNext, setIsNext] = useState(true);
 
   useEffect(() => {
     const getAndSetOrders = async () => {
       setIsLoading(true);
-      const newOrders = await handleOrderListStateFetch({
+      const newOrdersRes = await handleOrderListStateFetch({
         urlOptions: {
           params: {
-            limitNumber: 10,
+            limitNumber: 2,
             pageNumber: pageNumber,
           },
         },
       });
+
+      // @ts-ignore
+      const newOrders = newOrdersRes.data || [];
+      // @ts-ignore
+      const isNext = newOrdersRes.isNext || null;
+      setIsNext(isNext);
 
       // @ts-ignore
       if (newOrders) {
@@ -42,14 +49,20 @@ const Order = (props) => {
 
   const getAndSetInfiniteOrders = async (pageNumber) => {
     if (pageNumber > 1) {
-      const newOrders = await handleOrderListStateFetch({
+      const newOrdersRes = await handleOrderListStateFetch({
         urlOptions: {
           params: {
-            limitNumber: 1,
+            limitNumber: 2,
             pageNumber: pageNumber,
           },
         },
       });
+
+      // @ts-ignore
+      const newOrders = newOrdersRes.data || [];
+      // @ts-ignore
+      const isNext = newOrdersRes.isNext || null;
+      setIsNext(isNext);
 
       if (orders.length > 0) {
         // @ts-ignore
@@ -93,14 +106,29 @@ const Order = (props) => {
           }}
           dataLength={orders.length}
           next={fetchMoreProductsData}
-          hasMore={true}
-          loader={<h4></h4>}
+          hasMore={isNext !== null}
+          loader={
+            <div
+              style={{ width: '100%', textAlign: 'center', margin: '10px 0' }}
+            >
+              <h4
+                style={{
+                  textAlign: 'center',
+                }}
+              >
+                Loading...
+              </h4>{' '}
+            </div>
+          }
         >
-          {orders.map((order) => {
+          {orders.map((order, index) => {
             return (
               <div className='orderDetailsContainer'>
                 <div className='orderDetailItem'>
                   <div className='orderDetailHeader'>
+                    <div className='orderDetailHeader_Item'>
+                      <h2> #{index + 1} </h2>
+                    </div>
                     <div className='orderDetailHeader_Item'>
                       <h2>Created At</h2>
                       <h3>
@@ -149,7 +177,9 @@ const Order = (props) => {
         </InfiniteScroll>
       )}
 
-      {!isLoading && <h2>No Order has been created yet!</h2>}
+      {!isLoading && !(orders.length > 0) && (
+        <h2>No Order has been created yet!</h2>
+      )}
 
       {isLoading && <Spinner />}
     </div>

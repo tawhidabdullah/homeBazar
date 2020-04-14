@@ -1,5 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useFetch } from '../../hooks';
+import config from '../../config.json';
+import { urlToString } from '../../utils';
 
 interface Props {
   isShowMenuBar: boolean;
@@ -20,10 +23,18 @@ const MenuBar = ({ isShowMenuBar, handleToggleMenuBar }: Props) => {
         </span>
         <ul className='menuItems'>
           {Object.keys(navLinksState.data).length > 0 &&
-            navLinksState.data.map(item => {
+            navLinksState.data.map((item) => {
               return (
                 <li key={item.target}>
-                  <a href={item.target}>{item.text}</a>
+                  {urlToString(item['target']).includes(
+                    urlToString(config.baseURL)
+                  ) ? (
+                    <Link to={item['target'].replace(config.baseURL, '')}>
+                      {item['text']}
+                    </Link>
+                  ) : (
+                    <a href={item['target']}>{item['text']}</a>
+                  )}
                 </li>
               );
             })}

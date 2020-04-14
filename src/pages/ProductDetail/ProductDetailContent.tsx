@@ -5,7 +5,10 @@ import { Carousel } from 'react-responsive-carousel';
 import { connect } from 'react-redux';
 import { withAlert } from 'react-alert';
 import { cartOperations } from '../../state/ducks/cart';
-import { checkIfItemExistsInCartItemById } from '../../utils';
+import {
+  checkIfItemExistsInCartItemById,
+  getCartKeyFromCartItems,
+} from '../../utils';
 import { useHandleFetch } from '../../hooks';
 
 // import responsive carousel
@@ -57,18 +60,21 @@ const ProductDetailContent = ({
 
   const handleOnClickAddToCart = async () => {
     if (checkIfItemExistsInCartItemById(cartItems, id)) {
-      const removeFromCartRes = await handleRemoveFromCartFetch({
-        urlOptions: {
-          placeHolders: {
-            id,
+      const cartKey = getCartKeyFromCartItems(cartItems, id);
+      if (cartKey) {
+        const removeFromCartRes = await handleRemoveFromCartFetch({
+          urlOptions: {
+            placeHolders: {
+              cartKey,
+            },
           },
-        },
-      });
+        });
 
-      // @ts-ignore
-      if (removeFromCartRes) {
-        removeFromCart && removeFromCart(product);
-        alert.success('Product Has Been Removed From the Cart');
+        // @ts-ignore
+        if (removeFromCartRes) {
+          removeFromCart && removeFromCart(product);
+          alert.success('Product Has Been Removed From the Cart');
+        }
       }
     } else {
       const addToCartRes = await handleAddtoCartFetch({
@@ -90,6 +96,7 @@ const ProductDetailContent = ({
               : parseInt(addToCartRes['regularPrice']),
           id: addToCartRes['id'],
           url: addToCartRes['url'],
+          cartKey: addToCartRes['cartKey'],
         };
         addToCart && addToCart(product, addToCartRes['quantity']);
         alert.success('Product Added To The Cart');
@@ -214,31 +221,23 @@ const ProductDetailContent = ({
                     onClick={handleOnClickAddToCart}
                     href='##'
                   >
-                    {(checkIfItemExistsInCartItemById(cartItems, id) && (
-                      <span>
-                        <i
-                          className='fa fa-shopping-cart'
-                          style={{
-                            color: '#fff',
-                            fontSize: '18px',
-                            marginRight: '7px',
-                          }}
-                        ></i>
-                        Added
-                      </span>
-                    )) || (
-                      <span>
-                        <i
-                          className='fa fa-cart-plus'
-                          style={{
-                            color: '#fff',
-                            fontSize: '18px',
-                            marginRight: '7px',
-                          }}
-                        ></i>
-                        Add to cart
-                      </span>
-                    )}
+                    {!addToCartState.isLoading &&
+                      !removeFromCartState.isLoading && (
+                        <>
+                          {(checkIfItemExistsInCartItemById(cartItems, id) && (
+                            <span className='product-bottom-iconText'>
+                              🐎 Added
+                            </span>
+                          )) || (
+                            <span className='product-bottom-iconText'>
+                              🐎 Add to cart
+                            </span>
+                          )}
+                        </>
+                      )}
+
+                    {addToCartState.isLoading && '🐎 Adding...'}
+                    {removeFromCartState.isLoading && '🐎 Removing...'}
                   </a>
                 </div>
               </div>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useHandleFetch } from '../../hooks';
-import { checkIfItemExistsInCache } from '../../utils';
+import { checkIfItemExistsInCache, urlToString } from '../../utils';
+import config from '../../config.json';
 
 interface Props {
   addItemToCache: (any) => void;
@@ -37,17 +38,33 @@ const Logo = ({ addItemToCache, cache }: Props) => {
   return (
     <div className='navbar-center-logoBox'>
       {Object.keys(logo).length > 0 ? (
-        <Link to={logo['target']}>
-          <img
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-            }}
-            src={logo['src']}
-            alt='Mystyle'
-          />
-        </Link>
+        <>
+          {urlToString(logo['target']).includes(urlToString(config.baseURL)) ? (
+            <Link to={logo['target'].replace(config.baseURL, '')}>
+              <img
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                }}
+                src={logo['src']}
+                alt='Mystyle'
+              />
+            </Link>
+          ) : (
+            <a href={logo['target']}>
+              <img
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                }}
+                src={logo['src']}
+                alt='Mystyle'
+              />
+            </a>
+          )}
+        </>
       ) : (
         ''
       )}
