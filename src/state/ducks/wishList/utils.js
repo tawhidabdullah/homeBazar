@@ -1,3 +1,3 @@
-export function productPositionInWishList(wishList, product) {
-  return wishList.map(item => item.id).indexOf(product.id);
+export function productPositionInWishList(wishList, productId) {
+  return wishList.map(item => item).indexOf(productId);
 }

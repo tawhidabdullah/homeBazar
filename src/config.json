@@ -1,4 +1,4 @@
 {
   "server": "alpha",
-  "baseURL": "https://homebazarshibchar.com"
+  "baseURL": "http://localhost:5000"
 }

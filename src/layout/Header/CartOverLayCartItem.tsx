@@ -100,6 +100,8 @@ const CartOverLayCartItem = ({
         <h4
           style={{
             lineHeight: 1.5,
+            fontWeight: 700,
+            fontSize: '16px',
           }}
           onClick={() => {
             handleToggleCartBar();
@@ -111,7 +113,6 @@ const CartOverLayCartItem = ({
         <h5>৳{numberWithCommas(price)}</h5>
         <span className='remove-item' onClick={handleRemoveFromCart}>
           <i className='fa fa-trash'></i>
-          remove
         </span>
       </div>
       <div>

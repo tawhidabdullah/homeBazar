@@ -14,37 +14,27 @@ const initialState = [];
 
 const wishListReducer = createReducer(initialState)({
   [types.TOGGLE]: (state, action) => {
-    const { product } = action.payload;
+    const { productId } = action.payload;
 
-    const index = utils.productPositionInWishList(state, product);
+    const index = utils.productPositionInWishList(state, productId);
     if (index === -1) {
-      return [...state, product];
+      return [...state, productId];
     }
 
-    const tempArrayWithOutOldProduct = state.filter(item => item.id !== product.id);
+    const tempArrayWithOutOldProduct = state.filter(
+      (item) => item !== productId
+    );
 
     return tempArrayWithOutOldProduct;
   },
-
-  [types.SELECT_PRODUCT_FOR_CART]: (state, action) => {
-    const { product } = action.payload;
-    const index = utils.productPositionInWishList(state, product);
-    if (index === -1) {
-      return [...state, { ...product, isSelectedForCart: true }];
-    } else if (index !== -1 && !product.isSelectedForCart) {
-      const tempArrayWithOutOldProduct = state.filter(item => item.id !== product.id);
-
-      return [...tempArrayWithOutOldProduct, { ...product, isSelectedForCart: true }];
-    }
-
-    const tempArrayWithOutOldProduct = state.filter(item => item.id !== product.id);
-
-    return [...tempArrayWithOutOldProduct, { ...product, isSelectedForCart: false }];
+  [types.ADD_WISHLIST]: (state, action) => {
+    const wishlist = action.payload;
+    return [...wishlist];
   },
 
   [types.REMOVE]: (state, action) => {
-    const { product } = action.payload;
-    const index = utils.productPositionInWishList(state, product);
+    const { productId } = action.payload;
+    const index = utils.productPositionInWishList(state, productId);
     return [...state.slice(0, index), ...state.slice(index + 1)];
   },
   [types.CLEAR]: () => [],

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useFetch } from '../../hooks';
 import Products from './Products';
 
 interface Props {
@@ -47,7 +46,6 @@ const CategoryProducts = ({
               <Products
                 windowWidth={windowWidth}
                 categoryId={id}
-                category={category}
                 cache={cache}
                 addItemToCache={addItemToCache}
               />

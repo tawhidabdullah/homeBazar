@@ -68,6 +68,7 @@ class Converter {
               ? product.price['offer']
               : product.price['regular'],
           url: product.url,
+          unit: product.unit,
         };
       });
 
@@ -179,6 +180,67 @@ class Converter {
 
   /**
    * @public
+   * @method getWishlist convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async getWishlist(resData) {
+    // const cartItems = resData.items || [];
+    const convertedData = resData;
+
+    return convertedData;
+  }
+
+  /**
+   * @public
+   * @method addWishlist convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async addWishlist(resData) {
+    if (resData && resData['msg'] === 'wishlist updated') {
+      return {
+        status: 'ok',
+      };
+    }
+
+    return false;
+  }
+
+  /**
+   * @public
+   * @method removeFromWishlist convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async removeFromWishlist(resData) {
+    if (resData && resData['msg'] === 'wishlist updated') {
+      return {
+        status: 'ok',
+      };
+    }
+
+    return false;
+  }
+
+  /**
+   * @public
+   * @method removeAllWishlist convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async removeAllWishlist(resData) {
+    if (resData && resData['msg'] === 'wishlist updated') {
+      return {
+        status: 'ok',
+      };
+    }
+
+    return false;
+  }
+
+  /**
+   * @public
    * @method tagProducts convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
    * @returns {Object}  converted data
@@ -205,6 +267,7 @@ class Converter {
               ? product.price['offer']
               : product.price['regular'],
           url: product.url,
+          unit: product.unit,
         };
       });
 
@@ -242,6 +305,7 @@ class Converter {
               ? product.price['offer']
               : product.price['regular'],
           url: product.url,
+          unit: product.unit,
         };
       });
 
@@ -272,6 +336,7 @@ class Converter {
             regularPrice: product.price && product.price['regular'],
             offerPrice: product.price && product.price['offer'],
             url: product.url,
+            unit: product.unit,
           };
         })) ||
       [];
@@ -305,6 +370,7 @@ class Converter {
           regularPrice: product.price && product.price['regular'],
           offerPrice: product.price && product.price['offer'],
           url: product.url,
+          unit: product.unit,
         };
       });
 
@@ -432,6 +498,7 @@ class Converter {
         cover: `${config['baseURL']}${data.cover.medium}`,
         availableStock: data.availableStock,
         minimumStock: data.minimumStock,
+        unit: data.unit,
         category:
           (data.category &&
             data.category.length > 0 &&
@@ -462,7 +529,7 @@ class Converter {
               };
             })) ||
           data.tags,
-        availableStock: data.availableStock,
+
         image:
           (data.image &&
             data.image.length > 0 &&
@@ -490,6 +557,7 @@ class Converter {
         offerPrice: data.price && data.price['offer'],
         url: data.url,
         cover: `${config['baseURL']}${data.cover.medium}`,
+        unit: data.unit,
         category:
           (data.category &&
             data.category.length > 0 &&
@@ -603,17 +671,13 @@ class Converter {
    * @returns {Object}  converted data
    */
   async signin(data) {
-    //map props
-    let generalFormat = dataMap[config['server']]['signin']; //get genereal format from dataMap
+    if (data['msg']) {
+      return {
+        status: 'ok',
+      };
+    }
 
-    const formatedData = {
-      ...generalFormat,
-      status: data.status || 'ok',
-      cookie: data.cookie,
-      user: data.user,
-    };
-
-    return formatedData;
+    return false;
   }
 
   /**

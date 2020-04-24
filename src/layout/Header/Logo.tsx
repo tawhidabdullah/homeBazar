@@ -35,12 +35,42 @@ const Logo = ({ addItemToCache, cache }: Props) => {
     }
   }, []);
 
+  console.log('logofuck', logo);
+
   return (
     <div className='navbar-center-logoBox'>
       {Object.keys(logo).length > 0 ? (
         <>
-          {urlToString(logo['target']).includes(urlToString(config.baseURL)) ? (
-            <Link to={logo['target'].replace(config.baseURL, '')}>
+          {logo['target'] ? (
+            urlToString(logo['target']).includes(
+              urlToString(config.baseURL)
+            ) ? (
+              <Link to={logo['target'].replace(config.baseURL, '')}>
+                <img
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                  }}
+                  src={logo['src']}
+                  alt='Mystyle'
+                />
+              </Link>
+            ) : (
+              <a href={logo['target']}>
+                <img
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                  }}
+                  src={logo['src']}
+                  alt='Mystyle'
+                />
+              </a>
+            )
+          ) : (
+            <Link to={'/'}>
               <img
                 style={{
                   width: '100%',
@@ -51,18 +81,6 @@ const Logo = ({ addItemToCache, cache }: Props) => {
                 alt='Mystyle'
               />
             </Link>
-          ) : (
-            <a href={logo['target']}>
-              <img
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                }}
-                src={logo['src']}
-                alt='Mystyle'
-              />
-            </a>
           )}
         </>
       ) : (

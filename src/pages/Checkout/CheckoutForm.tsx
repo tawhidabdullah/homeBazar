@@ -140,7 +140,6 @@ const CheckoutForm = ({
         }
       />
       <TextFeildGroup
-        label='Address'
         name='address2'
         placeholder='Address line 2'
         type='text'

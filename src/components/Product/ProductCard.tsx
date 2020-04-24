@@ -1,12 +1,15 @@
-import React from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withAlert } from 'react-alert';
 import { cartOperations } from '../../state/ducks/cart';
+import { wishListOperations } from '../../state/ducks/wishList';
+
 import {
   numberWithCommas,
   checkIfItemExistsInCartItemById,
   getCartKeyFromCartItems,
+  checkIfTheWishListExistsInArrayById,
 } from '../../utils';
 import { useHandleFetch } from '../../hooks';
 
@@ -15,9 +18,12 @@ interface Props {
   AddCartContent?: () => void;
   history: any;
   addToCart?: (object, number) => void;
-  cartItems?: any;
   alert?: any;
+  cartItems?: any;
   removeFromCart?: (object) => void;
+  wishList: any;
+  addToWishList: (object) => void;
+  removeFromWishList: (object) => void;
 }
 
 const ProductCard = ({
@@ -27,6 +33,9 @@ const ProductCard = ({
   cartItems,
   addToCart,
   removeFromCart,
+  wishList,
+  addToWishList,
+  removeFromWishList,
 }: Props) => {
   const { name, regularPrice, cover, url, id, offerPrice } = product;
 
@@ -39,6 +48,15 @@ const ProductCard = ({
     [],
     'removeFromCart'
   );
+
+  const [addWishlistState, handleAddWishlistFetch] = useHandleFetch(
+    [],
+    'addWishlist'
+  );
+  const [
+    removeFromWishlistState,
+    handleRemoveFromWishlistFetch,
+  ] = useHandleFetch([], 'removeFromWishlist');
 
   const handleOnClickAddToCart = async () => {
     if (checkIfItemExistsInCartItemById(cartItems, id)) {
@@ -86,6 +104,45 @@ const ProductCard = ({
     }
   };
 
+  const handleOnClickWishlist = async () => {
+    if (checkIfTheWishListExistsInArrayById(wishList, id)) {
+      const removeFromWishListRes = await handleRemoveFromWishlistFetch({
+        urlOptions: {
+          placeHolders: {
+            id,
+          },
+        },
+      });
+
+      // @ts-ignore
+      if (removeFromWishListRes && removeFromWishListRes['status'] === 'ok') {
+        alert.success('Removed From wishlist Successfully!');
+        removeFromWishList && removeFromWishList(id);
+      }
+    } else {
+      const addWishlistRes = await handleAddWishlistFetch({
+        body: {
+          item: id,
+        },
+      });
+
+      // @ts-ignore
+      if (addWishlistRes && addWishlistRes['status'] === 'ok') {
+        alert.success('Added to wishlist Successfully!');
+        addToWishList && addToWishList(id);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (
+      addWishlistState['error']['isError'] &&
+      Object.keys(addWishlistState['error']['error']).length > 0
+    ) {
+      alert.error('Signin to use wishlist');
+    }
+  }, [addWishlistState]);
+
   return (
     <div className='product-card'>
       <div className='product-top'>
@@ -109,7 +166,35 @@ const ProductCard = ({
             title='Add To Cart'
             onClick={handleOnClickAddToCart}
           >
-            <i className='fa fa-shopping-cart'></i>
+            {checkIfItemExistsInCartItemById(cartItems, id) && (
+              <i className='fa fa-shopping-cart'></i>
+            )}
+            {!checkIfItemExistsInCartItemById(cartItems, id) && (
+              <i
+                style={{
+                  color: '#777',
+                }}
+                className='fa fa-shopping-cart'
+              ></i>
+            )}
+          </button>
+          <button
+            type='button'
+            className='btn btn-secondary'
+            title='Add To Wishlist'
+            onClick={handleOnClickWishlist}
+          >
+            {checkIfTheWishListExistsInArrayById(wishList, id) && (
+              <i className='fa fa-heart'></i>
+            )}
+            {!checkIfTheWishListExistsInArrayById(wishList, id) && (
+              <i
+                style={{
+                  color: '#777',
+                }}
+                className='fa fa-heart'
+              ></i>
+            )}
           </button>
         </div>
       </div>
@@ -147,11 +232,14 @@ const ProductCard = ({
 
 const mapStateToProps = (state) => ({
   cartItems: state.cart,
+  wishList: state.wishList,
 });
 
 const mapDispatchToProps = {
   removeFromCart: cartOperations.removeFromCart,
   addToCart: cartOperations.addToCart,
+  addToWishList: wishListOperations.addToWishList,
+  removeFromWishList: wishListOperations.removeFromWishList,
 };
 
 // @ts-ignore

@@ -77,7 +77,7 @@ const CartBar = ({
             cartItems.length > 0 &&
             cartItems.map((cartItem) => {
               return (
-                <React.Fragment key={cartItem._id}>
+                <React.Fragment key={cartItem.product.id}>
                   <CartOverLayCartItem
                     cartItem={cartItem}
                     handleToggleCartBar={handleToggleCartBar}

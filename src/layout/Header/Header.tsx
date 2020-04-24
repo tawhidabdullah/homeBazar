@@ -5,6 +5,7 @@ import { sessionOperations } from '../../state/ducks/session';
 import { categoryOperations } from '../../state/ducks/category';
 import { cacheOperations } from '../../state/ducks/cache';
 import { cartOperations } from '../../state/ducks/cart';
+import { wishListOperations } from '../../state/ducks/wishList';
 
 // import header components
 import TopHead from './TopHead';
@@ -31,6 +32,7 @@ interface Props {
   addItemToCache: (any) => void;
   cache: any;
   clearCart: () => void;
+  clearWishList: () => void;
 }
 
 const Header = ({
@@ -44,6 +46,7 @@ const Header = ({
   addItemToCache,
   cache,
   clearCart,
+  clearWishList,
 }: Props) => {
   const [windowWidth, setWindowWidth] = useState(0);
   const [isShowCartBar, setIsShowCartBar] = useState(false);
@@ -118,6 +121,7 @@ const Header = ({
         cache={cache}
         addItemToCache={addItemToCache}
         clearCart={clearCart}
+        clearWishList={clearWishList}
       />
 
       <div
@@ -211,6 +215,7 @@ const mapDispatchToProps = {
   getCategory: categoryOperations.getCategory,
   addItemToCache: cacheOperations.addItemToCache,
   clearCart: cartOperations.clearCart,
+  clearWishList: wishListOperations.clearWishList,
 };
 
 const mapStateToProps = (state) => ({

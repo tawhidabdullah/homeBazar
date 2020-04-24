@@ -8,6 +8,7 @@ import { sessionOperations } from '../state/ducks/session';
 
 import Order from './components/Order';
 import MyAccount from './components/MyAccount';
+import Wishlist from './components/Wishlist';
 
 const Dashboard = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +39,7 @@ const Dashboard = (props) => {
   const [tabs, settabs] = React.useState({
     isMyAccount: true,
     isOrders: false,
+    isWishlist: false,
   });
 
   const toggleTabs = (tabName) => {
@@ -85,6 +87,20 @@ const Dashboard = (props) => {
                     <span className='side-nav__text'>Orders</span>
                   </a>
                 </li>
+
+                <li
+                  className={
+                    tabs.isWishlist
+                      ? 'side-nav__item side-nav__item--active'
+                      : ' side-nav__item'
+                  }
+                  onClick={() => toggleTabs('isWishlist')}
+                >
+                  <a href='##' className='side-nav__link'>
+                    <i className='fa fa-first-order'></i>
+                    <span className='side-nav__text'>Wishlist</span>
+                  </a>
+                </li>
               </ul>
             </nav>
             <main className='dashboard__main-content'>
@@ -94,6 +110,8 @@ const Dashboard = (props) => {
               ) : (
                 ''
               )}
+
+              {tabs.isWishlist ? <Wishlist /> : ''}
             </main>
           </div>
         </div>

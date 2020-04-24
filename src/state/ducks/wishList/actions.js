@@ -1,28 +1,23 @@
 import * as types from './types';
 
-export const addToWishList = product => ({
+export const addToWishList = productId => ({
   type: types.TOGGLE,
   payload: {
-    product: {
-      ...product,
-      isSelectedForCart: false,
-    },
+    productId,
   },
 });
 
-export const selectProductForCart = product => ({
-  type: types.SELECT_PRODUCT_FOR_CART,
-  payload: {
-    product: {
-      ...product,
-    },
-  },
-});
+export const addWishlist = wishlist => {
+  return {
+    type: types.ADD_WISHLIST,
+    payload: wishlist,
+  };
+};
 
-export const removeFromWishList = product => ({
+export const removeFromWishList = productId => ({
   type: types.REMOVE,
   payload: {
-    product,
+    productId,
   },
 });
 

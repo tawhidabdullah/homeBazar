@@ -66,7 +66,7 @@ const SearchBar = ({ history, getCategory, addCategory, category }: Props) => {
                     {category.length > 0 &&
                       category.map((item, index) => {
                         return (
-                          <option value={item.id} key={item._id}>
+                          <option value={item.id} key={item.id}>
                             {item.name.charAt(0).toUpperCase() +
                               item.name.slice(1)}
                           </option>

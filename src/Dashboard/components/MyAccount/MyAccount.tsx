@@ -364,7 +364,6 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
                   }
                 />
                 <TextFeildGroup
-                  label='Address'
                   name='address2'
                   placeholder='Address line 2'
                   type='text'

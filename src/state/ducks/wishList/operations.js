@@ -1,3 +1,3 @@
-import { addToWishList, removeFromWishList, clearWishList, selectProductForCart } from './actions';
+import { addToWishList, removeFromWishList, clearWishList, addWishlist } from './actions';
 
-export { addToWishList, removeFromWishList, clearWishList, selectProductForCart };
+export { addToWishList, removeFromWishList, clearWishList, addWishlist };

@@ -103,35 +103,32 @@ const ShoppingCart = ({
           <div className='card-footer shoppingCartCardFooter' style={{}}>
             {cartItems.length > 0 ? (
               <>
-                <a
-                  href='##'
+                <button
+                  className='clear-cart banner-btn'
                   onClick={(e) => {
                     e.preventDefault();
                     history.push('/');
                   }}
-                  className='btn btn-primary fixedBoostrapButtonTobePrimaryColor'
                 >
                   Continue Shopping
-                </a>
-                <a
-                  href='##'
-                  className='btn btn-primary fixedBoostrapButtonTobePrimaryColor'
+                </button>
+
+                <button
+                  className='clear-cart banner-btn'
                   onClick={handleClearShoppingCart}
                 >
                   Clear Shopping Cart
-                </a>
+                </button>
 
-                <a
-                  href='##'
+                <button
+                  className='clear-cart banner-btn'
                   onClick={(e) => {
                     e.preventDefault();
-
                     history.push('/checkout');
                   }}
-                  className='btn btn-primary fixedBoostrapButtonTobePrimaryColor'
                 >
-                  checkout
-                </a>
+                  Checkout
+                </button>
               </>
             ) : (
               <a

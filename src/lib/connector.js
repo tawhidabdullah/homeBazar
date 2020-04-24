@@ -67,8 +67,6 @@ class Connector {
         throw error;
       }
     } catch (err) {
-      console.log('err', err);
-
       throw err;
       //TODO: breakdown errors
     }

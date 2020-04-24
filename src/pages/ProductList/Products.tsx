@@ -30,14 +30,24 @@ const Products = ({
           dataLength={products.length}
           next={fetchMoreProductsData}
           hasMore={isNext !== null}
-          loader={<div style={{width: '100%', textAlign: 'center', margin: '10px 0'}}><h4 style={{
-            textAlign: "center"
-          }}>Loading...</h4> </div>}
+          loader={
+            <div
+              style={{ width: '100%', textAlign: 'center', margin: '10px 0' }}
+            >
+              <h4
+                style={{
+                  textAlign: 'center',
+                }}
+              >
+                Loading...
+              </h4>{' '}
+            </div>
+          }
         >
           <div className='row productListingProductsContainer'>
             {products.map((product) => {
               return (
-                <React.Fragment key={product._id}>
+                <React.Fragment key={product.id}>
                   <ProductCard product={product} />
                 </React.Fragment>
               );

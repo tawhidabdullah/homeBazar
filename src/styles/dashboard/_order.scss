@@ -23,7 +23,7 @@
 
 .orderDetailHeader {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   background-color: #f7f8fa;
   flex-wrap: wrap;
 }
@@ -55,4 +55,11 @@
 
 .orderDetailProduct {
   padding: 5px 0;
+}
+
+.orderDetailFooter {
+  display: flex;
+  justify-content: space-between;
+  // background-color: #f7f8fa;
+  flex-wrap: wrap;
 }

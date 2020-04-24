@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { useHandleFetch } from '../../hooks';
@@ -770,11 +770,13 @@ const ProductList = ({
                   subcategories.length > 0 &&
                   subcategories.map((subCat) => {
                     return (
-                      <SubCategoryCard
-                        subCat={subCat}
-                        history={history}
-                        handleUiSelectSubCategory={handleUiSelectSubCategory}
-                      />
+                      <Fragment key={subCat['id']}>
+                        <SubCategoryCard
+                          subCat={subCat}
+                          history={history}
+                          handleUiSelectSubCategory={handleUiSelectSubCategory}
+                        />
+                      </Fragment>
                     );
                   })}
               </div>

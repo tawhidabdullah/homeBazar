@@ -44,6 +44,17 @@ export const checkIfItemExistsInCartItemById: (
   return (!isObjectEmpty(item) && true) || false;
 };
 
+export const checkIfTheWishListExistsInArrayById: (
+  array: any[] | [],
+  id: number | string
+) => boolean = (array: any[] | [], id: number | string) => {
+  if (!(array.length > 0)) return false;
+
+  const item = array.find((item) => item === id);
+
+  return (!isObjectEmpty(item) && true) || false;
+};
+
 export const getCartKeyFromCartItems = (cartItems, productId: string) => {
   const cartItem = cartItems.find(({ product }) => product.id === productId);
   if (!cartItem) {

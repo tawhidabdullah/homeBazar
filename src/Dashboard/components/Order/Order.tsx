@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react';
 import SmallItem from '../../../components/SmallItem';
 import { numberWithCommas } from '../../../utils';
 import Moment from 'react-moment';
+import { withRouter } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useHandleFetch } from '../../../hooks';
 import { Spinner } from '../../../components/Loading';
-const Order = (props) => {
+
+const Order = ({ history }) => {
   const [orderListState, handleOrderListStateFetch] = useHandleFetch(
     [],
     'getCurrentUserOrders'
@@ -129,12 +131,7 @@ const Order = (props) => {
                     <div className='orderDetailHeader_Item'>
                       <h2> #{index + 1} </h2>
                     </div>
-                    <div className='orderDetailHeader_Item'>
-                      <h2>Created At</h2>
-                      <h3>
-                        <Moment format='YYYY/MM/DD'>{order.date}</Moment>
-                      </h3>
-                    </div>
+
                     <div className='orderDetailHeader_Item'>
                       <h2>Payment Method</h2>
                       <h3>
@@ -148,13 +145,6 @@ const Order = (props) => {
                       <h2>Status</h2>
                       <h3>{order['status']}</h3>
                     </div>
-
-                    {order['total'] && (
-                      <div className='orderDetailHeader_Item'>
-                        <h2>Total</h2>
-                        <h3>৳{numberWithCommas(order['total'])}</h3>
-                      </div>
-                    )}
                   </div>
                   <div className='orderDetailProducts'>
                     {order['products'].length > 0 &&
@@ -165,10 +155,24 @@ const Order = (props) => {
                               productId={product._id}
                               quantity={product.quantity}
                               isOrderDetails={true}
+                              history={history}
                             />
                           </div>
                         );
                       })}
+                  </div>
+
+                  <div className='orderDetailFooter'>
+                    <div className='orderDetailHeader_Item'>
+                      <h3>
+                        <Moment format='YYYY/MM/DD'>{order.date}</Moment>
+                      </h3>
+                    </div>
+                    {order['total'] && (
+                      <div className='orderDetailHeader_Item'>
+                        <h2>৳{numberWithCommas(order['total'])}</h2>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -186,4 +190,4 @@ const Order = (props) => {
   );
 };
 
-export default Order;
+export default withRouter(Order);

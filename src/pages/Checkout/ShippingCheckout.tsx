@@ -143,7 +143,6 @@ const CheckoutForm = ({
       />
 
       <TextFeildGroup
-        label='Address'
         name='shippingAddress2'
         placeholder='Address line 2'
         type='text'

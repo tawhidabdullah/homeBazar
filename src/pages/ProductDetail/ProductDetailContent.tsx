@@ -5,9 +5,11 @@ import { Carousel } from 'react-responsive-carousel';
 import { connect } from 'react-redux';
 import { withAlert } from 'react-alert';
 import { cartOperations } from '../../state/ducks/cart';
+import { wishListOperations } from '../../state/ducks/wishList';
 import {
   checkIfItemExistsInCartItemById,
   getCartKeyFromCartItems,
+  checkIfTheWishListExistsInArrayById,
 } from '../../utils';
 import { useHandleFetch } from '../../hooks';
 
@@ -20,8 +22,12 @@ interface Props {
   history: any;
   addToCart?: (object, number) => void;
   cartItems: any;
+  wishList: any;
   alert: any;
   removeFromCart: (object) => void;
+  addToWishList: (object) => void;
+  removeFromWishList: (object) => void;
+  session?: any;
 }
 
 const ProductDetailContent = ({
@@ -31,6 +37,10 @@ const ProductDetailContent = ({
   cartItems,
   alert,
   removeFromCart,
+  removeFromWishList,
+  addToWishList,
+  wishList,
+  session,
 }: Props) => {
   const {
     name,
@@ -42,6 +52,7 @@ const ProductDetailContent = ({
     category,
     tags,
     id,
+    unit,
     cover,
     url,
     availableStock,
@@ -57,6 +68,15 @@ const ProductDetailContent = ({
     [],
     'removeFromCart'
   );
+
+  const [addWishlistState, handleAddWishlistFetch] = useHandleFetch(
+    [],
+    'addWishlist'
+  );
+  const [
+    removeFromWishlistState,
+    handleRemoveFromWishlistFetch,
+  ] = useHandleFetch([], 'removeFromWishlist');
 
   const handleOnClickAddToCart = async () => {
     if (checkIfItemExistsInCartItemById(cartItems, id)) {
@@ -104,17 +124,47 @@ const ProductDetailContent = ({
     }
   };
 
+  const handleOnClickToWishlist = async () => {
+    if (checkIfTheWishListExistsInArrayById(wishList, id)) {
+      const removeFromWishListRes = await handleRemoveFromWishlistFetch({
+        urlOptions: {
+          placeHolders: {
+            id,
+          },
+        },
+      });
+
+      // @ts-ignore
+      if (removeFromWishListRes && removeFromWishListRes['status'] === 'ok') {
+        alert.success('Removed From wishlist Successfully!');
+        removeFromWishList && removeFromWishList(id);
+      }
+    } else {
+      const addWishlistRes = await handleAddWishlistFetch({
+        body: {
+          item: id,
+        },
+      });
+
+      // @ts-ignore
+      if (addWishlistRes && addWishlistRes['status'] === 'ok') {
+        alert.success('Added to wishlist Successfully!');
+        addToWishList && addToWishList(id);
+      }
+    }
+  };
+
   return (
-    <div className='row productDetailInfo'>
-      <div className='col-md-6'>
-        <Carousel>
+    <>
+      <div className='col-md-6 productDetailInfo-carousel-column'>
+        <Carousel showArrows={false} showIndicators={false} showStatus={false}>
           {image &&
             image.length > 0 &&
             image.map((src) => {
               return (
                 <div
                   style={{
-                    maxHeight: '500px',
+                    maxHeight: '600px',
                   }}
                   key={src}
                 >
@@ -135,10 +185,19 @@ const ProductDetailContent = ({
       <div className='col-md-6'>
         <div className='productInfo__container'>
           <h2 className='productInfo__title'>{name}</h2>
-
+          <span
+            style={{
+              display: 'inline-block',
+              background: '#eee',
+              padding: '3px 5px',
+              borderRadius: 1,
+              fontSize: '15px',
+              marginTop: '7px',
+            }}
+          >
+            {unit}
+          </span>
           <div className='productInfo__price'>
-            <div className='product-reviews-summary'></div>
-
             <div className='product-price-box'>
               {offerPrice && parseInt(offerPrice) ? (
                 <h2 className='special-price'>
@@ -213,54 +272,85 @@ const ProductDetailContent = ({
             <p>{description}</p>
           </div>
           <div className='product-options-bottom'>
-            {parseInt(availableStock) > 0 ? (
-              <div className='box-tocart'>
-                <div className='actions'>
+            {parseInt(availableStock) === 0 ? (
+              <div className='alertText'>
+                <i className='fa fa-exclamation-circle'></i>
+                <h3>This product is out of stock</h3>
+              </div>
+            ) : (
+              <>
+                <a
+                  className='action-button'
+                  onClick={handleOnClickAddToCart}
+                  href='##'
+                >
+                  {!addToCartState.isLoading &&
+                    !removeFromCartState.isLoading && (
+                      <>
+                        {(checkIfItemExistsInCartItemById(cartItems, id) && (
+                          <span className='product-bottom-iconText'>
+                            🐎 Added
+                          </span>
+                        )) || (
+                          <span className='product-bottom-iconText'>
+                            🐎 Add to cart
+                          </span>
+                        )}
+                      </>
+                    )}
+
+                  {addToCartState.isLoading && '🐎 Adding...'}
+                  {removeFromCartState.isLoading && '🐎 Removing...'}
+                </a>
+
+                {session.isAuthenticated && (
                   <a
-                    className='btn-add withbackground'
-                    onClick={handleOnClickAddToCart}
+                    className='action-button'
+                    onClick={handleOnClickToWishlist}
                     href='##'
                   >
-                    {!addToCartState.isLoading &&
-                      !removeFromCartState.isLoading && (
+                    {!addWishlistState.isLoading &&
+                      !removeFromWishlistState.isLoading && (
                         <>
-                          {(checkIfItemExistsInCartItemById(cartItems, id) && (
+                          {(checkIfTheWishListExistsInArrayById(
+                            wishList,
+                            id
+                          ) && (
                             <span className='product-bottom-iconText'>
-                              🐎 Added
+                              ❤️ Added
                             </span>
                           )) || (
                             <span className='product-bottom-iconText'>
-                              🐎 Add to cart
+                              ❤️ Add to Wishlist
                             </span>
                           )}
                         </>
                       )}
 
-                    {addToCartState.isLoading && '🐎 Adding...'}
-                    {removeFromCartState.isLoading && '🐎 Removing...'}
+                    {addWishlistState.isLoading && '🐎 Adding...'}
+                    {removeFromWishlistState.isLoading && '🐎 Removing...'}
                   </a>
-                </div>
-              </div>
-            ) : (
-              <div className='alertText'>
-                <i className='fa fa-exclamation-circle'></i>
-                <h3>This product is out of stock</h3>
-              </div>
+                )}
+              </>
             )}
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
 const mapStateToProps = (state) => ({
   cartItems: state.cart,
+  wishList: state.wishList,
+  session: state.session,
 });
 
 const mapDispatchToProps = {
   addToCart: cartOperations.addToCart,
   removeFromCart: cartOperations.removeFromCart,
+  addToWishList: wishListOperations.addToWishList,
+  removeFromWishList: wishListOperations.removeFromWishList,
 };
 
 // @ts-ignore

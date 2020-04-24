@@ -19,7 +19,7 @@ const Menu = ({ history, category }: Props) => {
             category.map((item) => {
               return (
                 <li
-                  key={item._id}
+                  key={item.id}
                   onClick={() => {
                     history.push({
                       pathname: `/productList/${item.id}`,

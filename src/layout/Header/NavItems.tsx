@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { useFetch } from '../../hooks';
 import config from '../../config.json';
@@ -14,7 +14,7 @@ const NavItems = ({}: Props) => {
       {Object.keys(navLinksState.data).length > 0 &&
         navLinksState.data.map((item) => {
           return (
-            <>
+            <Fragment key={item['target']}>
               {urlToString(item['target']).includes(
                 urlToString(config.baseURL)
               ) ? (
@@ -24,7 +24,7 @@ const NavItems = ({}: Props) => {
               ) : (
                 <a href={item['target']}>{item['text']}</a>
               )}
-            </>
+            </Fragment>
           );
         })}
     </>

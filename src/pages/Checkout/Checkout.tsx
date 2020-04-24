@@ -1075,6 +1075,7 @@ const Checkout = ({
                                         <SmallItem
                                           productItem={product}
                                           isOrder={true}
+                                          history={history}
                                         />
                                       );
                                     })}

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { numberWithCommas } from '../../utils';
 import { withRouter } from 'react-router';
 import ContentLoader from 'react-content-loader';
 import { useHandleFetch } from '../../hooks';
+import { wishListOperations } from '../../state/ducks/wishList';
 
 interface Props {
   isOrderDetails?: boolean;
@@ -11,6 +13,10 @@ interface Props {
   productItem?: any;
   quantity?: number;
   isOrder?: boolean;
+  isWishlist?: boolean;
+  wishList?: any;
+  removeFromWishList?: (object) => void;
+  alert?: any;
 }
 
 const SmallItem = ({
@@ -20,6 +26,9 @@ const SmallItem = ({
   history,
   quantity,
   isOrder,
+  isWishlist,
+  removeFromWishList,
+  alert,
 }: Props) => {
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +36,11 @@ const SmallItem = ({
     {},
     'productDetailById'
   );
+
+  const [
+    removeFromWishlistState,
+    handleRemoveFromWishlistFetch,
+  ] = useHandleFetch([], 'removeFromWishlist');
 
   useEffect(() => {
     if (isOrderDetails) {
@@ -47,6 +61,22 @@ const SmallItem = ({
       getAndSetProduct();
     }
   }, [isOrderDetails]);
+
+  const handleRemoveFromWishiist = async () => {
+    const removeFromWishListRes = await handleRemoveFromWishlistFetch({
+      urlOptions: {
+        placeHolders: {
+          id: productId,
+        },
+      },
+    });
+
+    // @ts-ignore
+    if (removeFromWishListRes && removeFromWishListRes['status'] === 'ok') {
+      alert.success('Removed From wishlist Successfully!');
+      removeFromWishList && removeFromWishList(productId);
+    }
+  };
 
   return isOrderDetails ? (
     (product && Object.keys(product).length > 0 && (
@@ -76,7 +106,21 @@ const SmallItem = ({
             </h2>
           )}
 
-          <h2 className='small-product-offerPrice'>Quantity : {quantity}</h2>
+          {!isWishlist && (
+            <h2 className='small-product-offerPrice'>Quantity : {quantity}</h2>
+          )}
+
+          {isWishlist && (
+            <span className='remove-item' onClick={handleRemoveFromWishiist}>
+              <i
+                className='fa fa-trash'
+                style={{
+                  marginTop: '7px',
+                  fontSize: '19px',
+                }}
+              ></i>
+            </span>
+          )}
         </div>
       </div>
     )) ||
@@ -118,5 +162,14 @@ const SmallItem = ({
   );
 };
 
+const mapStateToProps = (state) => ({
+  wishList: state.wishList,
+});
+
+const mapDispatchToProps = {
+  addToWishList: wishListOperations.addToWishList,
+  removeFromWishList: wishListOperations.removeFromWishList,
+};
+
 // @ts-ignore
-export default withRouter(SmallItem);
+export default connect(mapStateToProps, mapDispatchToProps)(SmallItem);

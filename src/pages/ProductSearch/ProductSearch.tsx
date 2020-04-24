@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React from 'react';
+import React, { Fragment } from 'react';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -38,7 +38,7 @@ const ProductSearch = ({
   const [isLoading, setIsLoading] = React.useState(false);
   const [categories, setCategories] = React.useState([]);
   const [activeCategoryName, setActiveCategoryName] = React.useState('');
-  const [isNext,setIsNext] = React.useState(true); 
+  const [isNext, setIsNext] = React.useState(true);
   const [selectedValueForSort, setSelectedValueForSort] = React.useState({
     value: 'Relevance',
     label: 'Relevance',
@@ -263,11 +263,11 @@ const ProductSearch = ({
               `productSearch/${selectedValueForSort.value}/${searchCategoryValue}/${queryValue}`
             ];
 
-              // @ts-ignore
-            const products = productsRes.data || [];
-            // @ts-ignore
-            const isNext = productsRes.isNext || null;
-            setIsNext(isNext);
+          // @ts-ignore
+          const products = productsRes.data || [];
+          // @ts-ignore
+          const isNext = productsRes.isNext || null;
+          setIsNext(isNext);
 
           // @ts-ignore
           setProducts(products);
@@ -279,13 +279,11 @@ const ProductSearch = ({
             },
           });
 
-             // @ts-ignore
-            const newProducts = newProductsRes.data || [];
-            // @ts-ignore
-            const isNext = newProductsRes.isNext || null;
-            setIsNext(isNext);
-
-
+          // @ts-ignore
+          const newProducts = newProductsRes.data || [];
+          // @ts-ignore
+          const isNext = newProductsRes.isNext || null;
+          setIsNext(isNext);
 
           if (pageNumberOfCategoryProduct === 1) {
             addItemToCache({
@@ -387,7 +385,10 @@ const ProductSearch = ({
                     categories.length > 0 &&
                     categories.map((cat) => {
                       return (
-                        <li onClick={() => handleSelectCategory(cat['id'])}>
+                        <li
+                          onClick={() => handleSelectCategory(cat['id'])}
+                          key={cat['id']}
+                        >
                           <span
                             className={
                               cat[`is${cat['id']}`]
@@ -464,7 +465,7 @@ const ProductSearch = ({
               ''
             )}
 
-            {products && (
+            {!isLoading && products && (
               <InfiniteScroll
                 style={{
                   overflow: 'hidden',
@@ -472,9 +473,23 @@ const ProductSearch = ({
                 dataLength={products.length}
                 next={fetchMoreProductsData}
                 hasMore={isNext !== null}
-                loader={<div style={{width: '100%', textAlign: 'center', margin: '10px 0'}}><h4 style={{
-            textAlign: "center"
-          }}>Loading...</h4> </div>}
+                loader={
+                  <div
+                    style={{
+                      width: '100%',
+                      textAlign: 'center',
+                      margin: '10px 0',
+                    }}
+                  >
+                    <h4
+                      style={{
+                        textAlign: 'center',
+                      }}
+                    >
+                      Loading...
+                    </h4>{' '}
+                  </div>
+                }
               >
                 <div
                   style={{
@@ -488,7 +503,12 @@ const ProductSearch = ({
                   {products.length > 0 &&
                     products.map((product) => {
                       return (
-                        <ProductCard product={product} productListing={true} />
+                        <Fragment key={product['id']}>
+                          <ProductCard
+                            product={product}
+                            productListing={true}
+                          />
+                        </Fragment>
                       );
                     })}
                 </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useFetch, useHandleFetch } from '../../hooks';
+import { useHandleFetch } from '../../hooks';
 import { checkIfItemExistsInCache } from '../../utils';
 
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
   addItemToCache: (any) => void;
   cache: any;
   clearCart: () => void;
+  clearWishList: () => void;
 }
 
 const TopHead = ({
@@ -18,6 +19,7 @@ const TopHead = ({
   addItemToCache,
   cache,
   clearCart,
+  clearWishList,
 }: Props) => {
   const [welcomeState, handleWelcomeFetch] = useHandleFetch([], 'welcome');
   const [welcome, setWelcome] = useState([]);
@@ -48,6 +50,7 @@ const TopHead = ({
   const handleLogout = async () => {
     await handleLogoutFetch({});
     clearCart();
+    clearWishList();
     logout();
   };
   return (
