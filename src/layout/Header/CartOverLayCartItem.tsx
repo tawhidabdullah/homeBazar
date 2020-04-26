@@ -101,6 +101,7 @@ const CartOverLayCartItem = ({
           style={{
             lineHeight: 1.5,
             fontWeight: 700,
+            letterSpacing: '0px',
             fontSize: '16px',
           }}
           onClick={() => {

@@ -15,9 +15,10 @@ import { Spinner } from '../../components/Loading';
 import { AuthButton } from '../../components/Button';
 import Checkbox from '../../components/Checkbox';
 import { cacheOperations } from '../../state/ducks/cache';
-import { checkIfItemExistsInCache } from '../../utils';
+import { checkIfItemExistsInCache, getDeliveryChargeTotal } from '../../utils';
 import { cartOperations } from '../../state/ducks/cart';
 import PaymentForm from './PaymentForm';
+import dictionary from '../../dictionary';
 
 // import checkout component
 import CheckoutSuccessModal from './CheckoutSuccessModal';
@@ -274,13 +275,17 @@ const Checkout = ({
   );
 
   const [cityListState, handleCityListFetch] = useHandleFetch([], 'cityList');
+
   const [deliveryChargeState, handleDeliveryChargeFetch] = useHandleFetch(
     [],
     'getDeliveryCharge'
   );
 
-  const [billingDeliveryCharge, setBillingDeliveryCharge] = useState({});
-  const [shippingDeliveryCharge, setShippingDeliveryCharge] = useState({});
+  const [billingDeliveryCharge, setBillingDeliveryCharge] = useState([]);
+  const [shippingDeliveryCharge, setShippingDeliveryCharge] = useState([]);
+
+  const [deliveryRegionName, setDeliveryRegionName] = useState('');
+  const [selectedRegion, setSelectedRegion] = useState({});
 
   const [countryList, setCountryList] = useState([]);
   const [cityList, setCityList] = useState([]);
@@ -426,8 +431,7 @@ const Checkout = ({
         const billingDeliveryCharge = await handleDeliveryChargeFetch({
           urlOptions: {
             placeHolders: {
-              country: selectedCountryValue.value,
-              city: selectedCityValue.value,
+              cityName: selectedCityValue.value,
             },
           },
         });
@@ -459,8 +463,7 @@ const Checkout = ({
         const shippingDeliveryCharge = await handleDeliveryChargeFetch({
           urlOptions: {
             placeHolders: {
-              country: selectedShippingCountryValue.value,
-              city: selectedShippingCityValue.value,
+              cityName: selectedShippingCityValue.value,
             },
           },
         });
@@ -523,9 +526,66 @@ const Checkout = ({
     }
   };
 
+  const isDeliveryChargeExists = (regions) => {
+    if (!regions) {
+      return false;
+    } else return true;
+  };
+
   const onRadioGroupChange = (value) => {
     setPaymentMethod(value);
   };
+
+  const onDeviliveryRegionChange = (value) => {
+    setDeliveryRegionName(value);
+    if (
+      isDeliveryChargeExists(
+        isShipToDifferentAddress
+          ? shippingDeliveryCharge &&
+              shippingDeliveryCharge.length > 0 &&
+              shippingDeliveryCharge
+          : billingDeliveryCharge &&
+              billingDeliveryCharge.length > 0 &&
+              billingDeliveryCharge
+      )
+    ) {
+      const deliveryRegions = isShipToDifferentAddress
+        ? shippingDeliveryCharge
+        : billingDeliveryCharge;
+
+      const selectedRegion = deliveryRegions.find(
+        (region) => region['name'] === value
+      );
+      if (selectedRegion) {
+        setSelectedRegion(selectedRegion);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (
+      isDeliveryChargeExists(
+        isShipToDifferentAddress
+          ? shippingDeliveryCharge &&
+              shippingDeliveryCharge.length > 0 &&
+              shippingDeliveryCharge
+          : billingDeliveryCharge &&
+              billingDeliveryCharge.length > 0 &&
+              billingDeliveryCharge
+      )
+    ) {
+      const deliveryRegions = isShipToDifferentAddress
+        ? shippingDeliveryCharge
+        : billingDeliveryCharge;
+
+      const selectedRegion = deliveryRegions.find(
+        (region, index) => 0 === index
+      );
+      if (selectedRegion) {
+        setSelectedRegion(selectedRegion);
+      }
+    }
+  }, [shippingDeliveryCharge, billingDeliveryCharge]);
 
   const handleCheckout = async (values, actions) => {
     if (values) {
@@ -548,6 +608,7 @@ const Checkout = ({
           transactionId: values.transactionId,
           useAccountBillingAddress: isUseAccountBillingAddresss,
           shipToDifferentAddress: isShipToDifferentAddress,
+          delivery: selectedRegion['_id'],
 
           ...(isShipToDifferentAddress && {
             shippingFirstName: values.shippingFirstName,
@@ -566,7 +627,6 @@ const Checkout = ({
         });
 
         actions.setSubmitting(false);
-        clearCart();
       } else {
         const createOrderData = {
           phone: values.phone,
@@ -584,6 +644,7 @@ const Checkout = ({
           paymentMethod: 'cod',
           useAccountBillingAddress: isUseAccountBillingAddresss,
           shipToDifferentAddress: isShipToDifferentAddress,
+          delivery: selectedRegion['_id'],
 
           ...(isShipToDifferentAddress && {
             shippingFirstName: values.shippingFirstName,
@@ -601,7 +662,6 @@ const Checkout = ({
           body: createOrderData,
         });
         actions.setSubmitting(false);
-        clearCart();
       }
     }
   };
@@ -705,6 +765,7 @@ const Checkout = ({
       Object.keys(createOrderState.data).length > 0
     ) {
       if (createOrderState['data']['success']) {
+        clearCart();
         setIsModalShown(true);
       }
     }
@@ -712,16 +773,18 @@ const Checkout = ({
 
   const getTotalPrice = (total, charge) => {
     if (charge) {
-      return parseInt(total) + charge;
+      return parseInt(total) + parseInt(charge);
     } else {
-      return total;
+      return Math.floor(total);
     }
   };
 
-  const isDeliveryChargeExists = (charge) => {
-    if (charge) {
-      return true;
-    } else return false;
+  const getPercentage = (percent, total) => {
+    return Math.floor((percent / 100) * total);
+  };
+
+  const paytotalPrice = (percentTk, total) => {
+    return total + percentTk;
   };
 
   return (
@@ -747,60 +810,184 @@ const Checkout = ({
           }) => (
             <>
               <div className='checkout'>
-                <div className='container'>
-                  <div className='row'>
-                    <div className='col-md-7 createOrderContainer'>
-                      <div>
-                        <div>
-                          {!session.isAuthenticated ? (
+                <div className='createOrderContainer'>
+                  <div>
+                    {!session.isAuthenticated ? (
+                      <div
+                        onClick={() => history.push('/signin')}
+                        className='alertText'
+                        style={{
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <i className='fa fa-exclamation-circle'></i>
+                        <h3>Sign in to your account</h3>
+                        <span
+                          style={{
+                            marginLeft: '10px',
+                          }}
+                        >
+                          &rarr;
+                        </span>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    <div className='checkoutSection'>
+                      <div
+                        className='block-title authTitle'
+                        style={{
+                          margin: '20px 0',
+                        }}
+                      >
+                        <span>Billing Address</span>
+                      </div>
+
+                      {session.isAuthenticated ? (
+                        <Checkbox
+                          name={'useAccountBillingAddresss'}
+                          label={'Use Account Billing Addresss'}
+                          inputType={'checkbox'}
+                          value={'useAccountBillingAddresss'}
+                          onChange={(e) =>
+                            setIsUseAccountBillingAddresss(e.target.checked)
+                          }
+                        />
+                      ) : (
+                        ''
+                      )}
+
+                      {!isUseAccountBillingAddresss && (
+                        <CheckoutForm
+                          isSubmitting={isSubmitting}
+                          setFieldTouched={setFieldTouched}
+                          values={values}
+                          handleChange={handleChange}
+                          touched={touched}
+                          errors={errors}
+                          serverErrors={serverErrors}
+                          isAuthenticated={session.isAuthenticated}
+                          handleSelectCountryChange={handleSelectCountryChange}
+                          selectedCountryValue={selectedCountryValue}
+                          countryList={countryList}
+                          cityList={cityList}
+                          handleSelectCityChange={handleSelectCityChange}
+                          selectedCityValue={selectedCityValue}
+                          isUseAccountBillingAddresss={
+                            isUseAccountBillingAddresss
+                          }
+                        />
+                      )}
+                    </div>
+
+                    <div className='checkoutSection'>
+                      <div
+                        className='block-title authTitle'
+                        style={{
+                          margin: '20px 0',
+                        }}
+                      >
+                        <span>Shipping Address</span>
+                      </div>
+                      <Checkbox
+                        name={'shipToDifferentAddress'}
+                        label={'Ship To Different Address'}
+                        inputType={'checkbox'}
+                        value={'shipToDifferentAddress'}
+                        onChange={(e) =>
+                          setIsShipToDifferentAddress(e.target.checked)
+                        }
+                      />
+
+                      {isShipToDifferentAddress ? (
+                        <>
+                          <ShippingCheckout
+                            setFieldTouched={setFieldTouched}
+                            isSubmitting={isSubmitting}
+                            values={values}
+                            handleChange={handleChange}
+                            touched={touched}
+                            errors={errors}
+                            serverErrors={serverErrors}
+                            isAuthenticated={session.isAuthenticated}
+                            handleSelectShippingCityChange={
+                              handleSelectShippingCityChange
+                            }
+                            handleSelectShippingCountryChange={
+                              handleSelectShippingCountryChange
+                            }
+                            selectedShippingCityValue={
+                              selectedShippingCityValue
+                            }
+                            selectedShippingCountryValue={
+                              selectedShippingCountryValue
+                            }
+                            shippingCityList={shippingCityList}
+                            countryList={countryList}
+                          />
+                        </>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+
+                    <div className='orderOverview'>
+                      <div
+                        className='block-title authTitle'
+                        style={{
+                          marginBottom: '40px',
+                        }}
+                      >
+                        <span>Order Overview</span>
+                      </div>
+
+                      {cartItems.length > 0 ? (
+                        <>
+                          <div>
+                            {cartItems &&
+                              cartItems.length > 0 &&
+                              cartItems.map(({ product }) => {
+                                return (
+                                  <SmallItem
+                                    productItem={product}
+                                    isOrder={true}
+                                    history={history}
+                                  />
+                                );
+                              })}
+                          </div>
+                          <div className='order-price'>
                             <div
-                              onClick={() => history.push('/signin')}
-                              className='alertText'
+                              className='order-summary-price'
                               style={{
-                                cursor: 'pointer',
+                                paddingBottom: '10px',
                               }}
                             >
-                              <i className='fa fa-exclamation-circle'></i>
-                              <h3>Sign in to your account</h3>
+                              <h3>{cartItems.length} items in Cart</h3>
                               <span
                                 style={{
-                                  marginLeft: '10px',
+                                  fontWeight: 500,
                                 }}
                               >
-                                &rarr;
+                                ৳{totalPrice}
                               </span>
                             </div>
-                          ) : (
-                            ''
-                          )}
-                          <div className='checkoutSection'>
+
                             <div
-                              className='block-title authTitle'
                               style={{
-                                margin: '20px 0',
+                                borderTop: '1px solid #eee',
                               }}
                             >
-                              <span>Billing Address</span>
-                            </div>
+                              <div
+                                className='block-title authTitle'
+                                style={{
+                                  margin: '10px 0',
+                                }}
+                              >
+                                <span>Delivery Details</span>
+                              </div>
 
-                            {session.isAuthenticated ? (
-                              <Checkbox
-                                name={'useAccountBillingAddresss'}
-                                label={'Use Account Billing Addresss'}
-                                inputType={'checkbox'}
-                                value={'useAccountBillingAddresss'}
-                                onChange={(e) =>
-                                  setIsUseAccountBillingAddresss(
-                                    e.target.checked
-                                  )
-                                }
-                              />
-                            ) : (
-                              ''
-                            )}
-
-                            {!isUseAccountBillingAddresss ? (
-                              <>
+                              {isUseAccountBillingAddresss && (
                                 <CheckoutForm
                                   isSubmitting={isSubmitting}
                                   setFieldTouched={setFieldTouched}
@@ -820,62 +1007,166 @@ const Checkout = ({
                                     handleSelectCityChange
                                   }
                                   selectedCityValue={selectedCityValue}
+                                  isUseAccountBillingAddresss={
+                                    isUseAccountBillingAddresss
+                                  }
                                 />
-                              </>
-                            ) : (
-                              ''
-                            )}
-                          </div>
+                              )}
+                              {isDeliveryChargeExists(
+                                isShipToDifferentAddress
+                                  ? shippingDeliveryCharge &&
+                                      shippingDeliveryCharge.length > 0 &&
+                                      shippingDeliveryCharge
+                                  : billingDeliveryCharge &&
+                                      billingDeliveryCharge.length > 0 &&
+                                      billingDeliveryCharge
+                              ) ? (
+                                <>
+                                  <div
+                                    className='block-title authTitle sm'
+                                    style={{
+                                      margin: '20px 0',
+                                    }}
+                                  >
+                                    <span>Region List</span>
+                                  </div>
 
-                          <div className='checkoutSection'>
-                            <div
-                              className='block-title authTitle'
-                              style={{
-                                margin: '20px 0',
-                              }}
-                            >
-                              <span>Shipping Address</span>
+                                  <div className='paymentMethods'>
+                                    <RadioGroup
+                                      onChange={onDeviliveryRegionChange}
+                                      value={deliveryRegionName}
+                                      horizontal={
+                                        windowWidth > 380 ? true : false
+                                      }
+                                    >
+                                      {isShipToDifferentAddress
+                                        ? shippingDeliveryCharge &&
+                                          shippingDeliveryCharge.length > 0 &&
+                                          shippingDeliveryCharge.map((item) => {
+                                            return (
+                                              <ReversedRadioButton
+                                                rootColor={
+                                                  'rgba(0, 102, 51, 0.35)'
+                                                }
+                                                pointColor={'#006633'}
+                                                value={item['name']}
+                                                padding={10}
+                                              >
+                                                <div
+                                                  style={{
+                                                    ...(windowWidth < 380 && {
+                                                      width: '100%',
+                                                      height: '30px',
+                                                    }),
+                                                    ...(windowWidth > 380 && {
+                                                      width: '20%',
+                                                      height: '20px',
+                                                    }),
+                                                  }}
+                                                >
+                                                  <h2>{item['name']}</h2>
+                                                </div>
+                                              </ReversedRadioButton>
+                                            );
+                                          })
+                                        : billingDeliveryCharge &&
+                                          billingDeliveryCharge.length > 0 &&
+                                          billingDeliveryCharge.map((item) => {
+                                            return (
+                                              <ReversedRadioButton
+                                                rootColor={
+                                                  'rgba(0, 102, 51, 0.35)'
+                                                }
+                                                pointColor={'#006633'}
+                                                value={item['name']}
+                                                padding={10}
+                                              >
+                                                <div
+                                                  style={{
+                                                    ...(windowWidth < 380 && {
+                                                      width: '100%',
+                                                      height: '30px',
+                                                    }),
+                                                    ...(windowWidth > 380 && {
+                                                      height: '20px',
+                                                    }),
+                                                  }}
+                                                >
+                                                  <h2>{item['name']}</h2>
+                                                </div>
+                                              </ReversedRadioButton>
+                                            );
+                                          })}
+                                    </RadioGroup>
+                                  </div>
+
+                                  {selectedRegion &&
+                                    Object.keys(selectedRegion).length > 0 && (
+                                      <>
+                                        {selectedRegion['pickUpLocation'] && (
+                                          <div
+                                            className='deliveryProps'
+                                            style={{
+                                              marginTop: '15px',
+                                            }}
+                                          >
+                                            <h3>Pick Up Location : </h3>
+                                            <span>
+                                              {selectedRegion['pickUpLocation']}
+                                            </span>
+                                          </div>
+                                        )}
+
+                                        {selectedRegion['pickUpLocation'] && (
+                                          <div className='deliveryProps'>
+                                            <h3>Time : </h3>
+                                            <span>
+                                              {selectedRegion['time']}
+                                            </span>
+                                          </div>
+                                        )}
+
+                                        {selectedRegion['pickUpLocation'] && (
+                                          <div className='deliveryProps'>
+                                            <h3>Delivery Charge : </h3>
+                                            <span>
+                                              ৳
+                                              {getDeliveryChargeTotal(
+                                                selectedRegion,
+                                                totalPrice
+                                              ) || 0}
+                                            </span>
+                                          </div>
+                                        )}
+                                      </>
+                                    )}
+                                </>
+                              ) : (
+                                <div className='order-summary-price'>
+                                  <h3>
+                                    Delivery is not available in your area
+                                  </h3>
+                                </div>
+                              )}
                             </div>
-                            <Checkbox
-                              name={'shipToDifferentAddress'}
-                              label={'Ship To Different Address'}
-                              inputType={'checkbox'}
-                              value={'shipToDifferentAddress'}
-                              onChange={(e) =>
-                                setIsShipToDifferentAddress(e.target.checked)
-                              }
-                            />
 
-                            {isShipToDifferentAddress ? (
-                              <>
-                                <ShippingCheckout
-                                  setFieldTouched={setFieldTouched}
-                                  isSubmitting={isSubmitting}
-                                  values={values}
-                                  handleChange={handleChange}
-                                  touched={touched}
-                                  errors={errors}
-                                  serverErrors={serverErrors}
-                                  isAuthenticated={session.isAuthenticated}
-                                  handleSelectShippingCityChange={
-                                    handleSelectShippingCityChange
-                                  }
-                                  handleSelectShippingCountryChange={
-                                    handleSelectShippingCountryChange
-                                  }
-                                  selectedShippingCityValue={
-                                    selectedShippingCityValue
-                                  }
-                                  selectedShippingCountryValue={
-                                    selectedShippingCountryValue
-                                  }
-                                  shippingCityList={shippingCityList}
-                                  countryList={countryList}
-                                />
-                              </>
-                            ) : (
-                              ''
-                            )}
+                            {deliveryChargeState.isLoading && <Spinner />}
+                          </div>
+                          <div className='deliveryProps'>
+                            <h3>Total : </h3>
+                            <span>
+                              ৳
+                              {selectedRegion &&
+                              Object.keys(selectedRegion).length > 0
+                                ? getTotalPrice(
+                                    totalPrice,
+                                    getDeliveryChargeTotal(
+                                      selectedRegion,
+                                      totalPrice
+                                    ) || 0
+                                  )
+                                : totalPrice}
+                            </span>
                           </div>
 
                           <div className='checkoutSection'>
@@ -997,6 +1288,179 @@ const Checkout = ({
                               </RadioGroup>
                             </div>
 
+                            {paymentMethod !== 'cod' && (
+                              <div className='paymentMethodInstruction'>
+                                <div className='paymentMethodInstruction-item'>
+                                  <h3>
+                                    {paymentMethod[0].toUpperCase() +
+                                      paymentMethod.slice(1)}{' '}
+                                    number :{' '}
+                                  </h3>
+                                  <span>
+                                    {paymentMethod === 'bkash' &&
+                                      dictionary.bkashNumber}
+                                    {paymentMethod === 'nagad' &&
+                                      dictionary.nagadNumber}
+                                    {paymentMethod === 'rocket' &&
+                                      dictionary.rocketNumber}
+                                  </span>
+                                </div>
+
+                                <div className='paymentMethodInstruction-item'>
+                                  <h3>Agent will take TK:</h3>
+
+                                  <span>
+                                    {paymentMethod === 'bkash' &&
+                                      getPercentage(
+                                        1.9,
+                                        selectedRegion &&
+                                          Object.keys(selectedRegion).length > 0
+                                          ? getTotalPrice(
+                                              totalPrice,
+                                              getDeliveryChargeTotal(
+                                                selectedRegion,
+                                                totalPrice
+                                              ) || 0
+                                            )
+                                          : totalPrice
+                                      )}
+
+                                    {paymentMethod === 'nagad' &&
+                                      getPercentage(
+                                        1.5,
+                                        selectedRegion &&
+                                          Object.keys(selectedRegion).length > 0
+                                          ? getTotalPrice(
+                                              totalPrice,
+                                              getDeliveryChargeTotal(
+                                                selectedRegion,
+                                                totalPrice
+                                              ) || 0
+                                            )
+                                          : totalPrice
+                                      )}
+
+                                    {paymentMethod === 'rocket' &&
+                                      getPercentage(
+                                        1.8,
+                                        selectedRegion &&
+                                          Object.keys(selectedRegion).length > 0
+                                          ? getTotalPrice(
+                                              totalPrice,
+                                              getDeliveryChargeTotal(
+                                                selectedRegion,
+                                                totalPrice
+                                              ) || 0
+                                            )
+                                          : totalPrice
+                                      )}
+                                  </span>
+                                </div>
+
+                                <div className='paymentMethodInstruction-item'>
+                                  <h3>Pay TK:</h3>
+                                  <span>
+                                    {paymentMethod === 'bkash'
+                                      ? paytotalPrice(
+                                          getPercentage(
+                                            1.9,
+                                            selectedRegion &&
+                                              Object.keys(selectedRegion)
+                                                .length > 0
+                                              ? getTotalPrice(
+                                                  totalPrice,
+                                                  getDeliveryChargeTotal(
+                                                    selectedRegion,
+                                                    totalPrice
+                                                  ) || 0
+                                                )
+                                              : totalPrice
+                                          ),
+                                          selectedRegion &&
+                                            Object.keys(selectedRegion).length >
+                                              0
+                                            ? getTotalPrice(
+                                                totalPrice,
+                                                getDeliveryChargeTotal(
+                                                  selectedRegion,
+                                                  totalPrice
+                                                ) || 0
+                                              )
+                                            : totalPrice
+                                        )
+                                      : ''}
+
+                                    {paymentMethod === 'rocket'
+                                      ? paytotalPrice(
+                                          getPercentage(
+                                            1.8,
+                                            selectedRegion &&
+                                              Object.keys(selectedRegion)
+                                                .length > 0
+                                              ? getTotalPrice(
+                                                  totalPrice,
+                                                  getDeliveryChargeTotal(
+                                                    selectedRegion,
+                                                    totalPrice
+                                                  ) || 0
+                                                )
+                                              : totalPrice
+                                          ),
+                                          selectedRegion &&
+                                            Object.keys(selectedRegion).length >
+                                              0
+                                            ? getTotalPrice(
+                                                totalPrice,
+                                                getDeliveryChargeTotal(
+                                                  selectedRegion,
+                                                  totalPrice
+                                                ) || 0
+                                              )
+                                            : totalPrice
+                                        )
+                                      : ''}
+
+                                    {paymentMethod === 'nagad'
+                                      ? paytotalPrice(
+                                          getPercentage(
+                                            1.5,
+                                            selectedRegion &&
+                                              Object.keys(selectedRegion)
+                                                .length > 0
+                                              ? getTotalPrice(
+                                                  totalPrice,
+                                                  getDeliveryChargeTotal(
+                                                    selectedRegion,
+                                                    totalPrice
+                                                  ) || 0
+                                                )
+                                              : totalPrice
+                                          ),
+                                          selectedRegion &&
+                                            Object.keys(selectedRegion).length >
+                                              0
+                                            ? getTotalPrice(
+                                                totalPrice,
+                                                getDeliveryChargeTotal(
+                                                  selectedRegion,
+                                                  totalPrice
+                                                ) || 0
+                                              )
+                                            : totalPrice
+                                        )
+                                      : ''}
+                                  </span>
+                                </div>
+
+                                <div className='paymentMethodInstruction-item'>
+                                  <h3>
+                                    Enter your Payment Mobile Number and
+                                    Transaction Id below
+                                  </h3>
+                                </div>
+                              </div>
+                            )}
+
                             <PaymentForm
                               isSubmitting={isSubmitting}
                               paymentMethod={paymentMethod}
@@ -1008,182 +1472,79 @@ const Checkout = ({
                               touched={touched}
                             />
                           </div>
-
-                          {isDeliveryChargeExists(
-                            isShipToDifferentAddress
-                              ? shippingDeliveryCharge['charge'] &&
-                                  shippingDeliveryCharge['charge']
-                              : billingDeliveryCharge['charge'] &&
-                                  billingDeliveryCharge['charge']
-                          ) ? (
-                            ''
-                          ) : (
-                            <div className='alertText'>
-                              <i className='fa fa-exclamation-circle'></i>
-                              <h3>Delivery is not available in your area</h3>
-                            </div>
-                          )}
-                          <div
+                        </>
+                      ) : (
+                        <div
+                          style={{
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <p
                             style={{
-                              width: '100px',
+                              letterSpacing: '-1px',
+                              marginBottom: '20px',
+                              fontSize: '20px',
+                              fontWeight: 600,
                             }}
                           >
-                            <AuthButton
-                              onclick={handleSubmit}
-                              disabled={
-                                !isValid ||
-                                !isDeliveryChargeExists(
-                                  isShipToDifferentAddress
-                                    ? shippingDeliveryCharge['charge'] &&
-                                        shippingDeliveryCharge['charge']
-                                    : billingDeliveryCharge['charge'] &&
-                                        billingDeliveryCharge['charge']
-                                )
-                              }
-                            >
-                              {isSubmitting ? 'Checkout...' : 'Checkout'}
-                            </AuthButton>
-                          </div>
+                            Your Cart is empty
+                          </p>
+                          <button
+                            className='clear-cart banner-btn'
+                            onClick={() => {
+                              history.push('/');
+                            }}
+                          >
+                            Add Products
+                          </button>
                         </div>
-                      </div>
+                      )}
                     </div>
-                    <div className='col-md-5 order-md-1'>
-                      <div className='row'>
-                        <div className='col-md-12 '>
-                          <div className='order-summary'>
-                            <h2
-                              style={{
-                                fontSize: '20px',
-                                color: '#444',
-                                paddingBottom: '15px',
-                                paddingTop: '5px',
-                                fontWeight: 400,
-                                marginBottom: '10px',
-                                borderBottom: '1px solid #ddd',
-                              }}
-                            >
-                              Order Summary
-                            </h2>
 
-                            {cartItems.length > 0 ? (
-                              <>
-                                <div>
-                                  {cartItems &&
-                                    cartItems.length > 0 &&
-                                    cartItems.map(({ product }) => {
-                                      return (
-                                        <SmallItem
-                                          productItem={product}
-                                          isOrder={true}
-                                          history={history}
-                                        />
-                                      );
-                                    })}
-                                </div>
-                                <div className='order-price'>
-                                  <div className='order-summary-price'>
-                                    <h3>{cartItems.length} items in Cart</h3>
-                                    <span
-                                      style={{
-                                        fontWeight: 500,
-                                      }}
-                                    >
-                                      ৳{totalPrice}
-                                    </span>
-                                  </div>
-
-                                  {isDeliveryChargeExists(
-                                    isShipToDifferentAddress
-                                      ? shippingDeliveryCharge['charge'] &&
-                                          shippingDeliveryCharge['charge']
-                                      : billingDeliveryCharge['charge'] &&
-                                          billingDeliveryCharge['charge']
-                                  ) ? (
-                                    <div className='order-summary-price'>
-                                      <h3>Delivery Charge</h3>
-                                      <span
-                                        style={{
-                                          fontWeight: 500,
-                                        }}
-                                      >
-                                        ৳
-                                        {isShipToDifferentAddress
-                                          ? shippingDeliveryCharge['charge'] &&
-                                            shippingDeliveryCharge['charge']
-                                          : billingDeliveryCharge['charge'] &&
-                                            billingDeliveryCharge['charge']}
-                                      </span>
-                                    </div>
-                                  ) : (
-                                    <div className='order-summary-price'>
-                                      <h3>
-                                        Delivery is not available in your area
-                                      </h3>
-                                    </div>
-                                  )}
-                                </div>
-                                <div className='order-summary-price'>
-                                  <h3
-                                    style={{
-                                      fontWeight: 700,
-                                    }}
-                                  >
-                                    Total
-                                  </h3>
-                                  <span
-                                    style={{
-                                      fontWeight: 700,
-                                    }}
-                                  >
-                                    ৳
-                                    {getTotalPrice(
-                                      totalPrice,
-                                      isShipToDifferentAddress
-                                        ? shippingDeliveryCharge['charge'] &&
-                                            parseInt(
-                                              shippingDeliveryCharge['charge']
-                                            )
-                                        : billingDeliveryCharge['charge'] &&
-                                            parseInt(
-                                              billingDeliveryCharge['charge']
-                                            )
-                                    )}
-                                  </span>
-                                </div>
-                              </>
-                            ) : (
-                              <div
-                                style={{
-                                  height: '100%',
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                              >
-                                <p
-                                  style={{
-                                    letterSpacing: '-1px',
-                                    marginBottom: '20px',
-                                    fontSize: '20px',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  Your Cart is empty
-                                </p>
-                                <button
-                                  className='clear-cart banner-btn'
-                                  onClick={() => {
-                                    history.push('/');
-                                  }}
-                                >
-                                  Add Products
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        </div>
+                    {isDeliveryChargeExists(
+                      isShipToDifferentAddress
+                        ? shippingDeliveryCharge &&
+                            shippingDeliveryCharge.length > 0 &&
+                            shippingDeliveryCharge
+                        : billingDeliveryCharge &&
+                            billingDeliveryCharge.length > 0 &&
+                            billingDeliveryCharge
+                    ) ? (
+                      ''
+                    ) : (
+                      <div className='alertText'>
+                        <i className='fa fa-exclamation-circle'></i>
+                        <h3>Delivery is not available in your area</h3>
                       </div>
+                    )}
+                    <div
+                      style={{
+                        width: '200px',
+                        marginTop: '15px',
+                      }}
+                    >
+                      <AuthButton
+                        onclick={handleSubmit}
+                        disabled={
+                          !isValid ||
+                          !isDeliveryChargeExists(
+                            isShipToDifferentAddress
+                              ? shippingDeliveryCharge &&
+                                  shippingDeliveryCharge.length > 0 &&
+                                  shippingDeliveryCharge
+                              : billingDeliveryCharge &&
+                                  billingDeliveryCharge.length > 0 &&
+                                  billingDeliveryCharge
+                          ) ||
+                          !(cartItems.length > 0)
+                        }
+                      >
+                        {isSubmitting ? 'Ordering...' : 'Place Order'}
+                      </AuthButton>
                     </div>
                   </div>
                 </div>
