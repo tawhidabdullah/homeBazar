@@ -105,7 +105,7 @@ const CheckoutForm = ({
           )}
         </div>
         <div className='formContainerOfTwoItem formContainterSelect'>
-          {shippingCityList && (
+          {shippingCityList.length > 0 && (
             <div>
               <label className='formLabel'>City</label>
               <Select

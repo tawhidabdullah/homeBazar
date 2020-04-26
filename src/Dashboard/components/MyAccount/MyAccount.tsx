@@ -326,7 +326,7 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
                     )}
                   </div>
                   <div className='formContainerOfTwoItem'>
-                    {cityList && (
+                    {cityList.length > 0 && (
                       <div>
                         <label className='formLabel'>City</label>
                         <Select

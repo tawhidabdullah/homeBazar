@@ -278,7 +278,7 @@ const Signup = ({ addItemToCache, cache, history, alert }: Props) => {
                 </div>
 
                 <div className='formContainerOfTwoItem formContainterSelect'>
-                  {cityList && (
+                  {cityList.length > 0 && (
                     <div>
                       <label className='formLabel'>City</label>
 
