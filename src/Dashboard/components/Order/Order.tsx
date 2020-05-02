@@ -28,6 +28,8 @@ const Order = ({ history }) => {
           params: {
             limitNumber: 2,
             pageNumber: pageNumber,
+            sortValue: 'added',
+            sortOrderValue: -1,
           },
         },
       });

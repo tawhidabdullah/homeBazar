@@ -582,6 +582,7 @@ const Checkout = ({
         (region, index) => 0 === index
       );
       if (selectedRegion) {
+        setDeliveryRegionName(selectedRegion['name']);
         setSelectedRegion(selectedRegion);
       }
     }
@@ -1126,7 +1127,7 @@ const Checkout = ({
                                           </div>
                                         )}
 
-                                        {selectedRegion['pickUpLocation'] && (
+                                        {selectedRegion['charge'] && (
                                           <div className='deliveryProps'>
                                             <h3>Delivery Charge : </h3>
                                             <span>

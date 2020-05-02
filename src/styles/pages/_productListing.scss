@@ -1,9 +1,17 @@
 .filterbar {
-  background-color: #fff;
-  border-radius: 5px;
   padding-top: 20px;
   padding: 0 !important;
   margin-bottom: 10px;
+}
+
+.filterBar-child {
+  width: 95%;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.Bcak-bg {
+  padding: 10px;
 }
 
 /* category block start */
@@ -32,7 +40,7 @@
 }
 
 .category-block ul li {
-  margin-bottom: 10px;
+  // margin-bottom: 10px;
 }
 
 .category-text {
@@ -245,5 +253,148 @@
   .subcat-top {
     height: 100px;
     width: 100px;
+  }
+}
+
+// sub menu
+
+// sidebar functionality
+/*Functionality of documentation side nav */
+
+.documentation__sidenav-multi-level,
+.documentation__sidenav-item ul,
+.documentation__sidenav input {
+  display: none;
+}
+
+.sub-item-arrow-checkbox {
+  display: none;
+}
+
+.documentation__sidenav-item ul {
+  display: block;
+}
+
+.documentation__sidenav-multi-level,
+.documentation__sidenav-item ul {
+  display: block;
+}
+
+.documentation__sidenav-item .sub-item-arrow-checkbox.active ~ ul {
+  display: block;
+}
+
+.documentation__sidenav-item .sub-item-arrow-checkbox ~ ul {
+  display: none;
+}
+
+.documentation__sidenav-label {
+  width: 100%;
+  display: block;
+  z-index: 3;
+  position: relative;
+}
+
+/* documentation side nav */
+
+/* Documentation side nav multi level */
+
+.documentation__sidenav-multi-level {
+  transition: all 1s;
+  font-size: 15px;
+}
+
+.documentation__sidenav ul,
+.documentation__sidenav li,
+.documentation__sidenav-label.active {
+  line-height: 30px;
+  margin: 0;
+  list-style: none;
+  text-decoration: none;
+  font-weight: 700;
+  color: $color-dark-1;
+  cursor: pointer;
+}
+
+.documentation__sidenav ul,
+.documentation__sidenav li,
+.documentation__sidenav-label {
+  line-height: 30px;
+  margin: 0;
+  list-style: none;
+  text-decoration: none;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+}
+
+.documentation__sidenav-item ul {
+  padding: 0 0;
+}
+
+/*documentation__sidenav-item-arrow*/
+
+.documentation__sidenav-item-arrow {
+  width: 12px;
+  height: 12px;
+  vertical-align: middle;
+  float: left;
+  z-index: 0;
+  cursor: pointer;
+  margin: 10px 1em 0 2em;
+}
+
+.documentation__sidenav-item
+  .sub-item-arrow-checkbox
+  + .sub-item-arrow
+  .documentation__sidenav-item-arrow {
+  transform: rotate(-90deg);
+  transition: 0.1s;
+}
+
+.documentation__sidenav-item
+  .sub-item-arrow-checkbox.active
+  + .sub-item-arrow
+  .documentation__sidenav-item-arrow {
+  transform: rotate(0deg);
+  transition: 0.1s;
+}
+
+.documentation__sidenav-item.documentation__sidenav-item-block {
+  border-bottom: 1px solid #eee;
+  padding: 5px 0;
+}
+
+.documentation__sidenav input[type='checkbox'] {
+  display: none;
+}
+
+.sub-item {
+}
+
+.sub-item-arrow {
+  display: flex;
+}
+
+.sub-item-list {
+  margin: 2px 0px 2px 0;
+  margin-left: 15px;
+
+  li {
+    cursor: pointer;
+    .subCatLink {
+      color: #666;
+      text-decoration: none;
+      line-height: 25px;
+    }
+
+    .subCatLink:hover {
+      color: #333;
+    }
+
+    .subCatLink.active {
+      color: $color-dark-1;
+      font-weight: 600;
+    }
   }
 }

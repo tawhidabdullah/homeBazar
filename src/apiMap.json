@@ -95,7 +95,7 @@
       "method": "get"
     },
     "getDeliveryCharge": {
-      "url": "/api/delivery/:country/:city",
+      "url": "/api/delivery/city/:cityName",
       "method": "get"
     },
     "signup": {
@@ -119,7 +119,7 @@
       "method": "post"
     },
     "getCurrentUserOrders": {
-      "url": "/customer/api/order?limit=limitNumber&page=pageNumber",
+      "url": "/customer/api/order?limit=limitNumber&page=pageNumber&sort=sortValue&sortOrder=sortOrderValue",
       "method": "get"
     },
     "changePassword": {

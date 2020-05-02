@@ -1,5 +1,16 @@
 import React from 'react';
 import Select from 'react-select';
+import { NavLink } from 'react-router-dom';
+
+import arrow from '../../assets/arrow.png';
+
+const Arrow = ({ className, htmlFor }) => {
+  return (
+    <label htmlFor={htmlFor}>
+      <img src={arrow} alt='Hero' className={className} />
+    </label>
+  );
+};
 
 interface Props {
   handleSelectCategory: (catgoryId: string) => void;
@@ -10,6 +21,9 @@ interface Props {
   brands: any[];
   windowWidth: number;
   history: any;
+  subcategories: any;
+  handleUiSelectSubCategory?: (categoryId: string) => void;
+  activeSubCategoryId: string;
 }
 
 const SideFilterBar = ({
@@ -21,6 +35,9 @@ const SideFilterBar = ({
   brands,
   windowWidth,
   history,
+  subcategories,
+  handleUiSelectSubCategory,
+  activeSubCategoryId,
 }: Props) => {
   const [
     selectedCategoryValueForSort,
@@ -75,197 +92,255 @@ const SideFilterBar = ({
 
   return (
     <div className='col-sm-4 col-md-3 filterbar'>
-      {windowWidth < 581 ? (
-        <>
-          <div className='filterBySelectorsContainer'>
+      <div className='filterBar-child'>
+        {windowWidth < 581 ? (
+          <>
+            <div className='filterBySelectorsContainer'>
+              {categories && categories.length > 0 && (
+                <>
+                  <h2 className='filterBySelectorsContainer-title'>
+                    Categories
+                  </h2>
+                  <div className='filterBySelectorsSelects'>
+                    <Select
+                      value={selectedCategoryValueForSort}
+                      onChange={(value) => handleSelectCategoryChange(value)}
+                      options={categories.map((cat) => ({
+                        value: cat.id,
+                        label: cat.name,
+                      }))}
+                    />
+                  </div>
+                </>
+              )}{' '}
+            </div>
+
+            <div className='filterBySelectorsContainer'>
+              {tags && tags.length > 0 && (
+                <>
+                  <h2 className='filterBySelectorsContainer-title'>Tags</h2>
+                  <div className='filterBySelectorsSelects'>
+                    <Select
+                      value={selectedTagValueForSort}
+                      onChange={(value) => handleSelectTagChange(value)}
+                      options={tags.map((cat) => ({
+                        value: cat.id,
+                        label: cat.name,
+                      }))}
+                    />
+                  </div>
+                </>
+              )}{' '}
+            </div>
+
+            <div className='filterBySelectorsContainer'>
+              {brands && brands.length > 0 && (
+                <>
+                  <h2 className='filterBySelectorsContainer-title'>Brands</h2>
+                  <div className='filterBySelectorsSelects'>
+                    <Select
+                      value={selectedBrandValueForSort}
+                      onChange={(value) => handleSelectBrandChange(value)}
+                      options={brands.map((cat) => ({
+                        value: cat.id,
+                        label: cat.name,
+                      }))}
+                    />
+                  </div>
+                </>
+              )}{' '}
+            </div>
+          </>
+        ) : (
+          <>
             {categories && categories.length > 0 && (
-              <>
-                <h2 className='filterBySelectorsContainer-title'>Categories</h2>
-                <div className='filterBySelectorsSelects'>
-                  <Select
-                    value={selectedCategoryValueForSort}
-                    onChange={(value) => handleSelectCategoryChange(value)}
-                    options={categories.map((cat) => ({
-                      value: cat.id,
-                      label: cat.name,
-                    }))}
-                  />
-                </div>
-              </>
-            )}{' '}
-          </div>
+              <div className='category-block'>
+                <div className='product-detail'>
+                  <h2
+                    className='category-title'
+                    style={{
+                      marginBottom: '10px',
+                    }}
+                  >
+                    Categories
+                  </h2>
 
-          <div className='filterBySelectorsContainer'>
+                  <div className='documentation__sidenav-multi-level'>
+                    <div className='documentation__sidenav-item'>
+                      <ul>
+                        {categories.map((cat, i) => {
+                          return (
+                            <li key={i}>
+                              <div className='sub-item'>
+                                {cat.subCategory &&
+                                  cat.subCategory.length > 0 && (
+                                    <input
+                                      type='checkbox'
+                                      id={cat.name}
+                                      className={
+                                        cat[`is${cat.id}`]
+                                          ? 'sub-item-arrow-checkbox active'
+                                          : 'sub-item-arrow-checkbox'
+                                      }
+                                    />
+                                  )}
+
+                                <div className='sub-item-arrow'>
+                                  <label
+                                    onClick={() => {
+                                      handleSelectCategory(cat.id);
+                                    }}
+                                    htmlFor={cat.name}
+                                    className={
+                                      cat[`is${cat.id}`] && !activeSubCategoryId
+                                        ? 'documentation__sidenav-label active'
+                                        : 'documentation__sidenav-label'
+                                    }
+                                  >
+                                    {cat.name}
+                                  </label>
+                                  {cat.subCategory &&
+                                    cat.subCategory.length > 0 && (
+                                      <Arrow
+                                        htmlFor={cat.name}
+                                        className='documentation__sidenav-item-arrow'
+                                      />
+                                    )}
+                                </div>
+                                {cat.subCategory && cat.subCategory.length > 0 && (
+                                  <ul className='sub-item-list'>
+                                    {cat.subCategory.map((subCat, index) => {
+                                      return (
+                                        <li
+                                          key={index}
+                                          onClick={() => {
+                                            history.push({
+                                              pathname: `/productList/${subCat['id']}`,
+                                              state: { isCategory: true },
+                                            });
+                                            handleUiSelectSubCategory &&
+                                              handleUiSelectSubCategory(
+                                                subCat['id']
+                                              );
+                                          }}
+                                        >
+                                          <a
+                                            className={
+                                              subCat['id'] ===
+                                              activeSubCategoryId
+                                                ? 'subCatLink active'
+                                                : 'subCatLink'
+                                            }
+                                          >
+                                            {subCat.name}
+                                          </a>
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                )}
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {tags && tags.length > 0 && (
-              <>
-                <h2 className='filterBySelectorsContainer-title'>Tags</h2>
-                <div className='filterBySelectorsSelects'>
-                  <Select
-                    value={selectedTagValueForSort}
-                    onChange={(value) => handleSelectTagChange(value)}
-                    options={tags.map((cat) => ({
-                      value: cat.id,
-                      label: cat.name,
-                    }))}
-                  />
+              <div className='category-block'>
+                <div className='product-detail'>
+                  <h2
+                    className='category-title'
+                    style={{
+                      marginBottom: '10px',
+                    }}
+                  >
+                    Tags
+                  </h2>
+                  <div className='documentation__sidenav-multi-level'>
+                    <div className='documentation__sidenav-item'>
+                      <ul>
+                        {tags.map((tag, i) => {
+                          return (
+                            <li key={i}>
+                              <div className='sub-item'>
+                                <div className='sub-item-arrow'>
+                                  <label
+                                    onClick={() => {
+                                      handleSelectTag(tag.id);
+                                    }}
+                                    htmlFor={tag.name}
+                                    className={
+                                      tag[`is${tag.id}`]
+                                        ? 'documentation__sidenav-label active'
+                                        : 'documentation__sidenav-label'
+                                    }
+                                  >
+                                    {tag.name}
+                                  </label>
+                                </div>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-              </>
-            )}{' '}
-          </div>
+              </div>
+            )}
 
-          <div className='filterBySelectorsContainer'>
             {brands && brands.length > 0 && (
-              <>
-                <h2 className='filterBySelectorsContainer-title'>Brands</h2>
-                <div className='filterBySelectorsSelects'>
-                  <Select
-                    value={selectedBrandValueForSort}
-                    onChange={(value) => handleSelectBrandChange(value)}
-                    options={brands.map((cat) => ({
-                      value: cat.id,
-                      label: cat.name,
-                    }))}
-                  />
+              <div className='category-block'>
+                <div className='product-detail'>
+                  <h2
+                    className='category-title'
+                    style={{
+                      marginBottom: '10px',
+                    }}
+                  >
+                    Brands
+                  </h2>
+
+                  <div className='documentation__sidenav-multi-level'>
+                    <div className='documentation__sidenav-item'>
+                      <ul>
+                        {brands.map((brand, i) => {
+                          return (
+                            <li key={i}>
+                              <div className='sub-item'>
+                                <div className='sub-item-arrow'>
+                                  <label
+                                    onClick={() => {
+                                      handleSelectBrand(brand.id);
+                                    }}
+                                    htmlFor={brand.name}
+                                    className={
+                                      brand[`is${brand.id}`]
+                                        ? 'documentation__sidenav-label active'
+                                        : 'documentation__sidenav-label'
+                                    }
+                                  >
+                                    {brand.name}
+                                  </label>
+                                </div>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-              </>
-            )}{' '}
-          </div>
-        </>
-      ) : (
-        <>
-          {categories.length > 0 && (
-            <div className='category-block'>
-              <div className='product-detail'>
-                <h2
-                  className='category-title'
-                  style={{
-                    marginBottom: '10px',
-                  }}
-                >
-                  Categories
-                </h2>
-                <ul>
-                  {categories.length > 0 &&
-                    categories.map((cat, i) => {
-                      return (
-                        <li key={i}>
-                          <span
-                            className={
-                              cat.id !== 'all'
-                                ? `${
-                                    cat[`is${cat.id}`]
-                                      ? 'category-text active'
-                                      : 'category-text'
-                                  }`
-                                : `${
-                                    cat[`is${cat.id}`]
-                                      ? 'category-header-all active'
-                                      : 'category-header-all'
-                                  }`
-                            }
-                            onClick={() => {
-                              handleSelectCategory(cat.id);
-                            }}
-                          >
-                            {cat.name}
-                          </span>
-                        </li>
-                      );
-                    })}
-                </ul>
               </div>
-            </div>
-          )}
-
-          {tags.length > 0 && (
-            <div className='category-block'>
-              <div className='product-detail'>
-                <h2
-                  className='category-title'
-                  style={{
-                    marginBottom: '10px',
-                  }}
-                >
-                  Tags
-                </h2>
-                <ul>
-                  {tags.length > 0 &&
-                    tags.map((tag, i) => {
-                      return (
-                        <li key={i}>
-                          <span
-                            className={
-                              tag.id !== 'all'
-                                ? `${
-                                    tag[`is${tag.id}`]
-                                      ? 'category-text active'
-                                      : 'category-text'
-                                  }`
-                                : `${
-                                    tag[`is${tag.id}`]
-                                      ? 'category-header-all active'
-                                      : 'category-header-all'
-                                  }`
-                            }
-                            onClick={() => {
-                              handleSelectTag(tag.id);
-                            }}
-                          >
-                            {tag.name}
-                          </span>
-                        </li>
-                      );
-                    })}
-                </ul>
-              </div>
-            </div>
-          )}
-
-          {brands.length > 0 && (
-            <div className='category-block'>
-              <div className='product-detail'>
-                <h2
-                  className='category-title'
-                  style={{
-                    marginBottom: '10px',
-                  }}
-                >
-                  Brands
-                </h2>
-                <ul>
-                  {brands.length > 0 &&
-                    brands.map((brand, i) => {
-                      return (
-                        <li key={i}>
-                          <span
-                            className={
-                              brand.id !== 'all'
-                                ? `${
-                                    brand[`is${brand.id}`]
-                                      ? 'category-text active'
-                                      : 'category-text'
-                                  }`
-                                : `${
-                                    brand[`is${brand.id}`]
-                                      ? 'category-header-all active'
-                                      : 'category-header-all'
-                                  }`
-                            }
-                            onClick={() => {
-                              handleSelectBrand(brand.id);
-                            }}
-                          >
-                            {brand.name}
-                          </span>
-                        </li>
-                      );
-                    })}
-                </ul>
-              </div>
-            </div>
-          )}
-        </>
-      )}
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

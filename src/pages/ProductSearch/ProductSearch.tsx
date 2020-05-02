@@ -340,13 +340,13 @@ const ProductSearch = ({
   };
 
   return (
-    <>
+    <div
+      style={{
+        margin: '10px 10px 10px 25px',
+      }}
+    >
       <div
-        className={
-          windowWidth < 770
-            ? 'container-fluid productSearch'
-            : 'container productSearch'
-        }
+        className={'container-fluid productSearch'}
         style={{
           padding: windowWidth < 770 ? '15px' : '0 0 20px 0',
         }}
@@ -562,7 +562,7 @@ const ProductSearch = ({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

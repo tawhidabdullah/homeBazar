@@ -11,7 +11,7 @@ const SliderLefMenu = ({ history, category }: Props) => {
     <div className='col-md-2 col-sm-12 image-slider-section-carousel'>
       <ul className='sliderLeft'>
         {category.length > 0
-          ? category.slice(0, 7).map((categoryItem) => {
+          ? category.slice(0, 8).map((categoryItem) => {
               return (
                 <li
                   key={categoryItem.id}

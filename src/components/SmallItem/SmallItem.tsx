@@ -101,7 +101,7 @@ const SmallItem = ({
               ৳{numberWithCommas(product['offerPrice'])}
             </h2>
           ) : (
-            <h2 className='small-product-price'>
+            <h2 className='small-product-offerPrice small-product-offerPrice-dark '>
               ৳{numberWithCommas(product['regularPrice'])}
             </h2>
           )}
@@ -148,6 +148,7 @@ const SmallItem = ({
         >
           {productItem.name}
         </h2>
+
         {!isOrder && parseInt(productItem.offerPrice) ? (
           <h2 className='small-product-offerPrice'>
             ৳{numberWithCommas(productItem.offerPrice)}

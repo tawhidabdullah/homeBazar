@@ -80,7 +80,6 @@ export const getDeliveryChargeTotal = (delivery, totalPrice) => {
   // get the delivery charge according to totalPrice
 
   if (totalPrice < deliveryAmount[0]) {
-    console.log('lit');
     return 'Minium order amount is ' + deliveryCharge[0];
   } else if (totalPrice >= deliveryAmount[deliveryAmount.length - 1]) {
     // higher than all amount

@@ -82,6 +82,7 @@ const ProductList = ({
   ] = useState(1);
   const [pageNumberOfTagProduct, setPageNumberOfTagProduct] = useState(1);
   const [pageNumberOfBrandProduct, setPageNumberOfBrandProduct] = useState(1);
+  const [activeSubCategoryId, setActiveSubCategoryId] = useState('');
 
   const id = match.params.id;
 
@@ -517,6 +518,19 @@ const ProductList = ({
                 }
                 // @ts-ignore
               } else cat[`is${cat['id']}`] = false;
+
+              // @ts-ignore
+              if (cat['subCategory'] && cat['subCategory'].length > 0) {
+                subCategories = cat['subCategory'];
+                subCategories.length > 0 &&
+                  subCategories.forEach((item) => {
+                    if (categoryId === item['id']) {
+                      setActiveSubCategoryId(categoryId);
+                      // @ts-ignore
+                      cat[`is${cat['id']}`] = true;
+                    }
+                  });
+              }
             });
 
             setCategories(newCategories);
@@ -644,6 +658,7 @@ const ProductList = ({
       }
       setUiSelectItemDeactive('tag');
       setUiSelectItemDeactive('brand');
+      setActiveSubCategoryId('');
     } else if (type === 'tag') {
       if (tags.length > 0) {
         const tagId = id;
@@ -661,6 +676,7 @@ const ProductList = ({
       setSubcategories([]);
       setUiSelectItemDeactive('category');
       setUiSelectItemDeactive('brand');
+      setActiveSubCategoryId('');
     } else if (type === 'brand') {
       if (brands.length > 0) {
         const brandId = id;
@@ -679,11 +695,26 @@ const ProductList = ({
       setSubcategories([]);
       setUiSelectItemDeactive('category');
       setUiSelectItemDeactive('tag');
+      setActiveSubCategoryId('');
     }
   };
 
   const handleUiSelectSubCategory = (subCatId: string) => {
-    setSubcategories([]);
+    let newSubCategories = subcategories.length > 0 ? subcategories : false;
+    if (newSubCategories) {
+      let activeSubId = '';
+      subcategories.forEach((item: any) => {
+        if (item['id'] === subCatId) {
+          activeSubId = subCatId;
+        }
+      });
+
+      setActiveSubCategoryId(activeSubId);
+      setUiSelectItemDeactive('tag');
+      setUiSelectItemDeactive('brand');
+    } else {
+      setSubcategories([]);
+    }
 
     setPageNumberOfCategoryProduct(1);
     setIsNext(true);
@@ -742,13 +773,14 @@ const ProductList = ({
     <>
       <div className='Bcak-bg'>
         <div
-          className={`${windowWidth < 1000 ? 'container-fluid' : 'container'}`}
+          className={'container-fluid'}
           style={{
             paddingTop: `${windowWidth < 1000 ? '15px' : '0'}`,
           }}
         >
           <div className='row'>
             <SideFilterBar
+              subcategories={subcategories}
               handleSelectCategory={handleSelectCategory}
               categories={categories}
               handleSelectTag={handleSelectTag}
@@ -757,6 +789,8 @@ const ProductList = ({
               brands={brands}
               windowWidth={windowWidth}
               history={history}
+              activeSubCategoryId={activeSubCategoryId}
+              handleUiSelectSubCategory={handleUiSelectSubCategory}
             />
             <div className='col-sm-8 col-md-9'>
               <div
@@ -768,6 +802,7 @@ const ProductList = ({
               >
                 {!isLoading &&
                   subcategories.length > 0 &&
+                  windowWidth < 571 &&
                   subcategories.map((subCat) => {
                     return (
                       <Fragment key={subCat['id']}>

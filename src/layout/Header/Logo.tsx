@@ -35,8 +35,6 @@ const Logo = ({ addItemToCache, cache }: Props) => {
     }
   }, []);
 
-  console.log('logofuck', logo);
-
   return (
     <div className='navbar-center-logoBox'>
       {Object.keys(logo).length > 0 ? (
