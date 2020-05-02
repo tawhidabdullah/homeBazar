@@ -8,6 +8,7 @@
   width: 95%;
   background-color: #fff;
   border-radius: 5px;
+  padding-bottom: 5px;
 }
 
 .Bcak-bg {
@@ -335,8 +336,8 @@
 /*documentation__sidenav-item-arrow*/
 
 .documentation__sidenav-item-arrow {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   vertical-align: middle;
   float: left;
   z-index: 0;
@@ -385,7 +386,7 @@
     .subCatLink {
       color: #666;
       text-decoration: none;
-      line-height: 25px;
+      line-height: 28px;
     }
 
     .subCatLink:hover {

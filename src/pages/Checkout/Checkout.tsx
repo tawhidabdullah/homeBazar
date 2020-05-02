@@ -1292,75 +1292,9 @@ const Checkout = ({
                             {paymentMethod !== 'cod' && (
                               <div className='paymentMethodInstruction'>
                                 <div className='paymentMethodInstruction-item'>
-                                  <h3>
-                                    {paymentMethod[0].toUpperCase() +
-                                      paymentMethod.slice(1)}{' '}
-                                    number :{' '}
-                                  </h3>
+                                  <h3>Send </h3>
                                   <span>
-                                    {paymentMethod === 'bkash' &&
-                                      dictionary.bkashNumber}
-                                    {paymentMethod === 'nagad' &&
-                                      dictionary.nagadNumber}
-                                    {paymentMethod === 'rocket' &&
-                                      dictionary.rocketNumber}
-                                  </span>
-                                </div>
-
-                                <div className='paymentMethodInstruction-item'>
-                                  <h3>Agent will take TK:</h3>
-
-                                  <span>
-                                    {paymentMethod === 'bkash' &&
-                                      getPercentage(
-                                        1.9,
-                                        selectedRegion &&
-                                          Object.keys(selectedRegion).length > 0
-                                          ? getTotalPrice(
-                                              totalPrice,
-                                              getDeliveryChargeTotal(
-                                                selectedRegion,
-                                                totalPrice
-                                              ) || 0
-                                            )
-                                          : totalPrice
-                                      )}
-
-                                    {paymentMethod === 'nagad' &&
-                                      getPercentage(
-                                        1.5,
-                                        selectedRegion &&
-                                          Object.keys(selectedRegion).length > 0
-                                          ? getTotalPrice(
-                                              totalPrice,
-                                              getDeliveryChargeTotal(
-                                                selectedRegion,
-                                                totalPrice
-                                              ) || 0
-                                            )
-                                          : totalPrice
-                                      )}
-
-                                    {paymentMethod === 'rocket' &&
-                                      getPercentage(
-                                        1.8,
-                                        selectedRegion &&
-                                          Object.keys(selectedRegion).length > 0
-                                          ? getTotalPrice(
-                                              totalPrice,
-                                              getDeliveryChargeTotal(
-                                                selectedRegion,
-                                                totalPrice
-                                              ) || 0
-                                            )
-                                          : totalPrice
-                                      )}
-                                  </span>
-                                </div>
-
-                                <div className='paymentMethodInstruction-item'>
-                                  <h3>Pay TK:</h3>
-                                  <span>
+                                    ৳
                                     {paymentMethod === 'bkash'
                                       ? paytotalPrice(
                                           getPercentage(
@@ -1390,7 +1324,6 @@ const Checkout = ({
                                             : totalPrice
                                         )
                                       : ''}
-
                                     {paymentMethod === 'rocket'
                                       ? paytotalPrice(
                                           getPercentage(
@@ -1420,7 +1353,6 @@ const Checkout = ({
                                             : totalPrice
                                         )
                                       : ''}
-
                                     {paymentMethod === 'nagad'
                                       ? paytotalPrice(
                                           getPercentage(
@@ -1450,6 +1382,62 @@ const Checkout = ({
                                             : totalPrice
                                         )
                                       : ''}
+                                  </span>{' '}
+                                  <h3>
+                                    {' '}
+                                    (৳
+                                    {paymentMethod === 'bkash' &&
+                                      getPercentage(
+                                        1.9,
+                                        selectedRegion &&
+                                          Object.keys(selectedRegion).length > 0
+                                          ? getTotalPrice(
+                                              totalPrice,
+                                              getDeliveryChargeTotal(
+                                                selectedRegion,
+                                                totalPrice
+                                              ) || 0
+                                            )
+                                          : totalPrice
+                                      )}
+                                    {paymentMethod === 'nagad' &&
+                                      getPercentage(
+                                        1.5,
+                                        selectedRegion &&
+                                          Object.keys(selectedRegion).length > 0
+                                          ? getTotalPrice(
+                                              totalPrice,
+                                              getDeliveryChargeTotal(
+                                                selectedRegion,
+                                                totalPrice
+                                              ) || 0
+                                            )
+                                          : totalPrice
+                                      )}
+                                    {paymentMethod === 'rocket' &&
+                                      getPercentage(
+                                        1.8,
+                                        selectedRegion &&
+                                          Object.keys(selectedRegion).length > 0
+                                          ? getTotalPrice(
+                                              totalPrice,
+                                              getDeliveryChargeTotal(
+                                                selectedRegion,
+                                                totalPrice
+                                              ) || 0
+                                            )
+                                          : totalPrice
+                                      )}
+                                    )
+                                  </h3>
+                                  <h3>To</h3>
+                                  <span>
+                                    {paymentMethod === 'bkash' &&
+                                      dictionary.bkashNumber}
+                                    {paymentMethod === 'nagad' &&
+                                      dictionary.nagadNumber}
+                                    {paymentMethod === 'rocket' &&
+                                      dictionary.rocketNumber}
                                   </span>
                                 </div>
 

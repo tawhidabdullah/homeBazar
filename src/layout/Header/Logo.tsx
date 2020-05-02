@@ -40,33 +40,17 @@ const Logo = ({ addItemToCache, cache }: Props) => {
       {Object.keys(logo).length > 0 ? (
         <>
           {logo['target'] ? (
-            urlToString(logo['target']).includes(
-              urlToString(config.baseURL)
-            ) ? (
-              <Link to={logo['target'].replace(config.baseURL, '')}>
-                <img
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
-                  }}
-                  src={logo['src']}
-                  alt='Mystyle'
-                />
-              </Link>
-            ) : (
-              <a href={logo['target']}>
-                <img
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
-                  }}
-                  src={logo['src']}
-                  alt='Mystyle'
-                />
-              </a>
-            )
+            <Link to={logo['target']}>
+              <img
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                }}
+                src={logo['src']}
+                alt='Mystyle'
+              />
+            </Link>
           ) : (
             <Link to={'/'}>
               <img

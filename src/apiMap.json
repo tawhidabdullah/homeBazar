@@ -29,8 +29,8 @@
       "url": "/api/component/address",
       "method": "get"
     },
-    "Services": {
-      "url": "/api/component/Services",
+    "Links": {
+      "url": "/api/component/Links",
       "method": "get"
     },
     "Account": {
@@ -47,7 +47,7 @@
     },
 
     "categoryProducts": {
-      "url": "/api/category/:id/product?limit=limitNumber&page=pageNumber",
+      "url": "/api/category/:id/product?limit=limitNumber&page=pageNumber&recursive=isRecursive",
       "method": "get"
     },
     "categoryDetail": {
@@ -96,6 +96,10 @@
     },
     "getDeliveryCharge": {
       "url": "/api/delivery/city/:cityName",
+      "method": "get"
+    },
+    "forAnalytics": {
+      "url": "/api/analytics?loc=url",
       "method": "get"
     },
     "signup": {

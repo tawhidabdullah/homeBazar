@@ -15,15 +15,7 @@ const NavItems = ({}: Props) => {
         navLinksState.data.map((item) => {
           return (
             <Fragment key={item['target']}>
-              {urlToString(item['target']).includes(
-                urlToString(config.baseURL)
-              ) ? (
-                <Link to={item['target'].replace(config.baseURL, '')}>
-                  {item['text']}
-                </Link>
-              ) : (
-                <a href={item['target']}>{item['text']}</a>
-              )}
+              <Link to={item['target'] || '/'}>{item['text']}</Link>
             </Fragment>
           );
         })}

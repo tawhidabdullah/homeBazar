@@ -9,6 +9,7 @@ interface Props {
 const AuthButton = ({ onclick, disabled, children }: Props) => {
   return (
     <button
+      type='submit'
       onClick={onclick}
       className={disabled ? 'authButton disabled' : 'authButton'}
       disabled={disabled}

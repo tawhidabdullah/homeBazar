@@ -15,7 +15,7 @@ interface Props {
 const Footer = ({ addItemToCache, cache }: Props) => {
   const [addressState, handleAddressFetch] = useHandleFetch({}, 'address');
   const [accountState, handleAccountFetch] = useHandleFetch([], 'Account');
-  const [servicesState, handleServicesFetch] = useHandleFetch([], 'Services');
+  const [servicesState, handleServicesFetch] = useHandleFetch([], 'Links');
   const [aboutUsState, handleAboutUsFetch] = useHandleFetch([], 'About Us');
 
   const [address, setAddress] = useState({});
@@ -66,8 +66,8 @@ const Footer = ({ addItemToCache, cache }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (checkIfItemExistsInCache(`services`, cache)) {
-      const services = cache['services'];
+    if (checkIfItemExistsInCache(`Links`, cache)) {
+      const services = cache['Links'];
       setServices(services);
     } else {
       const getAndSetServices = async () => {
@@ -137,15 +137,7 @@ const Footer = ({ addItemToCache, cache }: Props) => {
                       key={index}
                       className='menu-item menu-item-type-custom menu-item-object-custom menu-item-244'
                     >
-                      {urlToString(item['target']).includes(
-                        urlToString(config.baseURL)
-                      ) ? (
-                        <Link to={item['target'].replace(config.baseURL, '')}>
-                          {item['name']}
-                        </Link>
-                      ) : (
-                        <a href={item['target']}>{item['name']}</a>
-                      )}
+                      <Link to={item['target'] || '/'}>{item['name']}</Link>
                     </li>
                   );
                 })}
@@ -157,7 +149,7 @@ const Footer = ({ addItemToCache, cache }: Props) => {
         {services.length > 0 && (
           <div className='col-md-3'>
             <div className='our__categories'>
-              <span className='widget-title'>Services </span>
+              <span className='widget-title'>Links </span>
               <ul className='footerMenu'>
                 {services.map((item, index) => {
                   return (
@@ -165,15 +157,7 @@ const Footer = ({ addItemToCache, cache }: Props) => {
                       key={index}
                       className='menu-item menu-item-type-custom menu-item-object-custom menu-item-244'
                     >
-                      {urlToString(item['target']).includes(
-                        urlToString(config.baseURL)
-                      ) ? (
-                        <Link to={item['target'].replace(config.baseURL, '')}>
-                          {item['name']}
-                        </Link>
-                      ) : (
-                        <a href={item['target']}>{item['name']}</a>
-                      )}
+                      <Link to={item['target'] || '/'}>{item['name']}</Link>
                     </li>
                   );
                 })}
@@ -193,15 +177,7 @@ const Footer = ({ addItemToCache, cache }: Props) => {
                       key={index}
                       className='menu-item menu-item-type-custom menu-item-object-custom menu-item-244'
                     >
-                      {urlToString(item['target']).includes(
-                        urlToString(config.baseURL)
-                      ) ? (
-                        <Link to={item['target'].replace(config.baseURL, '')}>
-                          {item['name']}
-                        </Link>
-                      ) : (
-                        <a href={item['target']}>{item['name']}</a>
-                      )}
+                      <Link to={item['target'] || '/'}>{item['name']}</Link>
                     </li>
                   );
                 })}

@@ -482,6 +482,18 @@ class Converter {
 
   /**
    * @public
+   * @method forAnalytics convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async forAnalytics(resData) {
+    return resData;
+  }
+
+  forAnalytics;
+
+  /**
+   * @public
    * @method productDetail convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
    * @returns {Object}  converted data
@@ -927,11 +939,11 @@ class Converter {
 
   /**
    * @public
-   * @method Services convert api data from API to general format based on config server
+   * @method Links convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data
    */
-  async Services(data) {
+  async Links(data) {
     const servicesItems = data.items;
     if (!servicesItems.length > 0) {
       return servicesItems;

@@ -53,6 +53,11 @@ const ProductDetail = (props: Props) => {
     'categoryProducts'
   );
 
+  const [forAnalyticsState, handleForAnalyticsFetch] = useHandleFetch(
+    [],
+    'forAnalytics'
+  );
+
   useEffect(() => {
     const getSetProductDetailAndRelatedProducts = async () => {
       if (
@@ -71,7 +76,7 @@ const ProductDetail = (props: Props) => {
         const categoryId = product.category && product.category[0].id;
         setRelatedProductId(categoryId);
       } else {
-        // @ts-ignore
+        // @ts-ignore //
         const productDetail = await handleProductDetailFetch({
           urlOptions: {
             placeHolders: {
@@ -83,6 +88,15 @@ const ProductDetail = (props: Props) => {
 
         // @ts-ignore
         if (productDetail && Object.keys(productDetail).length > 0) {
+          console.log('fuckingURl', productDetail['url']);
+          await handleForAnalyticsFetch({
+            urlOptions: {
+              params: {
+                url: productDetail['url'].toString(),
+              },
+            },
+          });
+
           props.addItemToCache({
             [`productDetail/${categoryName}/${productName}`]: productDetail,
           });

@@ -198,6 +198,7 @@ const ProductList = ({
           params: {
             limitNumber: 15,
             pageNumber: pageNumber ? pageNumber : pageNumberOfCategoryProduct,
+            isRecursive: true,
           },
         },
       });
@@ -384,12 +385,6 @@ const ProductList = ({
       });
     }
 
-    const categoryItem = {
-      name: 'All Categories',
-      id: 'all',
-      [`isall`]: id ? false : true,
-    };
-
     const tempCategories =
       (categories.length > 0 &&
         categories.map((cat: object) => {
@@ -400,7 +395,16 @@ const ProductList = ({
         })) ||
       [];
 
-    return [categoryItem, ...tempCategories];
+    if (tempCategories && tempCategories.length > 0) {
+      const categoryItem = {
+        name: 'All Categories',
+        id: 'all',
+        [`isall`]: id ? false : true,
+      };
+
+      return [categoryItem, ...tempCategories];
+    }
+    return [...tempCategories];
   };
 
   const getTags = async () => {
@@ -412,12 +416,6 @@ const ProductList = ({
       tags = await handleTagListFetch({});
     }
 
-    const tagItem = {
-      name: 'All Tags',
-      id: 'all',
-      [`isall`]: id ? false : true,
-    };
-
     const tempTags =
       (tags.length > 0 &&
         tags.map((tagItem: object) => {
@@ -428,7 +426,15 @@ const ProductList = ({
         })) ||
       [];
 
-    return [tagItem, ...tempTags];
+    if (tempTags && tempTags.length > 0) {
+      const tagItem = {
+        name: 'All Tags',
+        id: 'all',
+        [`isall`]: id ? false : true,
+      };
+      return [tagItem, ...tempTags];
+    }
+    return [...tempTags];
   };
 
   const getBrands = async () => {
@@ -444,12 +450,6 @@ const ProductList = ({
       }
     }
 
-    const brandItem = {
-      name: 'All Brands',
-      id: 'all',
-      [`isall`]: id ? false : true,
-    };
-
     const tempBrands =
       (brands.length > 0 &&
         brands.map((brandItem: object) => {
@@ -460,7 +460,15 @@ const ProductList = ({
         })) ||
       [];
 
-    return [brandItem, ...tempBrands];
+    if (tempBrands && tempBrands.length > 0) {
+      const brandItem = {
+        name: 'All Brands',
+        id: 'all',
+        [`isall`]: id ? false : true,
+      };
+      return [brandItem, ...tempBrands];
+    }
+    return [...tempBrands];
   };
 
   React.useEffect(() => {
@@ -513,17 +521,18 @@ const ProductList = ({
                 cat[`is${cat['id']}`] = true;
                 // @ts-ignore
 
-                if (cat['subCategory'] && cat['subCategory'].length > 0) {
+                if (cat['subCategory']) {
                   subCategories = cat['subCategory'];
                 }
                 // @ts-ignore
               } else cat[`is${cat['id']}`] = false;
 
               // @ts-ignore
-              if (cat['subCategory'] && cat['subCategory'].length > 0) {
-                subCategories = cat['subCategory'];
-                subCategories.length > 0 &&
-                  subCategories.forEach((item) => {
+              if (cat['id'] !== categoryId) {
+                const newSubCat = cat['subCategory'] || [];
+                newSubCat['length'] > 0 &&
+                  // @ts-ignore
+                  newSubCat.forEach((item) => {
                     if (categoryId === item['id']) {
                       setActiveSubCategoryId(categoryId);
                       // @ts-ignore
@@ -721,6 +730,8 @@ const ProductList = ({
   };
 
   const handleSelectCategory = (categoryId) => {
+    setActiveSubCategoryId('');
+
     history.push({
       pathname: `/productList/${categoryId}`,
       state: { isCategory: true },
@@ -728,7 +739,6 @@ const ProductList = ({
 
     setPageNumberOfCategoryProduct(1);
     setIsNext(true);
-
     setUiSelectItemActive('category', categoryId);
   };
 
@@ -791,6 +801,12 @@ const ProductList = ({
               history={history}
               activeSubCategoryId={activeSubCategoryId}
               handleUiSelectSubCategory={handleUiSelectSubCategory}
+              setActiveSubCategoryId={setActiveSubCategoryId}
+              setPageNumberOfCategoryProduct={setPageNumberOfCategoryProduct}
+              setUiSelectItemActive={setUiSelectItemActive}
+              setIsNext={setIsNext}
+              setPageNumberOfTagProduct={setPageNumberOfTagProduct}
+              setPageNumberOfBrandProduct={setPageNumberOfBrandProduct}
             />
             <div className='col-sm-8 col-md-9'>
               <div
@@ -802,7 +818,7 @@ const ProductList = ({
               >
                 {!isLoading &&
                   subcategories.length > 0 &&
-                  windowWidth < 571 &&
+                  !activeSubCategoryId &&
                   subcategories.map((subCat) => {
                     return (
                       <Fragment key={subCat['id']}>

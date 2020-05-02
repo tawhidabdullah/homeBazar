@@ -24,6 +24,12 @@ interface Props {
   subcategories: any;
   handleUiSelectSubCategory?: (categoryId: string) => void;
   activeSubCategoryId: string;
+  setActiveSubCategoryId: (any) => void;
+  setPageNumberOfCategoryProduct: (any) => void;
+  setUiSelectItemActive: (arg1: any, arg2: any) => void;
+  setIsNext: (any) => void;
+  setPageNumberOfTagProduct: (any) => void;
+  setPageNumberOfBrandProduct: (any) => void;
 }
 
 const SideFilterBar = ({
@@ -35,9 +41,14 @@ const SideFilterBar = ({
   brands,
   windowWidth,
   history,
-  subcategories,
   handleUiSelectSubCategory,
   activeSubCategoryId,
+  setActiveSubCategoryId,
+  setPageNumberOfCategoryProduct,
+  setIsNext,
+  setUiSelectItemActive,
+  setPageNumberOfBrandProduct,
+  setPageNumberOfTagProduct,
 }: Props) => {
   const [
     selectedCategoryValueForSort,
@@ -64,10 +75,17 @@ const SideFilterBar = ({
     setSelectedCategoryValueForSort(value);
 
     const categoryId = value.value;
+
     history.push({
       pathname: `/productList/${categoryId}`,
       state: { isCategory: true },
     });
+
+    setActiveSubCategoryId('');
+
+    setPageNumberOfCategoryProduct(1);
+    setIsNext(true);
+    setUiSelectItemActive('category', categoryId);
   };
 
   const handleSelectTagChange = (value) => {
@@ -78,6 +96,11 @@ const SideFilterBar = ({
       pathname: `/productList/${tagId}`,
       state: { isTag: true },
     });
+
+    setActiveSubCategoryId('');
+    setPageNumberOfTagProduct(1);
+    setIsNext(true);
+    setUiSelectItemActive('tag', tagId);
   };
 
   const handleSelectBrandChange = (value) => {
@@ -88,6 +111,10 @@ const SideFilterBar = ({
       pathname: `/productList/${brandId}`,
       state: { isBrand: true },
     });
+    setActiveSubCategoryId('');
+    setPageNumberOfBrandProduct(1);
+    setIsNext(true);
+    setUiSelectItemActive('brand', brandId);
   };
 
   return (
