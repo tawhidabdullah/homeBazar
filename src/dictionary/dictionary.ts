@@ -2,9 +2,9 @@ const dictionary = {
   title: 'Homebazar',
   signinTitle: 'Signin to Homebazar Sibchar',
   signupTitle: 'Signup to Homebazar Sibchar',
-  bkashNumber: '01793706417',
-  nagadNumber: '01922222222',
-  rocketNumber: '01312222222',
+  bkashNumber: '01980907868',
+  nagadNumber: '01980907868',
+  rocketNumber: '01980907868',
 };
 
 export default dictionary;
