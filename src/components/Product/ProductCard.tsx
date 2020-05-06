@@ -37,7 +37,7 @@ const ProductCard = ({
   addToWishList,
   removeFromWishList,
 }: Props) => {
-  const { name, regularPrice, cover, url, id, offerPrice } = product;
+  const { name, regularPrice, cover, url, id, offerPrice, availableStock } = product;
 
   const [addToCartState, handleAddtoCartFetch] = useHandleFetch(
     [],
@@ -147,7 +147,19 @@ const ProductCard = ({
     <div className='product-card'>
       <div className='product-top'>
         <img src={cover} alt='product img' />
-        <div className='product-top-overlay'></div>
+
+
+        {parseInt(availableStock) === 0 && <div className='product-top-outofstockBatch'>
+          <span>
+            Out of
+            Stock
+          </span>
+        </div>}
+
+
+        <div className='product-top-overlay'>
+
+        </div>
 
         <div className='overlay-right'>
           <button
@@ -207,10 +219,10 @@ const ProductCard = ({
                 {(checkIfItemExistsInCartItemById(cartItems, id) && (
                   <span className='product-bottom-iconText'>🐎 Added</span>
                 )) || (
-                  <span className='product-bottom-iconText'>
-                    🐎 Add to cart
-                  </span>
-                )}
+                    <span className='product-bottom-iconText'>
+                      🐎 Add to cart
+                    </span>
+                  )}
               </>
             )}
 

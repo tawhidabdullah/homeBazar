@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Spinner } from '../components/Loading';
 import { useHandleFetch } from '../hooks';
+import { saveCity, deleteCity } from '../utils';
 import { sessionOperations } from '../state/ducks/session';
 
 import Order from './components/Order';
@@ -25,8 +26,11 @@ const Dashboard = (props) => {
       // @ts-ignore
       if (!Object.keys(customerData).length > 0) {
         props.history.push('/signin');
+        await deleteCity();
+
         props.logout();
       } else {
+        await saveCity(customerData['city']);
         if (!props.session.isAuthenticated) {
           props.login();
         }
@@ -108,8 +112,8 @@ const Dashboard = (props) => {
               {tabs.isMyAccount ? (
                 <MyAccount customerDetail={customerDetailState.data} />
               ) : (
-                ''
-              )}
+                  ''
+                )}
 
               {tabs.isWishlist ? <Wishlist /> : ''}
             </main>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHandleFetch } from '../../hooks';
-import { checkIfItemExistsInCache } from '../../utils';
+import { checkIfItemExistsInCache, deleteCity } from '../../utils';
 
 interface Props {
   history: any;
@@ -51,6 +51,7 @@ const TopHead = ({
     await handleLogoutFetch({});
     clearCart();
     clearWishList();
+    await deleteCity();
     logout();
   };
   return (
@@ -78,12 +79,12 @@ const TopHead = ({
             </p>
           </>
         )) || (
-          <p>
-            <i className='fa fa-user'></i>
-            <span onClick={() => history.push('/signin')}>Signin</span> or{' '}
-            <span onClick={() => history.push('/signup')}>Signup</span>
-          </p>
-        )}
+            <p>
+              <i className='fa fa-user'></i>
+              <span onClick={() => history.push('/signin')}>Signin</span> or{' '}
+              <span onClick={() => history.push('/signup')}>Signup</span>
+            </p>
+          )}
       </div>
     </div>
   );

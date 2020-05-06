@@ -410,6 +410,19 @@
   }
 }
 
+@media screen and (max-width: 482px) {
+  .categoryContainer {
+    margin: 20px 5px 0 5px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .categoryContainer {
+    padding: 15px 5px 15px 5px;
+  }
+}
+
+
 @media screen and (max-width: 806px) {
   .product-card {
     min-width: 200px;
@@ -537,4 +550,23 @@
   .top-head-1 {
     justify-content: center;
   }
+}
+
+
+.product-top-outofstockBatch {
+  position: absolute;
+    top: 0;
+    right: 0; 
+
+    span{
+      font-size: 12px;
+      margin-top: 10px;
+      display: block;
+      padding: 4px 3px;
+      border-top-left-radius: 3px;
+      border-bottom-left-radius: 3px;
+      box-shadow: 1px 3px 5px 0 rgba(0, 0, 0, 0.05);
+      background-color: $color-dark-1;
+      color: #fff;
+    }
 }

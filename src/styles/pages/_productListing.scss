@@ -281,13 +281,28 @@
   display: block;
 }
 
+
+
+
 .documentation__sidenav-item .sub-item-arrow-checkbox.active ~ ul {
-  display: block;
+  display: block !important;
 }
 
 .documentation__sidenav-item .sub-item-arrow-checkbox ~ ul {
-  display: none;
+  display: none !important;
 }
+
+.documentation__sidenav-item input:checked ~ ul {
+  display: block !important;
+}
+
+
+
+.documentation__sidenav-item input ~ ul {
+  display: none ;
+}
+
+
 
 .documentation__sidenav-label {
   width: 100%;
@@ -361,6 +376,23 @@
   transition: 0.1s;
 }
 
+
+
+.documentation__sidenav-item input:checked+.sub-item-arrow
+.documentation__sidenav-item-arrow {
+  transform: rotate(0deg);
+  transition: 0.1s;
+}
+
+.documentation__sidenav-item input+.sub-item-arrow
+.documentation__sidenav-item-arrow {
+  transform: rotate(-90deg);
+  transition: 0.1s;
+}
+
+
+
+
 .documentation__sidenav-item.documentation__sidenav-item-block {
   border-bottom: 1px solid #eee;
   padding: 5px 0;
@@ -370,8 +402,7 @@
   display: none;
 }
 
-.sub-item {
-}
+
 
 .sub-item-arrow {
   display: flex;
@@ -399,3 +430,6 @@
     }
   }
 }
+
+
+// by default 

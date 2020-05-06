@@ -6,7 +6,7 @@ import Select from 'react-select';
 import { TextFeildGroup } from '../../../components/Field';
 import { useHandleFetch } from '../../../hooks';
 import { AuthButton } from '../../../components/Button';
-import { checkIfItemExistsInCache } from '../../../utils';
+import { checkIfItemExistsInCache, saveCity } from '../../../utils';
 import { cacheOperations } from '../../../state/ducks/cache';
 import { withAlert } from 'react-alert';
 
@@ -123,6 +123,10 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
         country: selectedCountryValue.value,
         city: selectedCityValue.value,
       });
+
+      await saveCity(selectedCityValue.value);
+
+
       if (type === 'personalinfo') {
         setIsPersonalInfoEdit(false);
       } else if (type === 'contact') {
@@ -132,6 +136,16 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
 
     actions.setSubmitting(false);
   };
+
+  useEffect(() => {
+    if (customerData['city']) {
+      const value = {
+        value: customerData['city'],
+        label: customerData['city'],
+      }
+      setSelectedCityValue(value);
+    }
+  }, [customerData])
 
   const handleChangePassword = async (values, actions) => {
     const changePasswordRes = await handleChangePasswordFetch({
@@ -222,6 +236,8 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
     setSelectedCityValue(value);
   };
 
+
+
   return (
     <div className='myAccount'>
       <div className='myAccountSectionHeader'>
@@ -238,8 +254,8 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
           <Formik
             initialValues={
               isPersonalInfoEdit &&
-              customerData &&
-              Object.keys(customerData).length > 0
+                customerData &&
+                Object.keys(customerData).length > 0
                 ? customerData
                 : personalInfoInitialValues
             }
@@ -261,143 +277,147 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
               handleBlur,
               setFieldTouched,
             }) => (
-              <>
-                <div className='formContainerOfTwo'>
-                  <div className='formContainerOfTwoItem'>
-                    <TextFeildGroup
-                      label='FirstName'
-                      name='firstName'
-                      placeholder='FirstName'
-                      type='text'
-                      value={values.firstName}
-                      onChange={(e) => {
-                        handleChange(e);
-                        setFieldTouched('firstName');
-                      }}
-                      errors={
-                        (touched.firstName && errors.firstName) ||
-                        (!isSubmitting &&
-                          updateCurrentCustomerData.error['error']['firstName'])
-                      }
-                    />
+                <>
+                  <div className='formContainerOfTwo'>
+                    <div className='formContainerOfTwoItem'>
+                      <TextFeildGroup
+                        label='FirstName'
+                        name='firstName'
+                        placeholder='FirstName'
+                        type='text'
+                        value={values.firstName}
+                        onChange={(e) => {
+                          handleChange(e);
+                          setFieldTouched('firstName');
+                        }}
+                        errors={
+                          (touched.firstName && errors.firstName) ||
+                          (!isSubmitting &&
+                            updateCurrentCustomerData.error['error']['firstName'])
+                        }
+                      />
+                    </div>
+                    <div className='formContainerOfTwoItem'>
+                      <TextFeildGroup
+                        label='Lastname'
+                        name='lastName'
+                        placeholder='Lastname'
+                        type='text'
+                        value={values.lastName}
+                        onChange={(e) => {
+                          handleChange(e);
+                          setFieldTouched('lastName');
+                        }}
+                        errors={
+                          (touched.lastName && errors.lastName) ||
+                          (!isSubmitting &&
+                            updateCurrentCustomerData.error['error']['lastName'])
+                        }
+                      />
+                    </div>
                   </div>
-                  <div className='formContainerOfTwoItem'>
-                    <TextFeildGroup
-                      label='Lastname'
-                      name='lastName'
-                      placeholder='Lastname'
-                      type='text'
-                      value={values.lastName}
-                      onChange={(e) => {
-                        handleChange(e);
-                        setFieldTouched('lastName');
-                      }}
-                      errors={
-                        (touched.lastName && errors.lastName) ||
-                        (!isSubmitting &&
-                          updateCurrentCustomerData.error['error']['lastName'])
-                      }
-                    />
-                  </div>
-                </div>
 
-                <div className='formContainerOfTwo'>
-                  <div className='formContainerOfTwoItem'>
-                    {countryList.length > 0 && (
-                      <div>
-                        <label className='formLabel'>Country</label>
-                        <Select
-                          value={selectedCountryValue}
-                          onChange={(value) => handleSelectCountryChange(value)}
-                          options={countryList.map((country) => ({
-                            value: country['name'],
-                            label: country['name'],
-                          }))}
-                        />
+                  <div className='formContainerOfTwo'>
+                    <div className='formContainerOfTwoItem'>
+                      {countryList.length > 0 && (
+                        <div>
+                          <label className='formLabel'>Country</label>
+                          <Select
 
-                        <div className='select-invalid-feedback'>
-                          {errors.country ||
-                            (!isSubmitting &&
-                              updateCurrentCustomerData.error['error'][
+                            value={selectedCountryValue}
+                            defaultValue={customerData['country'] || ''}
+
+                            onChange={(value) => handleSelectCountryChange(value)}
+                            options={countryList.map((country) => ({
+                              value: country['name'],
+                              label: country['name'],
+                            }))}
+                          />
+
+                          <div className='select-invalid-feedback'>
+                            {errors.country ||
+                              (!isSubmitting &&
+                                updateCurrentCustomerData.error['error'][
                                 'country'
-                              ])}
+                                ])}
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                  <div className='formContainerOfTwoItem'>
-                    {cityList.length > 0 && (
-                      <div>
-                        <label className='formLabel'>City</label>
-                        <Select
-                          value={selectedCityValue}
-                          onChange={(value) => handleSelectCityChange(value)}
-                          options={cityList.map((city) => ({
-                            value: city['name'],
-                            label: city['name'],
-                          }))}
-                        />
-                        <div className='select-invalid-feedback'>
-                          {errors.city ||
-                            (!isSubmitting &&
-                              updateCurrentCustomerData.error['error']['city'])}
+                      )}
+                    </div>
+                    <div className='formContainerOfTwoItem'>
+                      {cityList.length > 0 && (
+                        <div>
+                          <label className='formLabel'>City</label>
+                          <Select
+                            value={selectedCityValue}
+
+                            onChange={(value) => handleSelectCityChange(value)}
+                            options={cityList.map((city) => ({
+                              value: city['name'],
+                              label: city['name'],
+                            }))}
+                          />
+                          <div className='select-invalid-feedback'>
+                            {errors.city ||
+                              (!isSubmitting &&
+                                updateCurrentCustomerData.error['error']['city'])}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <TextFeildGroup
-                  label='Address'
-                  name='address1'
-                  placeholder='Address line 1'
-                  type='text'
-                  value={values.address1}
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldTouched('address1');
-                  }}
-                  errors={
-                    (touched.address1 && errors.address1) ||
-                    (!isSubmitting &&
-                      updateCurrentCustomerData.error['error']['address1'])
-                  }
-                />
-                <TextFeildGroup
-                  name='address2'
-                  placeholder='Address line 2'
-                  type='text'
-                  value={values.address2}
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldTouched('address2');
-                  }}
-                  errors={
-                    (touched.address2 && errors.address2) ||
-                    (!isSubmitting &&
-                      updateCurrentCustomerData.error['error']['address2'])
-                  }
-                />
-
-                <div
-                  style={{
-                    width: '100px',
-                  }}
-                >
-                  <AuthButton
-                    onclick={handleSubmit}
-                    disabled={
-                      !isValid ||
-                      !values.firstName ||
-                      !values.lastName ||
-                      !values.address1
+                  <TextFeildGroup
+                    label='Address'
+                    name='address1'
+                    placeholder='Address line 1'
+                    type='text'
+                    value={values.address1}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched('address1');
+                    }}
+                    errors={
+                      (touched.address1 && errors.address1) ||
+                      (!isSubmitting &&
+                        updateCurrentCustomerData.error['error']['address1'])
                     }
+                  />
+                  <TextFeildGroup
+                    name='address2'
+                    placeholder='Address line 2'
+                    type='text'
+                    value={values.address2}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched('address2');
+                    }}
+                    errors={
+                      (touched.address2 && errors.address2) ||
+                      (!isSubmitting &&
+                        updateCurrentCustomerData.error['error']['address2'])
+                    }
+                  />
+
+                  <div
+                    style={{
+                      width: '100px',
+                    }}
                   >
-                    {isSubmitting ? 'Saving...' : 'Save'}
-                  </AuthButton>
-                </div>
-              </>
-            )}
+                    <AuthButton
+                      onclick={handleSubmit}
+                      disabled={
+                        !isValid ||
+                        !values.firstName ||
+                        !values.lastName ||
+                        !values.address1
+                      }
+                    >
+                      {isSubmitting ? 'Saving...' : 'Save'}
+                    </AuthButton>
+                  </div>
+                </>
+              )}
           </Formik>
         )}
 
@@ -539,55 +559,55 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
               handleBlur,
               setFieldTouched,
             }) => (
-              <>
-                <TextFeildGroup
-                  label='Phone'
-                  name='phone'
-                  placeholder='Enter your phone'
-                  type='text'
-                  value={values.phone}
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldTouched('phone');
-                  }}
-                  errors={
-                    (touched.phone && errors.phone) ||
-                    (!isSubmitting &&
-                      updateCurrentCustomerData.error['error']['phone'])
-                  }
-                />
+                <>
+                  <TextFeildGroup
+                    label='Phone'
+                    name='phone'
+                    placeholder='Enter your phone'
+                    type='text'
+                    value={values.phone}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched('phone');
+                    }}
+                    errors={
+                      (touched.phone && errors.phone) ||
+                      (!isSubmitting &&
+                        updateCurrentCustomerData.error['error']['phone'])
+                    }
+                  />
 
-                <TextFeildGroup
-                  label='Email'
-                  name='email'
-                  placeholder='Enter your email'
-                  type='text'
-                  value={values.email}
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldTouched('email');
-                  }}
-                  errors={
-                    (touched.email && errors.email) ||
-                    (!isSubmitting &&
-                      updateCurrentCustomerData.error['error']['email'])
-                  }
-                />
+                  <TextFeildGroup
+                    label='Email'
+                    name='email'
+                    placeholder='Enter your email'
+                    type='text'
+                    value={values.email}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched('email');
+                    }}
+                    errors={
+                      (touched.email && errors.email) ||
+                      (!isSubmitting &&
+                        updateCurrentCustomerData.error['error']['email'])
+                    }
+                  />
 
-                <div
-                  style={{
-                    width: '100px',
-                  }}
-                >
-                  <AuthButton
-                    onclick={handleSubmit}
-                    disabled={!isValid || !values.phone}
+                  <div
+                    style={{
+                      width: '100px',
+                    }}
                   >
-                    {isSubmitting ? 'Saving...' : 'Save'}
-                  </AuthButton>
-                </div>
-              </>
-            )}
+                    <AuthButton
+                      onclick={handleSubmit}
+                      disabled={!isValid || !values.phone}
+                    >
+                      {isSubmitting ? 'Saving...' : 'Save'}
+                    </AuthButton>
+                  </div>
+                </>
+              )}
           </Formik>
         )}
 
@@ -647,77 +667,77 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
             handleBlur,
             setFieldTouched,
           }) => (
-            <>
-              <TextFeildGroup
-                label='Old Password'
-                name='password'
-                placeholder='old password'
-                type='password'
-                value={values.password}
-                onChange={(e) => {
-                  handleChange(e);
-                  setFieldTouched('password');
-                }}
-                errors={
-                  (touched.password && errors.password) ||
-                  (!isSubmitting &&
-                    changePasswordState.error['error']['password'])
-                }
-              />
-
-              <TextFeildGroup
-                label='New Password'
-                name='newPassword'
-                placeholder='New Password'
-                type='password'
-                value={values.newPassword}
-                onChange={(e) => {
-                  handleChange(e);
-                  setFieldTouched('newPassword');
-                }}
-                errors={
-                  (touched.newPassword && errors.newPassword) ||
-                  (!isSubmitting &&
-                    changePasswordState.error['error']['newPassword'])
-                }
-              />
-
-              <TextFeildGroup
-                label='Confirm New Password'
-                name='newPassword2'
-                placeholder='Confirm New Password'
-                type='password'
-                value={values.newPassword2}
-                onChange={(e) => {
-                  handleChange(e);
-                  setFieldTouched('newPassword2');
-                }}
-                errors={
-                  (touched.newPassword2 && errors.newPassword2) ||
-                  (!isSubmitting &&
-                    changePasswordState.error['error']['newPassword2'])
-                }
-              />
-
-              <div
-                style={{
-                  width: '100px',
-                }}
-              >
-                <AuthButton
-                  onclick={handleSubmit}
-                  disabled={
-                    !isValid ||
-                    !values.password ||
-                    !values.newPassword ||
-                    !values.newPassword2
+              <>
+                <TextFeildGroup
+                  label='Old Password'
+                  name='password'
+                  placeholder='old password'
+                  type='password'
+                  value={values.password}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldTouched('password');
+                  }}
+                  errors={
+                    (touched.password && errors.password) ||
+                    (!isSubmitting &&
+                      changePasswordState.error['error']['password'])
                   }
+                />
+
+                <TextFeildGroup
+                  label='New Password'
+                  name='newPassword'
+                  placeholder='New Password'
+                  type='password'
+                  value={values.newPassword}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldTouched('newPassword');
+                  }}
+                  errors={
+                    (touched.newPassword && errors.newPassword) ||
+                    (!isSubmitting &&
+                      changePasswordState.error['error']['newPassword'])
+                  }
+                />
+
+                <TextFeildGroup
+                  label='Confirm New Password'
+                  name='newPassword2'
+                  placeholder='Confirm New Password'
+                  type='password'
+                  value={values.newPassword2}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldTouched('newPassword2');
+                  }}
+                  errors={
+                    (touched.newPassword2 && errors.newPassword2) ||
+                    (!isSubmitting &&
+                      changePasswordState.error['error']['newPassword2'])
+                  }
+                />
+
+                <div
+                  style={{
+                    width: '100px',
+                  }}
                 >
-                  {isSubmitting ? 'Saving...' : 'Save'}
-                </AuthButton>
-              </div>
-            </>
-          )}
+                  <AuthButton
+                    onclick={handleSubmit}
+                    disabled={
+                      !isValid ||
+                      !values.password ||
+                      !values.newPassword ||
+                      !values.newPassword2
+                    }
+                  >
+                    {isSubmitting ? 'Saving...' : 'Save'}
+                  </AuthButton>
+                </div>
+              </>
+            )}
         </Formik>
       )}
     </div>

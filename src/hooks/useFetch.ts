@@ -15,6 +15,7 @@ interface IState {
   readonly isLoading: boolean;
   readonly error: object;
   readonly data: TInitialData;
+  readonly done: boolean;
 }
 
 const connector = new Connector();
@@ -27,14 +28,16 @@ const dataFetchReducer = (state: IState, action: Actions) => {
         isLoading: true,
         error: {
           isError: false,
-          error: {}
-        }
+          error: {},
+        },
+        done: false,
       };
     case 'FETCH_SUCCESS':
       return {
         ...state,
         isLoading: false,
-        data: action.payload
+        data: action.payload,
+        done: true,
       };
     case 'FETCH_FAILURE':
       return {
@@ -42,15 +45,16 @@ const dataFetchReducer = (state: IState, action: Actions) => {
         isLoading: false,
         error: {
           isError: true,
-          error: action.payload
-        }
+          error: action.payload,
+          done: true,
+        },
       };
     default:
       throw new Error();
   }
 };
 
-const useGetData = (
+const useFetch = (
   dependencies: Tdependecies = [],
   initialData: TInitialData,
   item: TItem,
@@ -61,9 +65,10 @@ const useGetData = (
     isLoading: false,
     error: {
       isError: false,
-      error: {}
+      error: {},
     },
-    data: initialData
+    data: initialData,
+    done: false,
   };
   const [state, dispatch] = useReducer(dataFetchReducer, initialState);
 
@@ -92,4 +97,4 @@ const useGetData = (
   return state;
 };
 
-export default useGetData;
+export default useFetch;

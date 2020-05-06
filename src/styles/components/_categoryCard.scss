@@ -121,7 +121,23 @@
   }
 }
 
-@media screen and (max-width: 335px) {
+
+
+@media screen and (max-width: 360px) {
+  .category-card {
+    min-width: 130px;
+    max-width: 130px;
+    border-radius: 4px;
+  }
+
+  .category-top {
+    background: #fff;
+    height: 130px;
+  }
+}
+
+
+@media screen and (max-width: 300px) {
   .category-card {
     min-width: 100%;
     max-width: 100%;
@@ -130,6 +146,10 @@
 
   .category-top {
     background: #fff;
-    height: 190px;
+    height: 150px;
+  }
+
+  .category-top img {
+    object-fit: cover;
   }
 }

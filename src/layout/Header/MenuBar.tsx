@@ -26,7 +26,15 @@ const MenuBar = ({ isShowMenuBar, handleToggleMenuBar }: Props) => {
             navLinksState.data.map((item) => {
               return (
                 <li key={item.target}>
-                  <Link to={item['target'] || '/'}>{item['text']}</Link>
+                  {urlToString(item['target']).includes(
+                    urlToString(config.baseURL2)
+                  ) ? (
+                    <Link to={item['target'].replace(config.baseURL2, '')}>
+                      {item['text']}
+                    </Link>
+                  ) : (
+                    <a href={item['target']}>{item['text']}</a>
+                  )}
                 </li>
               );
             })}

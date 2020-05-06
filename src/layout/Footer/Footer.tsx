@@ -137,7 +137,15 @@ const Footer = ({ addItemToCache, cache }: Props) => {
                       key={index}
                       className='menu-item menu-item-type-custom menu-item-object-custom menu-item-244'
                     >
-                      <Link to={item['target'] || '/'}>{item['name']}</Link>
+                      {urlToString(item['target']).includes(
+                        urlToString(config.baseURL2)
+                      ) ? (
+                        <Link to={item['target'].replace(config.baseURL2, '')}>
+                          {item['name']}
+                        </Link>
+                      ) : (
+                        <a href={item['target']}>{item['name']}</a>
+                      )}
                     </li>
                   );
                 })}
@@ -157,7 +165,15 @@ const Footer = ({ addItemToCache, cache }: Props) => {
                       key={index}
                       className='menu-item menu-item-type-custom menu-item-object-custom menu-item-244'
                     >
-                      <Link to={item['target'] || '/'}>{item['name']}</Link>
+                      {urlToString(item['target']).includes(
+                        urlToString(config.baseURL2)
+                      ) ? (
+                        <Link to={item['target'].replace(config.baseURL2, '')}>
+                          {item['name']}
+                        </Link>
+                      ) : (
+                        <a href={item['target']}>{item['name']}</a>
+                      )}
                     </li>
                   );
                 })}
@@ -177,7 +193,15 @@ const Footer = ({ addItemToCache, cache }: Props) => {
                       key={index}
                       className='menu-item menu-item-type-custom menu-item-object-custom menu-item-244'
                     >
-                      <Link to={item['target'] || '/'}>{item['name']}</Link>
+                      {urlToString(item['target']).includes(
+                        urlToString(config.baseURL2)
+                      ) ? (
+                        <Link to={item['target'].replace(config.baseURL2, '')}>
+                          {item['name']}
+                        </Link>
+                      ) : (
+                        <a href={item['target']}>{item['name']}</a>
+                      )}
                     </li>
                   );
                 })}

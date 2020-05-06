@@ -111,7 +111,25 @@ const CartOverLayCartItem = ({
         >
           {name}
         </h4>
-        <h5>৳{numberWithCommas(price)}</h5>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center'
+
+        }}>
+          <h5>৳{numberWithCommas(price)}</h5>
+          <span
+            style={{
+              display: 'inline-block',
+              background: '#eee',
+              padding: '3px 3px',
+              borderRadius: 1,
+              fontSize: '13px',
+              marginLeft: '5px'
+            }}
+          >
+            15 kg
+          </span>
+        </div>
         <span className='remove-item' onClick={handleRemoveFromCart}>
           <i className='fa fa-trash'></i>
         </span>

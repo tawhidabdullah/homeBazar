@@ -103,3 +103,33 @@ export const getDeliveryChargeTotal = (delivery, totalPrice) => {
 
   return deliveryCharge;
 };
+
+export const deleteCity = async () => {
+  await localStorage.removeItem('city');
+}
+
+
+export const saveCity = async (city) => {
+  if (city) {
+    const preCity = await localStorage.getItem('city');
+    if (preCity) {
+      await deleteCity();
+      await localStorage.setItem('city', city);
+    }
+    else {
+      await localStorage.setItem('city', city);
+    }
+
+  }
+}
+
+
+export const getCity = async () => {
+  const city = await localStorage.getItem('city');
+  if (!city) {
+    return false;
+  }
+  return city;
+}
+
+

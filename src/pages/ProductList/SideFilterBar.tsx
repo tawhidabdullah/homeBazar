@@ -1,13 +1,12 @@
 import React from 'react';
 import Select from 'react-select';
-import { NavLink } from 'react-router-dom';
 
 import arrow from '../../assets/arrow.png';
 
-const Arrow = ({ className, htmlFor }) => {
+const Arrow = ({ className, htmlFor, handleSelectCategory, catId }) => {
   return (
-    <label htmlFor={htmlFor}>
-      <img src={arrow} alt='Hero' className={className} />
+    <label htmlFor={htmlFor} >
+      <img src={arrow} alt='arrow' className={className} />
     </label>
   );
 };
@@ -179,194 +178,196 @@ const SideFilterBar = ({
             </div>
           </>
         ) : (
-          <>
-            {categories && categories.length > 0 && (
-              <div className='category-block'>
-                <div className='product-detail'>
-                  <h2
-                    className='category-title'
-                    style={{
-                      marginBottom: '10px',
-                    }}
-                  >
-                    Categories
+            <>
+              {categories && categories.length > 0 && (
+                <div className='category-block'>
+                  <div className='product-detail'>
+                    <h2
+                      className='category-title'
+                      style={{
+                        marginBottom: '10px',
+                      }}
+                    >
+                      Categories
                   </h2>
 
-                  <div className='documentation__sidenav-multi-level'>
-                    <div className='documentation__sidenav-item'>
-                      <ul>
-                        {categories.map((cat, i) => {
-                          return (
-                            <li key={i}>
-                              <div className='sub-item'>
-                                {cat.subCategory &&
-                                  cat.subCategory.length > 0 && (
-                                    <input
-                                      type='checkbox'
-                                      id={cat.name}
-                                      className={
-                                        cat[`is${cat.id}`]
-                                          ? 'sub-item-arrow-checkbox active'
-                                          : 'sub-item-arrow-checkbox'
-                                      }
-                                    />
-                                  )}
-
-                                <div className='sub-item-arrow'>
-                                  <label
-                                    onClick={() => {
-                                      handleSelectCategory(cat.id);
-                                    }}
-                                    htmlFor={cat.name}
-                                    className={
-                                      cat[`is${cat.id}`] && !activeSubCategoryId
-                                        ? 'documentation__sidenav-label active'
-                                        : 'documentation__sidenav-label'
-                                    }
-                                  >
-                                    {cat.name}
-                                  </label>
+                    <div className='documentation__sidenav-multi-level'>
+                      <div className='documentation__sidenav-item'>
+                        <ul>
+                          {categories.map((cat, i) => {
+                            return (
+                              <li key={i}>
+                                <div className='sub-item'>
                                   {cat.subCategory &&
                                     cat.subCategory.length > 0 && (
-                                      <Arrow
-                                        htmlFor={cat.name}
-                                        className='documentation__sidenav-item-arrow'
+                                      <input
+                                        type='checkbox'
+                                        id={cat.id}
+                                        className={
+                                          cat[`is${cat.id}`]
+                                            ? 'sub-item-arrow-checkbox active'
+                                            : 'sub-item-arrow-checkbox'
+                                        }
                                       />
                                     )}
-                                </div>
-                                {cat.subCategory && cat.subCategory.length > 0 && (
-                                  <ul className='sub-item-list'>
-                                    {cat.subCategory.map((subCat, index) => {
-                                      return (
-                                        <li
-                                          key={index}
-                                          onClick={() => {
-                                            history.push({
-                                              pathname: `/productList/${subCat['id']}`,
-                                              state: { isCategory: true },
-                                            });
-                                            handleUiSelectSubCategory &&
-                                              handleUiSelectSubCategory(
-                                                subCat['id']
-                                              );
-                                          }}
-                                        >
-                                          <a
-                                            className={
-                                              subCat['id'] ===
-                                              activeSubCategoryId
-                                                ? 'subCatLink active'
-                                                : 'subCatLink'
-                                            }
+
+                                  <div className='sub-item-arrow'>
+                                    <label
+                                      onClick={() => {
+                                        handleSelectCategory(cat.id);
+                                      }}
+                                      htmlFor={cat.id}
+                                      className={
+                                        cat[`is${cat.id}`] && !activeSubCategoryId
+                                          ? 'documentation__sidenav-label active'
+                                          : 'documentation__sidenav-label'
+                                      }
+                                    >
+                                      {cat.name}
+                                    </label>
+                                    {cat.subCategory &&
+                                      cat.subCategory.length > 0 && (
+                                        <Arrow
+                                          htmlFor={cat.id}
+                                          handleSelectCategory={handleSelectCategory}
+                                          catId={cat.id}
+                                          className='documentation__sidenav-item-arrow'
+                                        />
+                                      )}
+                                  </div>
+                                  {cat.subCategory && cat.subCategory.length > 0 && (
+                                    <ul className='sub-item-list'>
+                                      {cat.subCategory.map((subCat, index) => {
+                                        return (
+                                          <li
+                                            key={index}
+                                            onClick={() => {
+                                              history.push({
+                                                pathname: `/productList/${subCat['id']}`,
+                                                state: { isCategory: true },
+                                              });
+                                              handleUiSelectSubCategory &&
+                                                handleUiSelectSubCategory(
+                                                  subCat['id']
+                                                );
+                                            }}
                                           >
-                                            {subCat.name}
-                                          </a>
-                                        </li>
-                                      );
-                                    })}
-                                  </ul>
-                                )}
-                              </div>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {tags && tags.length > 0 && (
-              <div className='category-block'>
-                <div className='product-detail'>
-                  <h2
-                    className='category-title'
-                    style={{
-                      marginBottom: '10px',
-                    }}
-                  >
-                    Tags
-                  </h2>
-                  <div className='documentation__sidenav-multi-level'>
-                    <div className='documentation__sidenav-item'>
-                      <ul>
-                        {tags.map((tag, i) => {
-                          return (
-                            <li key={i}>
-                              <div className='sub-item'>
-                                <div className='sub-item-arrow'>
-                                  <label
-                                    onClick={() => {
-                                      handleSelectTag(tag.id);
-                                    }}
-                                    htmlFor={tag.name}
-                                    className={
-                                      tag[`is${tag.id}`]
-                                        ? 'documentation__sidenav-label active'
-                                        : 'documentation__sidenav-label'
-                                    }
-                                  >
-                                    {tag.name}
-                                  </label>
+                                            <a
+                                              className={
+                                                subCat['id'] ===
+                                                  activeSubCategoryId
+                                                  ? 'subCatLink active'
+                                                  : 'subCatLink'
+                                              }
+                                            >
+                                              {subCat.name}
+                                            </a>
+                                          </li>
+                                        );
+                                      })}
+                                    </ul>
+                                  )}
                                 </div>
-                              </div>
-                            </li>
-                          );
-                        })}
-                      </ul>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {brands && brands.length > 0 && (
-              <div className='category-block'>
-                <div className='product-detail'>
-                  <h2
-                    className='category-title'
-                    style={{
-                      marginBottom: '10px',
-                    }}
-                  >
-                    Brands
+              {tags && tags.length > 0 && (
+                <div className='category-block'>
+                  <div className='product-detail'>
+                    <h2
+                      className='category-title'
+                      style={{
+                        marginBottom: '10px',
+                      }}
+                    >
+                      Tags
+                  </h2>
+                    <div className='documentation__sidenav-multi-level'>
+                      <div className='documentation__sidenav-item'>
+                        <ul>
+                          {tags.map((tag, i) => {
+                            return (
+                              <li key={i}>
+                                <div className='sub-item'>
+                                  <div className='sub-item-arrow'>
+                                    <label
+                                      onClick={() => {
+                                        handleSelectTag(tag.id);
+                                      }}
+                                      htmlFor={tag.name}
+                                      className={
+                                        tag[`is${tag.id}`]
+                                          ? 'documentation__sidenav-label active'
+                                          : 'documentation__sidenav-label'
+                                      }
+                                    >
+                                      {tag.name}
+                                    </label>
+                                  </div>
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {brands && brands.length > 0 && (
+                <div className='category-block'>
+                  <div className='product-detail'>
+                    <h2
+                      className='category-title'
+                      style={{
+                        marginBottom: '10px',
+                      }}
+                    >
+                      Brands
                   </h2>
 
-                  <div className='documentation__sidenav-multi-level'>
-                    <div className='documentation__sidenav-item'>
-                      <ul>
-                        {brands.map((brand, i) => {
-                          return (
-                            <li key={i}>
-                              <div className='sub-item'>
-                                <div className='sub-item-arrow'>
-                                  <label
-                                    onClick={() => {
-                                      handleSelectBrand(brand.id);
-                                    }}
-                                    htmlFor={brand.name}
-                                    className={
-                                      brand[`is${brand.id}`]
-                                        ? 'documentation__sidenav-label active'
-                                        : 'documentation__sidenav-label'
-                                    }
-                                  >
-                                    {brand.name}
-                                  </label>
+                    <div className='documentation__sidenav-multi-level'>
+                      <div className='documentation__sidenav-item'>
+                        <ul>
+                          {brands.map((brand, i) => {
+                            return (
+                              <li key={i}>
+                                <div className='sub-item'>
+                                  <div className='sub-item-arrow'>
+                                    <label
+                                      onClick={() => {
+                                        handleSelectBrand(brand.id);
+                                      }}
+                                      htmlFor={brand.name}
+                                      className={
+                                        brand[`is${brand.id}`]
+                                          ? 'documentation__sidenav-label active'
+                                          : 'documentation__sidenav-label'
+                                      }
+                                    >
+                                      {brand.name}
+                                    </label>
+                                  </div>
                                 </div>
-                              </div>
-                            </li>
-                          );
-                        })}
-                      </ul>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </>
-        )}
+              )}
+            </>
+          )}
       </div>
     </div>
   );

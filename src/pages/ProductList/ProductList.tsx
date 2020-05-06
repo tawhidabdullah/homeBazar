@@ -476,7 +476,7 @@ const ProductList = ({
       setIsLoading(true);
       let cat = [];
 
-      if (!(categories && categories.length > 0)) {
+      if (!(categoryListState.done)) {
         // fetch and set the categories is they haven't been seted yet
         // @ts-ignore
         cat = await getCategories();
@@ -484,7 +484,7 @@ const ProductList = ({
       }
 
       let t = [];
-      if (!(tags && tags.length > 0)) {
+      if (!(tagListState.done)) {
         // fetch and set the tags is they haven't been seted yet
 
         // @ts-ignore
@@ -493,7 +493,7 @@ const ProductList = ({
       }
 
       let b = [];
-      if (!(brands && brands.length > 0)) {
+      if (!(brandListState.done)) {
         // fetch and set the brands is they haven't been seted yet
 
         // @ts-ignore

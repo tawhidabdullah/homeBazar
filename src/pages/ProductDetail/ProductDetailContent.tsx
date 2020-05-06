@@ -117,6 +117,7 @@ const ProductDetailContent = ({
           id: addToCartRes['id'],
           url: addToCartRes['url'],
           cartKey: addToCartRes['cartKey'],
+          unit: unit
         };
         addToCart && addToCart(product, addToCartRes['quantity']);
         alert.success('Product Added To The Cart');
@@ -204,8 +205,8 @@ const ProductDetailContent = ({
                   ৳{numberWithCommas(offerPrice)}
                 </h2>
               ) : (
-                ''
-              )}
+                  ''
+                )}
               <h2
                 className={
                   offerPrice && !parseInt(offerPrice)
@@ -278,61 +279,64 @@ const ProductDetailContent = ({
                 <h3>This product is out of stock</h3>
               </div>
             ) : (
-              <>
-                <a
-                  className='action-button'
-                  onClick={handleOnClickAddToCart}
-                  href='##'
-                >
-                  {!addToCartState.isLoading &&
-                    !removeFromCartState.isLoading && (
-                      <>
-                        {(checkIfItemExistsInCartItemById(cartItems, id) && (
-                          <span className='product-bottom-iconText'>
-                            🐎 Added
-                          </span>
-                        )) || (
-                          <span className='product-bottom-iconText'>
-                            🐎 Add to cart
-                          </span>
-                        )}
-                      </>
-                    )}
-
-                  {addToCartState.isLoading && '🐎 Adding...'}
-                  {removeFromCartState.isLoading && '🐎 Removing...'}
-                </a>
-
-                {session.isAuthenticated && (
+                <>
                   <a
                     className='action-button'
-                    onClick={handleOnClickToWishlist}
+                    onClick={handleOnClickAddToCart}
                     href='##'
                   >
-                    {!addWishlistState.isLoading &&
-                      !removeFromWishlistState.isLoading && (
+                    {!addToCartState.isLoading &&
+                      !removeFromCartState.isLoading && (
                         <>
-                          {(checkIfTheWishListExistsInArrayById(
-                            wishList,
-                            id
-                          ) && (
+                          {(checkIfItemExistsInCartItemById(cartItems, id) && (
                             <span className='product-bottom-iconText'>
-                              ❤️ Added
+                              🐎 Added
                             </span>
                           )) || (
-                            <span className='product-bottom-iconText'>
-                              ❤️ Add to Wishlist
-                            </span>
-                          )}
+                              <span className='product-bottom-iconText'>
+                                🐎 Add to cart
+                              </span>
+                            )}
                         </>
                       )}
 
-                    {addWishlistState.isLoading && '🐎 Adding...'}
-                    {removeFromWishlistState.isLoading && '🐎 Removing...'}
+                    {addToCartState.isLoading && '🐎 Adding...'}
+                    {removeFromCartState.isLoading && '🐎 Removing...'}
                   </a>
-                )}
-              </>
-            )}
+
+                  {session.isAuthenticated && (
+                    <a
+                      className='action-button'
+                      onClick={handleOnClickToWishlist}
+                      href='##'
+                      style={{
+                        marginLeft: '20px'
+                      }}
+                    >
+                      {!addWishlistState.isLoading &&
+                        !removeFromWishlistState.isLoading && (
+                          <>
+                            {(checkIfTheWishListExistsInArrayById(
+                              wishList,
+                              id
+                            ) && (
+                                <span className='product-bottom-iconText'>
+                                  ❤️ Added
+                                </span>
+                              )) || (
+                                <span className='product-bottom-iconText'>
+                                  ❤️ Add to Wishlist
+                                </span>
+                              )}
+                          </>
+                        )}
+
+                      {addWishlistState.isLoading && '🐎 Adding...'}
+                      {removeFromWishlistState.isLoading && '🐎 Removing...'}
+                    </a>
+                  )}
+                </>
+              )}
           </div>
         </div>
       </div>

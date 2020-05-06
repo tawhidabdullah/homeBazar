@@ -18,6 +18,7 @@ const ProductDetail = (props: Props) => {
   const productName = props.match.params && props.match.params['productName'];
   const [productDetail, setProductDetail] = useState({});
   const [relatedProductId, setRelatedProductId] = useState('');
+  const [fethedProductFromCache, setFethedProductFromCache] = useState(false);
 
   const [windowWidth, setWindowWidth] = useState(0);
   const getWindowWidth = () => {
@@ -69,6 +70,7 @@ const ProductDetail = (props: Props) => {
         const productDetail =
           props['cache'][`productDetail/${categoryName}/${productName}`];
         setProductDetail(productDetail);
+        setFethedProductFromCache(true);
 
         // @ts-ignore
         const product = productDetail;
@@ -76,6 +78,8 @@ const ProductDetail = (props: Props) => {
         const categoryId = product.category && product.category[0].id;
         setRelatedProductId(categoryId);
       } else {
+        setFethedProductFromCache(false);
+
         // @ts-ignore //
         const productDetail = await handleProductDetailFetch({
           urlOptions: {
@@ -89,13 +93,7 @@ const ProductDetail = (props: Props) => {
         // @ts-ignore
         if (productDetail && Object.keys(productDetail).length > 0) {
           console.log('fuckingURl', productDetail['url']);
-          await handleForAnalyticsFetch({
-            urlOptions: {
-              params: {
-                url: productDetail['url'].toString(),
-              },
-            },
-          });
+
 
           props.addItemToCache({
             [`productDetail/${categoryName}/${productName}`]: productDetail,
@@ -107,6 +105,14 @@ const ProductDetail = (props: Props) => {
           // @ts-ignore
           const categoryId = product.category && product.category[0].id;
           setRelatedProductId(categoryId);
+
+          await handleForAnalyticsFetch({
+            urlOptions: {
+              params: {
+                url: productDetail['url'].toString(),
+              },
+            },
+          });
         }
       }
     };
@@ -117,62 +123,131 @@ const ProductDetail = (props: Props) => {
 
   return (
     <>
-      {!productDetailState.isLoading &&
-      Object.keys(productDetail).length > 0 ? (
-        <div className='singleProduct'>
-          <div className='container-fluid singleProduct__container'>
-            <div className='row productDetailInfo'>
-              <ProductDetailContent
-                // @ts-ignore
-                product={productDetail}
-              />
-            </div>
-            <div className='row relatedProductsContainer'>
-              <div className='col-md-12 '>
-                {(relatedProductId && (
-                  <div className='relativeProductsContainer'>
-                    <div className='row product-slider-section-heading'>
-                      <div className='col-md-12'>
-                        <div className='block-title'>
-                          <span>Related products</span>
-                        </div>
-                      </div>
-                    </div>
-                    <Products
-                      windowWidth={windowWidth}
-                      categoryId={relatedProductId}
-                      cache={props.cache}
-                      addItemToCache={props.addItemToCache}
+
+      {!fethedProductFromCache && (
+        <>
+          {!productDetailState.isLoading &&
+            productDetailState.done &&
+            Object.keys(productDetail).length > 0 && (
+              <div className='singleProduct'>
+                <div className='container-fluid singleProduct__container'>
+                  <div className='row productDetailInfo'>
+                    <ProductDetailContent
+                      // @ts-ignore
+                      product={productDetail}
                     />
                   </div>
-                )) ||
-                  ''}
+                  <div className='row relatedProductsContainer'>
+                    <div className='col-md-12 '>
+                      {(relatedProductId && (
+                        <div className='relativeProductsContainer'>
+                          <div className='row product-slider-section-heading'>
+                            <div className='col-md-12'>
+                              <div className='block-title'>
+                                <span>Related products</span>
+                              </div>
+                            </div>
+                          </div>
+                          <Products
+                            windowWidth={windowWidth}
+                            categoryId={relatedProductId}
+                            cache={props.cache}
+                            addItemToCache={props.addItemToCache}
+                          />
+                        </div>
+                      )) ||
+                        ''}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        !productDetailState.isLoading && (
-          <div
-            style={{
-              textAlign: 'center',
-              minHeight: '200px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <h1
+            )}
+
+          {!productDetailState.isLoading && productDetailState.done && productDetailState.data && !(Object.keys(productDetailState.data).length > 0) && (
+            <div
               style={{
-                fontSize: '20px',
-                fontWeight: 500,
+                textAlign: 'center',
+                minHeight: '200px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
-              Product Not Found
+              <h1
+                style={{
+                  fontSize: '20px',
+                  fontWeight: 500,
+                }}
+              >
+                Product Not Found
             </h1>
-          </div>
-        )
+            </div>
+          )}
+        </>
       )}
+
+
+      {fethedProductFromCache && (
+        <>
+          {
+            Object.keys(productDetail).length > 0 && (
+              <div className='singleProduct'>
+                <div className='container-fluid singleProduct__container'>
+                  <div className='row productDetailInfo'>
+                    <ProductDetailContent
+                      // @ts-ignore
+                      product={productDetail}
+                    />
+                  </div>
+                  <div className='row relatedProductsContainer'>
+                    <div className='col-md-12 '>
+                      {(relatedProductId && (
+                        <div className='relativeProductsContainer'>
+                          <div className='row product-slider-section-heading'>
+                            <div className='col-md-12'>
+                              <div className='block-title'>
+                                <span>Related products</span>
+                              </div>
+                            </div>
+                          </div>
+                          <Products
+                            windowWidth={windowWidth}
+                            categoryId={relatedProductId}
+                            cache={props.cache}
+                            addItemToCache={props.addItemToCache}
+                          />
+                        </div>
+                      )) ||
+                        ''}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          {productDetail && !(Object.keys(productDetail).length > 0) && (
+            <div
+              style={{
+                textAlign: 'center',
+                minHeight: '200px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <h1
+                style={{
+                  fontSize: '20px',
+                  fontWeight: 500,
+                }}
+              >
+                Product Not Found
+            </h1>
+            </div>
+          )}
+        </>
+      )}
+
       {productDetailState.isLoading && <ProductPlaceholder />}
     </>
   );
