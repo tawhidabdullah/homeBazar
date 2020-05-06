@@ -4,11 +4,11 @@ import { useFetch } from '../../hooks';
 import config from '../../config.json';
 import { urlToString } from '../../utils';
 
-interface Props {}
+interface Props { }
 
-const NavItems = ({}: Props) => {
+const NavItems = ({ }: Props) => {
   const navLinksState = useFetch([], [], 'navLinks');
-
+  console.log('nofuck', navLinksState)
   return (
     <>
       {Object.keys(navLinksState.data).length > 0 &&
@@ -18,12 +18,12 @@ const NavItems = ({}: Props) => {
               {urlToString(item['target']).includes(
                 urlToString(config.baseURL2)
               ) ? (
-                <Link to={item['target'].replace(config.baseURL2, '')}>
-                  {item['text']}
-                </Link>
-              ) : (
-                <a href={item['target']}>{item['text']}</a>
-              )}
+                  <Link to={item['target'].replace(config.baseURL2, '')}>
+                    {item['text']}
+                  </Link>
+                ) : (
+                  <a href={item['target']}>{item['text']}</a>
+                )}
             </Fragment>
           );
         })}

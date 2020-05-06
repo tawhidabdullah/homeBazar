@@ -117,7 +117,7 @@ const CartOverLayCartItem = ({
 
         }}>
           <h5>৳{numberWithCommas(price)}</h5>
-          <span
+          {/* <span
             style={{
               display: 'inline-block',
               background: '#eee',
@@ -128,7 +128,7 @@ const CartOverLayCartItem = ({
             }}
           >
             15 kg
-          </span>
+          </span> */}
         </div>
         <span className='remove-item' onClick={handleRemoveFromCart}>
           <i className='fa fa-trash'></i>

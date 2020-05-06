@@ -135,22 +135,22 @@ const Header = ({
           {windowWidth < 600 ? (
             ''
           ) : (
-            <SearchBar
-              history={history}
-              addCategory={addCategory}
-              getCategory={getCategory}
-              category={category}
-            />
-          )}
+              <SearchBar
+                history={history}
+                addCategory={addCategory}
+                getCategory={getCategory}
+                category={category}
+              />
+            )}
 
           {windowWidth < 600 ? (
             ''
           ) : (
-            <CartIcon
-              handleToggleCartBar={handleToggleCartBar}
-              cartLength={cartItems.length}
-            />
-          )}
+              <CartIcon
+                handleToggleCartBar={handleToggleCartBar}
+                cartLength={cartItems.length}
+              />
+            )}
         </div>
       </div>
       {windowWidth < 600 ? (
@@ -161,22 +161,22 @@ const Header = ({
           cartLength={cartItems.length}
         />
       ) : (
-        ''
-      )}
+          ''
+        )}
       {windowWidth < 600 ? (
         ''
       ) : (
-        <div className='navbar'>
-          <div className='navbar-center'>
-            <Menu history={history} category={category} />
+          <div className='navbar'>
+            <div className='navbar-center'>
+              <Menu history={history} category={category} />
 
-            <div className='navbar-center-navItems'>
-              <NavItems />
+              <div className='navbar-center-navItems'>
+                <NavItems />
+              </div>
+              <Hotline />
             </div>
-            <Hotline />
           </div>
-        </div>
-      )}
+        )}
 
       <CartBar
         // @ts-ignore
@@ -190,6 +190,10 @@ const Header = ({
       <MenuBar
         isShowMenuBar={isShowMenuBar}
         handleToggleMenuBar={handleToggleMenuBar}
+        category={category}
+        addCategory={addCategory}
+
+        history={history}
       />
 
       <AuthenticationModal

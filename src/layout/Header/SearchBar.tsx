@@ -7,7 +7,7 @@ interface Props {
   category: any;
 }
 
-const SearchBar = ({ history, getCategory, addCategory, category }: Props) => {
+const SearchBar = ({ history, addCategory, category }: Props) => {
   const categoryState = useFetch([], [], 'categoryList', {
     urlOptions: {
       params: {

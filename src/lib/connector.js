@@ -67,6 +67,7 @@ class Connector {
         throw error;
       }
     } catch (err) {
+
       throw err;
       //TODO: breakdown errors
     }

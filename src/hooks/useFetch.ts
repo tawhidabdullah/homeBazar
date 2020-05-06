@@ -83,6 +83,7 @@ const useFetch = (
           dispatch({ type: 'FETCH_SUCCESS', payload: data });
         }
       } catch (error) {
+        console.log('fuckingError', error);
         if (!didCancel) {
           dispatch({ type: 'FETCH_FAILURE', payload: error });
         }
