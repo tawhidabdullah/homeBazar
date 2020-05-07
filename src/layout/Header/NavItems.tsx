@@ -8,7 +8,6 @@ interface Props { }
 
 const NavItems = ({ }: Props) => {
   const navLinksState = useFetch([], [], 'navLinks');
-  console.log('nofuck', navLinksState)
   return (
     <>
       {Object.keys(navLinksState.data).length > 0 &&

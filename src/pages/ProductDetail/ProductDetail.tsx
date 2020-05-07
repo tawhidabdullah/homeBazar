@@ -92,7 +92,6 @@ const ProductDetail = (props: Props) => {
 
         // @ts-ignore
         if (productDetail && Object.keys(productDetail).length > 0) {
-          console.log('fuckingURl', productDetail['url']);
 
 
           props.addItemToCache({

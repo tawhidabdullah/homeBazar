@@ -866,7 +866,6 @@ const Checkout = ({
   };
 
 
-  console.log('billingDeliveryCharge', billingDeliveryCharge)
 
   return (
     <>
