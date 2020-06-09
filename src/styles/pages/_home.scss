@@ -10,6 +10,7 @@
 .product-slider-section {
   margin: 15px 25px !important;
   background-color: $color-light-back-1;
+
 }
 
 .product-slider-section-heading {
@@ -120,7 +121,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  background-color: #fff;
+  background-color: $color-light-back-1;
 }
 
 @media screen and (max-width: 640px) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
@@ -49,6 +49,12 @@ const ShoppingCart = ({
       clearCart();
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, []);
+
+
   return (
     <>
       <Modal show={show} onHide={handleClose} animation={false}>
@@ -96,8 +102,8 @@ const ShoppingCart = ({
                 </React.Fragment>
               ))
             ) : (
-              <h1 className=' mt-5 text-center text404'>Your cart is Empty</h1>
-            )}
+                <h1 className=' mt-5 text-center text404'>Your cart is Empty</h1>
+              )}
           </div>
 
           <div className='card-footer shoppingCartCardFooter' style={{}}>
@@ -131,17 +137,17 @@ const ShoppingCart = ({
                 </button>
               </>
             ) : (
-              <a
-                href='##'
-                onClick={(e) => {
-                  e.preventDefault();
-                  history.push('/');
-                }}
-                className='btn btn-primary fixedBoostrapButtonTobePrimaryColor'
-              >
-                Go Back and Shopping
-              </a>
-            )}
+                <a
+                  href='##'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    history.push('/');
+                  }}
+                  className='btn btn-primary fixedBoostrapButtonTobePrimaryColor'
+                >
+                  Go Back and Shopping
+                </a>
+              )}
 
             <div className='pull-right' style={{ margin: '10px', flexGrow: 1 }}>
               <div className='pull-right' style={{ margin: '5px' }}>

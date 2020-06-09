@@ -120,6 +120,11 @@ const ProductDetail = (props: Props) => {
     }
   }, [categoryName, productName]);
 
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, []);
+
   return (
     <>
 

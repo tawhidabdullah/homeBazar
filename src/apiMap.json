@@ -8,7 +8,10 @@
       "url": "/api/component/welcome",
       "method": "get"
     },
-
+    "payment": {
+      "url": "/api/component/payment",
+      "method": "get"
+    },
     "hotline": {
       "url": "/api/component/hotline",
       "method": "get"
@@ -45,7 +48,6 @@
       "url": "/api/category?subCategory=isSubCategory",
       "method": "get"
     },
-
     "categoryProducts": {
       "url": "/api/category/:id/product?limit=limitNumber&page=pageNumber&recursive=isRecursive",
       "method": "get"

@@ -40,6 +40,8 @@ class Converter {
     return formatedData;
   }
 
+
+
   /**
    * @public
    * @method categoryProducts convert api data from API to general format based on config server
@@ -507,7 +509,7 @@ class Converter {
         regularPrice: data.price && data.price['regular'],
         offerPrice: data.price && data.price['offer'],
         url: data.url,
-        cover: `${config['baseURL']}${data.cover.medium}`,
+        cover: `${config['baseURL']}${data.cover.original}`,
         availableStock: data.availableStock,
         minimumStock: data.minimumStock,
         unit: data.unit,
@@ -817,6 +819,29 @@ class Converter {
       [];
 
     return convertedData;
+  }
+
+
+  /**
+   * @public
+   * @method payment convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+
+  async payment(data) {
+    const paymentItems = data.items;
+    if (!paymentItems.length > 0) {
+      return paymentItems;
+    }
+
+    const items = paymentItems.map((item) => {
+      return {
+        name: item.name || '',
+        number: item.text || '',
+      };
+    });
+    return items;
   }
 
   /**

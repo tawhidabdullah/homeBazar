@@ -21,21 +21,26 @@ const Dashboard = (props) => {
 
   useEffect(() => {
     const getCheckAndSetCustomerData = async () => {
-      setIsLoading(true);
-      const customerData = await handleCustomerDetailFetch({});
-      // @ts-ignore
-      if (!Object.keys(customerData).length > 0) {
-        props.history.push('/signin');
-        await deleteCity();
+      if (Object.keys(customerDetailState.data).length > 0) {
 
-        props.logout();
-      } else {
-        await saveCity(customerData['city']);
-        if (!props.session.isAuthenticated) {
-          props.login();
-        }
       }
-      setIsLoading(false);
+      else {
+        setIsLoading(true);
+        const customerData = await handleCustomerDetailFetch({});
+        // @ts-ignore
+        if (!Object.keys(customerData).length > 0) {
+          props.history.push('/signin');
+          await deleteCity();
+
+          props.logout();
+        } else {
+          await saveCity(customerData['city']);
+          if (!props.session.isAuthenticated) {
+            props.login();
+          }
+        }
+        setIsLoading(false);
+      }
     };
     getCheckAndSetCustomerData();
   }, [props.session]);
@@ -59,7 +64,7 @@ const Dashboard = (props) => {
 
   return (
     <>
-      {!isLoading && (
+      {!isLoading && customerDetailState.done && (
         <div className='container__of-dashboard'>
           <div className='content'>
             <nav className='sidebar'>

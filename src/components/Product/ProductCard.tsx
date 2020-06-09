@@ -157,7 +157,7 @@ const ProductCard = ({
         </div>}
 
 
-        <div className='product-top-overlay'>
+        <div className='product-top-overlay' onClick={handleOnClickAddToCart}>
 
         </div>
 

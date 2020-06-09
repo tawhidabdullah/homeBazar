@@ -49,9 +49,9 @@ const CheckoutForm = ({
       <div className='formContainerOfTwo'>
         <div className='formContainerOfTwoItem'>
           <TextFeildGroup
-            label='FirstName'
+            label='First name'
             name='shippingFirstName'
-            placeholder='FirstName'
+            placeholder='first name'
             type='text'
             value={values.shippingFirstName}
             onChange={(e) => {
@@ -66,9 +66,9 @@ const CheckoutForm = ({
         </div>
         <div className='formContainerOfTwoItem'>
           <TextFeildGroup
-            label='LastName'
+            label='Last Name'
             name='shippingLastName'
-            placeholder='LastName'
+            placeholder='last name'
             type='text'
             value={values.shippingLastName}
             onChange={(e) => {

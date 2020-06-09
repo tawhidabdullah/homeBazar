@@ -51,13 +51,17 @@ const Home = ({
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, []);
+
   return (
     <>
       {windowWidth < 700 ? (
         ''
       ) : (
-        <TopTags history={history} addTag={addTag} tag={tag} />
-      )}
+          <TopTags history={history} addTag={addTag} tag={tag} />
+        )}
 
       <section className='image-slider-section'>
         <div className='row'>
@@ -100,7 +104,7 @@ export default connect(
   // @ts-ignore
 )(Home);
 
-/* 
+/*
 1. where the fuck is delivery charge????
 
 /productList/:id ei url koitheke anso
@@ -112,7 +116,7 @@ category er product view korle oita url category/:id
 brand view korle brand/:id
 
 
-// nesscessary polishing 
+// nesscessary polishing
 cart page e clear shopping cart dile only locally cart clear hoitese
 
 

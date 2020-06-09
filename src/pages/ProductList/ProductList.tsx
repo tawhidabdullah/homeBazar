@@ -727,6 +727,7 @@ const ProductList = ({
 
     setPageNumberOfCategoryProduct(1);
     setIsNext(true);
+    window.scrollTo(0, 0)
   };
 
   const handleSelectCategory = (categoryId) => {
@@ -740,6 +741,7 @@ const ProductList = ({
     setPageNumberOfCategoryProduct(1);
     setIsNext(true);
     setUiSelectItemActive('category', categoryId);
+    window.scrollTo(0, 0)
   };
 
   const handleSelectTag = (tagId) => {
@@ -751,6 +753,7 @@ const ProductList = ({
     setPageNumberOfTagProduct(1);
     setIsNext(true);
     setUiSelectItemActive('tag', tagId);
+    window.scrollTo(0, 0)
   };
 
   const handleSelectBrand = (brandId) => {
@@ -761,6 +764,7 @@ const ProductList = ({
     setPageNumberOfBrandProduct(1);
     setIsNext(true);
     setUiSelectItemActive('brand', brandId);
+    window.scrollTo(0, 0)
   };
 
   const fetchMoreProductsData = () => {
@@ -778,6 +782,10 @@ const ProductList = ({
       setPageNumberOfBrandProduct((pageNumber) => pageNumber + 1);
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, []);
 
   return (
     <>

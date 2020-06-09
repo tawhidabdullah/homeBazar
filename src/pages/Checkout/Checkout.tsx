@@ -8,17 +8,21 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { RadioGroup, ReversedRadioButton } from 'react-radio-buttons';
 import { cartSelectors } from '../../state/ducks/cart';
-import { sessionOperations } from '../../state/ducks/session';
 import SmallItem from '../../components/SmallItem';
 import { useHandleFetch } from '../../hooks';
 import { Spinner } from '../../components/Loading';
 import { AuthButton } from '../../components/Button';
 import Checkbox from '../../components/Checkbox';
 import { cacheOperations } from '../../state/ducks/cache';
-import { checkIfItemExistsInCache, getDeliveryChargeTotal, getCity, saveCity, deleteCity } from '../../utils';
+import {
+  checkIfItemExistsInCache, getDeliveryChargeTotal,
+  getCity, saveCity,
+  deleteCity, getCustomerData, saveCustomerData,
+  deleteCustomerData
+} from '../../utils';
 import { cartOperations } from '../../state/ducks/cart';
+import { sessionOperations } from '../../state/ducks/session';
 import PaymentForm from './PaymentForm';
-import dictionary from '../../dictionary';
 
 // import checkout component
 import CheckoutSuccessModal from './CheckoutSuccessModal';
@@ -233,7 +237,7 @@ const Checkout = ({
   cache,
   clearCart,
   alert,
-  login
+  login,
 }: Props) => {
   const [paymentMethod, setPaymentMethod] = React.useState('cod');
   const [isModalShown, setIsModalShown] = useState(false);
@@ -309,6 +313,12 @@ const Checkout = ({
     'createOrder'
   );
 
+
+  const [paymentState, handlePaymentFetch] = useHandleFetch(
+    [],
+    'payment'
+  );
+
   const getWindowWidth = () => {
     return Math.max(
       document.documentElement.clientWidth,
@@ -332,6 +342,110 @@ const Checkout = ({
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+
+  useLayoutEffect(() => {
+    handlePaymentFetch({});
+
+  }, []);
+
+
+  const [customerData, setCustomerData] = useState({});
+
+
+
+  useEffect(() => {
+    if (session.isAuthenticated) {
+      const getCutomerDataAsync = async () => {
+        const customerData = await getCustomerData()
+        if (customerData) {
+          setCustomerData(customerData);
+        }
+        else {
+          setCustomerData({})
+        }
+      }
+      getCutomerDataAsync();
+    }
+  }, [session]);
+
+
+  useEffect(() => {
+    if (checkIfItemExistsInCache(`countryList`, cache)) {
+      const countryList = cache['countryList'];
+      setCountryList(countryList);
+
+      // @ts-ignore
+      const countryValue = countryList.length > 0 && countryList.find(country => {
+
+        if (session.isAuthenticated && Object.keys(customerData).length > 0) {
+          return country.name === customerData['country']
+        }
+        else return country.name === 'Bangladesh'
+      });
+
+
+      if (countryValue) {
+        setSelectedCountryValue({
+          label: countryValue['name'],
+          value: countryValue['name']
+        });
+      }
+      else {
+        // @ts-ignore
+        setSelectedCountryValue({
+          label: 'Bangladesh',
+          value: 'Bangladesh'
+
+        });
+      }
+
+
+    } else {
+      const getAndSetCountryList = async () => {
+        const countryList = await handleCountryListFetch({});
+        // @ts-ignore
+        if (countryList) {
+          // @ts-ignore
+          setCountryList(countryList);
+
+          // @ts-ignore
+          const countryValue = countryList.length > 0 && countryList.find(country => {
+
+            if (session.isAuthenticated && Object.keys(customerData).length > 0) {
+              return country.name === customerData['country']
+            }
+            else return country.name === 'Bangladesh'
+          });
+
+          if (countryValue) {
+            setSelectedCountryValue({
+              label: countryValue['name'],
+              value: countryValue['name']
+            });
+          }
+          else {
+            // @ts-ignore
+            setSelectedCountryValue({
+              label: 'Bangladesh',
+              value: 'Bangladesh'
+
+            });
+          }
+          addItemToCache({
+            countryList: countryList,
+          });
+        }
+      };
+
+      getAndSetCountryList();
+    }
+  }, [customerData]);
+
+
+
+
+
+
   useEffect(() => {
     if (
       checkIfItemExistsInCache(`cityList/${selectedCountryValue.value}`, cache)
@@ -339,11 +453,29 @@ const Checkout = ({
       const cityList = cache[`cityList/${selectedCountryValue.value}`];
       setCityList(cityList);
       // @ts-ignore
-      const cityValue = cityList.length > 0 && cityList[0];
-      setSelectedCityValue({
-        value: cityValue['name'],
-        label: cityValue['name'],
+      const cityValue = cityList.length > 0 && cityList.find(city => {
+
+        if (session.isAuthenticated && Object.keys(customerData).length > 0) {
+          return city.name === customerData['city']
+        }
+        else return city.name === 'Mādārīpur'
+
       });
+
+      if (cityValue) {
+        setSelectedCityValue({
+          value: cityValue['name'],
+          label: cityValue['name'],
+        });
+      }
+      else {
+        // @ts-ignore
+        const indexZerocityValue = cityList.length > 0 && cityList[0];
+        setSelectedCityValue({
+          value: indexZerocityValue['name'],
+          label: indexZerocityValue['name'],
+        });
+      }
     } else {
       const getAndSetCityList = async () => {
         const cityList = await handleCityListFetch({
@@ -358,11 +490,29 @@ const Checkout = ({
           // @ts-ignore
           setCityList(cityList);
           // @ts-ignore
-          const cityValue = cityList.length > 0 && cityList[0];
-          setSelectedCityValue({
-            value: cityValue['name'],
-            label: cityValue['name'],
+          const cityValue = cityList.length > 0 && cityList.find(city => {
+
+            if (session.isAuthenticated && Object.keys(customerData).length > 0) {
+              return city.name === customerData['city']
+            }
+            else return city.name === 'Mādārīpur'
+
           });
+
+          if (cityValue) {
+            setSelectedCityValue({
+              value: cityValue['name'],
+              label: cityValue['name'],
+            });
+          }
+          else {
+            // @ts-ignore
+            const indexZerocityValue = cityList.length > 0 && cityList[0];
+            setSelectedCityValue({
+              value: indexZerocityValue['name'],
+              label: indexZerocityValue['name'],
+            });
+          }
           addItemToCache({
             [`cityList/${selectedCountryValue.value}`]: cityList,
           });
@@ -371,7 +521,7 @@ const Checkout = ({
 
       getAndSetCityList();
     }
-  }, [selectedCountryValue]);
+  }, [selectedCountryValue, customerData]);
 
   useEffect(() => {
     if (
@@ -384,11 +534,23 @@ const Checkout = ({
         cache[`shippingCityList/${selectedShippingCountryValue.value}`];
       setShippingCityList(shippingCityList);
       // @ts-ignore
-      const cityValue = shippingCityList.length > 0 && shippingCityList[0];
-      setSelectedShippingCityValue({
-        value: cityValue['name'],
-        label: cityValue['name'],
-      });
+      // @ts-ignore
+      const cityValue = shippingCityList.length > 0 && shippingCityList.find(city => city.name === 'Mādārīpur');
+
+      if (cityValue) {
+        setSelectedShippingCityValue({
+          value: cityValue['name'],
+          label: cityValue['name'],
+        });
+      }
+      else {
+        // @ts-ignore
+        const indexZerocityValue = shippingCityList.length > 0 && shippingCityList[0];
+        setSelectedShippingCityValue({
+          value: indexZerocityValue['name'],
+          label: indexZerocityValue['name'],
+        });
+      }
     } else {
       const getAndSetShippingCityList = async () => {
         const shippingCityList = await handleCityListFetch({
@@ -404,11 +566,22 @@ const Checkout = ({
           setShippingCityList(shippingCityList);
 
           // @ts-ignore
-          const cityValue = shippingCityList.length > 0 && shippingCityList[0];
-          setSelectedShippingCityValue({
-            value: cityValue['name'],
-            label: cityValue['name'],
-          });
+          const cityValue = shippingCityList.length > 0 && shippingCityList.find(city => city.name === 'Mādārīpur');
+
+          if (cityValue) {
+            setSelectedShippingCityValue({
+              value: cityValue['name'],
+              label: cityValue['name'],
+            });
+          }
+          else {
+            // @ts-ignore
+            const indexZerocityValue = shippingCityList.length > 0 && shippingCityList[0];
+            setSelectedShippingCityValue({
+              value: indexZerocityValue['name'],
+              label: indexZerocityValue['name'],
+            });
+          }
 
           addItemToCache({
             [`cityList/${selectedShippingCountryValue.value}`]: shippingCityList,
@@ -519,51 +692,8 @@ const Checkout = ({
     }
   }, [selectedShippingCityValue]);
 
-  useEffect(() => {
-    if (checkIfItemExistsInCache(`countryList`, cache)) {
-      const countryList = cache['countryList'];
-      setCountryList(countryList);
-    } else {
-      const getAndSetCountryList = async () => {
-        const countryList = await handleCountryListFetch({});
-        // @ts-ignore
-        if (countryList) {
-          // @ts-ignore
-          setCountryList(countryList);
-          addItemToCache({
-            countryList: countryList,
-          });
-        }
-      };
 
-      getAndSetCountryList();
-    }
-  }, []);
 
-  useEffect(() => {
-    const getCheckAndSetCustomerData = async () => {
-      setIsAuthLoading(true);
-      const customerData = await handleCustomerDetailFetch({});
-      // @ts-ignore
-      if (!customerData) {
-        // history.push('/signin');
-        await deleteCity();
-
-        logout();
-      }
-      else {
-        await saveCity(customerData['data']);
-        if (!session.isAuthenticated) {
-          login();
-        }
-      }
-
-      setIsAuthLoading(false);
-    };
-    if (!session['isAuthenticated']) {
-      getCheckAndSetCustomerData();
-    }
-  }, [session['isAuthenticated']]);
 
   const handleCloseModal = () => {
     setIsModalShown(false);
@@ -582,17 +712,7 @@ const Checkout = ({
   };
 
   const isValuesValid = (values) => {
-    // if (!isShipToDifferentAddress) {
-    //   if (!values.shippingFirstName ||
-    //     !values.shippingLastName ||
-    //     !values.shippingAddress1 ||
-    //     !values.shippingPhone) {
-    //     return false;
-    //   }
-    //   else {
-    //     return true; 
-    //   }
-    // }
+
 
   }
 
@@ -734,8 +854,33 @@ const Checkout = ({
   const getInitialValues = () => {
     if (session.isAuthenticated) {
       if (paymentMethod === 'cod') {
+        if (customerData && Object.keys(customerData).length > 0) {
+          return {
+            ...codInitialValues,
+            phone: customerData['phone'],
+            email: customerData['email'],
+            firstName: customerData['firstName'],
+            lastName: customerData['lastName'],
+            address1: customerData['address1'],
+            address2: customerData['address2'],
+          }
+        }
         return codInitialValues;
+
       } else {
+        if (customerData && Object.keys(customerData).length > 0) {
+          return {
+            ...otherPaymentMethodIntialValues,
+            phone: customerData['phone'],
+            email: customerData['email'],
+            firstName: customerData['firstName'],
+            lastName: customerData['lastName'],
+            address1: customerData['address1'],
+            address2: customerData['address2'],
+          }
+        }
+
+
         return otherPaymentMethodIntialValues;
       }
     } else {
@@ -812,14 +957,27 @@ const Checkout = ({
         } else if (error['error']['checkoutError']) {
           setServerErrors(error['error']['checkoutError']);
         }
+        else {
+          setServerErrors(error['error']);
+        }
 
         const errors =
           Object.values(error['error']).length > 0
             ? Object.values(error['error'])
             : [];
         errors.forEach((err, i) => {
-          if (i === 0) {
+          if (typeof err === 'string') {
+
             alert.error(err);
+          }
+          else if (typeof err === 'object') {
+            if (err && Object.keys(err).length > 0) {
+              const errs = Object.values(err);
+              errs.forEach(err => {
+                alert.error(err);
+              })
+
+            }
           }
         });
       }
@@ -866,6 +1024,23 @@ const Checkout = ({
   };
 
 
+
+
+
+  const renderNumber = (numberType) => {
+    if (paymentState.data && paymentState.data.length > 0) {
+      const numberItem = paymentState.data.find(item => item['name'].toLowerCase() === numberType);
+      if (numberItem) {
+        return numberItem['number']
+      }
+      return ""
+    }
+    return ""
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, []);
 
   return (
     <>
@@ -1584,11 +1759,11 @@ const Checkout = ({
                                     <h3>To</h3>
                                     <span>
                                       {paymentMethod === 'bkash' &&
-                                        dictionary.bkashNumber}
+                                        renderNumber('bkash')}
                                       {paymentMethod === 'nagad' &&
-                                        dictionary.nagadNumber}
+                                        renderNumber('nagad')}
                                       {paymentMethod === 'rocket' &&
-                                        dictionary.rocketNumber}
+                                        renderNumber('rocket')}
                                     </span>
                                   </div>
 

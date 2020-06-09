@@ -1,4 +1,4 @@
-import { login, logout, initializeSession, setRedirectAfterLogin } from "./actions";
+import { login, logout, initializeSession, setRedirectAfterLogin, addCustomerData } from "./actions";
 
 export {
     login,

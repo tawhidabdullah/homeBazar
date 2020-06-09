@@ -23,7 +23,6 @@ const MenuBar = ({ isShowMenuBar, handleToggleMenuBar, category, addCategory, hi
 
   const [localCategory, setLocalCategory] = useState([]);
 
-
   useLayoutEffect(() => {
     if (category && !(category.length > 0)) {
       const setLocalCategoryAsync = async () => {
@@ -97,13 +96,14 @@ const MenuBar = ({ isShowMenuBar, handleToggleMenuBar, category, addCategory, hi
               {localCategory.map(cat => {
                 return (
                   <li key={cat['id']}>
-                    <a onClick={() => {
-                      handleToggleMenuBar();
-                      history.push({
-                        pathname: `/productList/${cat['id']}`,
-                        state: { isCategory: true },
-                      });
-                    }}>{cat['name']}</a>
+                    <a
+                      onClick={() => {
+                        handleToggleMenuBar();
+                        history.push({
+                          pathname: `/productList/${cat['id']}`,
+                          state: { isCategory: true },
+                        });
+                      }}>{cat['name']}</a>
 
                     {cat['subCategory'] &&
                       // @ts-ignore
@@ -120,9 +120,6 @@ const MenuBar = ({ isShowMenuBar, handleToggleMenuBar, category, addCategory, hi
                           }}
                           className='subCaty'>{subCat['name']}</a>
                       })}
-
-
-
                   </li>
                 )
               })}
@@ -130,9 +127,6 @@ const MenuBar = ({ isShowMenuBar, handleToggleMenuBar, category, addCategory, hi
             </ul>
           </>
         )}
-
-
-
 
       </div>
     </div>

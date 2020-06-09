@@ -6,8 +6,9 @@ import Select from 'react-select';
 import { TextFeildGroup } from '../../../components/Field';
 import { useHandleFetch } from '../../../hooks';
 import { AuthButton } from '../../../components/Button';
-import { checkIfItemExistsInCache, saveCity } from '../../../utils';
+import { checkIfItemExistsInCache, saveCity, saveCustomerData } from '../../../utils';
 import { cacheOperations } from '../../../state/ducks/cache';
+import { sessionOperations } from '../../../state/ducks/session';
 import { withAlert } from 'react-alert';
 
 const personalInfoInitialValues = {
@@ -71,9 +72,10 @@ interface Props {
   cache?: any;
   addItemToCache?: (any) => void;
   alert?: any;
+  session: any;
 }
 
-const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
+const MyAccount = ({ customerDetail, cache, addItemToCache, alert, session }: Props) => {
   const [isPersonalInfoEdit, setIsPersonalInfoEdit] = useState(false);
   const [iscontactInfoEdit, setIsContactInfoEdit] = useState(false);
   const [isChangePasswordEdit, setIsChangePasswordEdit] = useState(false);
@@ -118,12 +120,15 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
     });
 
     if (updatedCustomerRes['status'] === 'ok') {
-      setCustomerData({
+      const newCusomerData = {
         ...updatedValues,
         country: selectedCountryValue.value,
         city: selectedCityValue.value,
-      });
+      };
+      setCustomerData(newCusomerData);
 
+
+      await saveCustomerData(newCusomerData)
       await saveCity(selectedCityValue.value);
 
 
@@ -137,15 +142,7 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
     actions.setSubmitting(false);
   };
 
-  useEffect(() => {
-    if (customerData['city']) {
-      const value = {
-        value: customerData['city'],
-        label: customerData['city'],
-      }
-      setSelectedCityValue(value);
-    }
-  }, [customerData])
+
 
   const handleChangePassword = async (values, actions) => {
     const changePasswordRes = await handleChangePasswordFetch({
@@ -168,6 +165,33 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
     if (checkIfItemExistsInCache(`countryList`, cache)) {
       const countryList = cache['countryList'];
       setCountryList(countryList);
+
+      // @ts-ignore
+      const countryValue = countryList.length > 0 && countryList.find(country => {
+
+        if (session.isAuthenticated && Object.keys(customerData).length > 0) {
+          return country.name === customerData['country']
+        }
+        else return country.name === 'Bangladesh'
+      });
+
+
+      if (countryValue) {
+        setSelectedCountryValue({
+          label: countryValue['name'],
+          value: countryValue['name']
+        });
+      }
+      else {
+        // @ts-ignore
+        setSelectedCountryValue({
+          label: 'Bangladesh',
+          value: 'Bangladesh'
+
+        });
+      }
+
+
     } else {
       const getAndSetCountryList = async () => {
         const countryList = await handleCountryListFetch({});
@@ -175,16 +199,39 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
         if (countryList) {
           // @ts-ignore
           setCountryList(countryList);
-          addItemToCache &&
-            addItemToCache({
-              countryList: countryList,
+
+          // @ts-ignore
+          const countryValue = countryList.length > 0 && countryList.find(country => {
+
+            if (session.isAuthenticated && Object.keys(customerData).length > 0) {
+              return country.name === customerData['country']
+            }
+            else return country.name === 'Bangladesh'
+          });
+
+          if (countryValue) {
+            setSelectedCountryValue({
+              label: countryValue['name'],
+              value: countryValue['name']
             });
+          }
+          else {
+            // @ts-ignore
+            setSelectedCountryValue({
+              label: 'Bangladesh',
+              value: 'Bangladesh'
+
+            });
+          }
+          addItemToCache && addItemToCache({
+            countryList: countryList,
+          });
         }
       };
 
       getAndSetCountryList();
     }
-  }, []);
+  }, [customerData]);
 
   useEffect(() => {
     if (
@@ -193,11 +240,29 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
       const cityList = cache[`cityList/${selectedCountryValue.value}`];
       setCityList(cityList);
       // @ts-ignore
-      const cityValue = cityList.length > 0 && cityList[0];
-      setSelectedCityValue({
-        value: cityValue['name'],
-        label: cityValue['name'],
+      const cityValue = cityList.length > 0 && cityList.find(city => {
+
+        if (session.isAuthenticated && Object.keys(customerData).length > 0) {
+          return city.name === customerData['city']
+        }
+        else return city.name === 'Mādārīpur'
+
       });
+
+      if (cityValue) {
+        setSelectedCityValue({
+          value: cityValue['name'],
+          label: cityValue['name'],
+        });
+      }
+      else {
+        // @ts-ignore
+        const indexZerocityValue = cityList.length > 0 && cityList[0];
+        setSelectedCityValue({
+          value: indexZerocityValue['name'],
+          label: indexZerocityValue['name'],
+        });
+      }
     } else {
       const getAndSetCityList = async () => {
         const cityList = await handleCityListFetch({
@@ -212,21 +277,38 @@ const MyAccount = ({ customerDetail, cache, addItemToCache, alert }: Props) => {
           // @ts-ignore
           setCityList(cityList);
           // @ts-ignore
-          const cityValue = cityList.length > 0 && cityList[0];
-          setSelectedCityValue({
-            value: cityValue['name'],
-            label: cityValue['name'],
+          const cityValue = cityList.length > 0 && cityList.find(city => {
+
+            if (session.isAuthenticated && Object.keys(customerData).length > 0) {
+              return city.name === customerData['city']
+            }
+            else return city.name === 'Mādārīpur'
+
           });
-          addItemToCache &&
-            addItemToCache({
-              [`cityList/${selectedCountryValue.value}`]: cityList,
+
+          if (cityValue) {
+            setSelectedCityValue({
+              value: cityValue['name'],
+              label: cityValue['name'],
             });
+          }
+          else {
+            // @ts-ignore
+            const indexZerocityValue = cityList.length > 0 && cityList[0];
+            setSelectedCityValue({
+              value: indexZerocityValue['name'],
+              label: indexZerocityValue['name'],
+            });
+          }
+          addItemToCache && addItemToCache({
+            [`cityList/${selectedCountryValue.value}`]: cityList,
+          });
         }
       };
 
       getAndSetCityList();
     }
-  }, [selectedCountryValue]);
+  }, [selectedCountryValue, customerData]);
 
   const handleSelectCountryChange = (value) => {
     setSelectedCountryValue(value);
@@ -750,6 +832,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state) => ({
   cache: state.cache,
+  session: state.session,
 });
 
 // @ts-ignore

@@ -16,6 +16,7 @@ const SearchBar = ({ history, addCategory, category }: Props) => {
     },
   });
 
+
   const [searchBarValue, setSearchBarValue] = useState('');
   const [categorySelectValue, setCategorySelectValue] = useState('');
 

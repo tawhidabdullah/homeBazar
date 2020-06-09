@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { sessionOperations } from '../../state/ducks/session';
@@ -112,6 +112,7 @@ const Header = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+
   return (
     <>
       <TopHead
@@ -132,18 +133,16 @@ const Header = ({
       >
         <div className='navbar-center'>
           <Logo cache={cache} addItemToCache={addItemToCache} />
-          {windowWidth < 600 ? (
-            ''
-          ) : (
-              <SearchBar
-                history={history}
-                addCategory={addCategory}
-                getCategory={getCategory}
-                category={category}
-              />
-            )}
+          {windowWidth && windowWidth > 600 ? (
+            <SearchBar
+              history={history}
+              addCategory={addCategory}
+              getCategory={getCategory}
+              category={category}
+            />
+          ) : ''}
 
-          {windowWidth < 600 ? (
+          {windowWidth && windowWidth < 600 ? (
             ''
           ) : (
               <CartIcon
@@ -153,7 +152,8 @@ const Header = ({
             )}
         </div>
       </div>
-      {windowWidth < 600 ? (
+
+      {windowWidth && windowWidth < 600 ? (
         <MobileNav
           handleToggleCartBar={handleToggleCartBar}
           handleToggleMenuBar={handleToggleMenuBar}
@@ -163,20 +163,21 @@ const Header = ({
       ) : (
           ''
         )}
-      {windowWidth < 600 ? (
-        ''
-      ) : (
-          <div className='navbar'>
-            <div className='navbar-center'>
-              <Menu history={history} category={category} />
 
-              <div className='navbar-center-navItems'>
-                <NavItems />
-              </div>
-              <Hotline />
+
+
+      {windowWidth && windowWidth > 600 ? (
+        <div className='navbar'>
+          <div className='navbar-center'>
+            <Menu history={history} category={category} />
+
+            <div className='navbar-center-navItems'>
+              <NavItems />
             </div>
+            <Hotline />
           </div>
-        )}
+        </div>
+      ) : ''}
 
       <CartBar
         // @ts-ignore
@@ -187,14 +188,18 @@ const Header = ({
         isAuthenticated={session['isAuthenticated']}
       />
 
-      <MenuBar
-        isShowMenuBar={isShowMenuBar}
-        handleToggleMenuBar={handleToggleMenuBar}
-        category={category}
-        addCategory={addCategory}
 
-        history={history}
-      />
+      {windowWidth && windowWidth < 600 ? (
+        <MenuBar
+          isShowMenuBar={isShowMenuBar}
+          handleToggleMenuBar={handleToggleMenuBar}
+          category={category}
+          addCategory={addCategory}
+          history={history}
+
+        />
+      ) : ""}
+
 
       <AuthenticationModal
         isModalShown={isModalShown}

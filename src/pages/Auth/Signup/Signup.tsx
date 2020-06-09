@@ -144,11 +144,22 @@ const Signup = ({ addItemToCache, cache, history, alert }: Props) => {
       const cityList = cache[`cityList/${selectedCountryValue.value}`];
       setCityList(cityList);
       // @ts-ignore
-      const cityValue = cityList.length > 0 && cityList[0];
-      setSelectedCityValue({
-        value: cityValue['name'],
-        label: cityValue['name'],
-      });
+      const cityValue = cityList.length > 0 && cityList.find(city => city.name === 'Mādārīpur');
+
+      if (cityValue) {
+        setSelectedCityValue({
+          value: cityValue['name'],
+          label: cityValue['name'],
+        });
+      }
+      else {
+        // @ts-ignore
+        const indexZerocityValue = cityList.length > 0 && cityList[0];
+        setSelectedCityValue({
+          value: indexZerocityValue['name'],
+          label: indexZerocityValue['name'],
+        });
+      }
     } else {
       const getAndSetCityList = async () => {
         const cityList = await handleCityListFetch({
@@ -163,11 +174,22 @@ const Signup = ({ addItemToCache, cache, history, alert }: Props) => {
           // @ts-ignore
           setCityList(cityList);
           // @ts-ignore
-          const cityValue = cityList.length > 0 && cityList[0];
-          setSelectedCityValue({
-            value: cityValue['name'],
-            label: cityValue['name'],
-          });
+          const cityValue = cityList.length > 0 && cityList.find(city => city.name === 'Mādārīpur');
+
+          if (cityValue) {
+            setSelectedCityValue({
+              value: cityValue['name'],
+              label: cityValue['name'],
+            });
+          }
+          else {
+            // @ts-ignore
+            const indexZerocityValue = cityList.length > 0 && cityList[0];
+            setSelectedCityValue({
+              value: indexZerocityValue['name'],
+              label: indexZerocityValue['name'],
+            });
+          }
           addItemToCache({
             [`cityList/${selectedCountryValue.value}`]: cityList,
           });
@@ -186,6 +208,10 @@ const Signup = ({ addItemToCache, cache, history, alert }: Props) => {
     setSelectedCityValue(value);
   };
 
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, []);
   return (
     <div className='auth'>
       <h1 className='display-4 text-center auth_title'>Signup</h1>
@@ -208,216 +234,215 @@ const Signup = ({ addItemToCache, cache, history, alert }: Props) => {
             handleBlur,
             setFieldTouched,
           }) => (
-            <>
-              <div
-                className='block-title authTitle'
-                style={{
-                  margin: '20px 0',
-                }}
-              >
-                <span>Personal Information</span>
-              </div>
-
-              <div className='formContainerOfTwo'>
-                <div className='formContainerOfTwoItem'>
-                  <TextFeildGroup
-                    label='FirstName'
-                    name='firstName'
-                    placeholder='firstName'
-                    type='text'
-                    value={values.firstName}
-                    onChange={(e) => {
-                      handleChange(e);
-                      setFieldTouched('firstName');
-                    }}
-                    errors={
-                      (touched.firstName && errors.firstName) ||
-                      (!isSubmitting && signupState.error['error']['firstName'])
-                    }
-                  />
+              <>
+                <div
+                  className='block-title authTitle'
+                  style={{
+                    margin: '20px 0',
+                  }}
+                >
+                  <span>Personal Information</span>
                 </div>
 
-                <div className='formContainerOfTwoItem'>
-                  <TextFeildGroup
-                    label='Lastname'
-                    name='lastName'
-                    placeholder='lastName'
-                    type='text'
-                    value={values.lastName}
-                    onChange={(e) => {
-                      handleChange(e);
-                      setFieldTouched('lastName');
-                    }}
-                    errors={
-                      (touched.lastName && errors.lastName) ||
-                      (!isSubmitting && signupState.error['error']['lastName'])
-                    }
-                  />
+                <div className='formContainerOfTwo'>
+                  <div className='formContainerOfTwoItem'>
+                    <TextFeildGroup
+                      label='First name'
+                      name='firstName'
+                      placeholder='first name'
+                      type='text'
+                      value={values.firstName}
+                      onChange={(e) => {
+                        handleChange(e);
+                        setFieldTouched('firstName');
+                      }}
+                      errors={
+                        (touched.firstName && errors.firstName) ||
+                        (!isSubmitting && signupState.error['error']['firstName'])
+                      }
+                    />
+                  </div>
+
+                  <div className='formContainerOfTwoItem'>
+                    <TextFeildGroup
+                      label='Last name'
+                      name='lastName'
+                      placeholder='last name'
+                      type='text'
+                      value={values.lastName}
+                      onChange={(e) => {
+                        handleChange(e);
+                        setFieldTouched('lastName');
+                      }}
+                      errors={
+                        (touched.lastName && errors.lastName) ||
+                        (!isSubmitting && signupState.error['error']['lastName'])
+                      }
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className='formContainerOfTwo'>
-                <div className='formContainerOfTwoItem'>
-                  {countryList.length > 0 && (
-                    <div>
-                      <label className='formLabel'>Country</label>
-                      <Select
-                        value={selectedCountryValue}
-                        onChange={(value) => handleSelectCountryChange(value)}
-                        options={countryList.map((country) => ({
-                          value: country['name'],
-                          label: country['name'],
-                        }))}
-                      />
-
-                      <div className='select-invalid-feedback'>
-                        {!isSubmitting && signupState.error['error']['country']}
+                <div className='formContainerOfTwo'>
+                  <div className='formContainerOfTwoItem'>
+                    {countryList.length > 0 && (
+                      <div>
+                        <label className='formLabel'>Country</label>
+                        <Select
+                          value={selectedCountryValue}
+                          onChange={(value) => handleSelectCountryChange(value)}
+                          options={countryList.map((country) => ({
+                            value: country['name'],
+                            label: country['name'],
+                          }))}
+                        />
+                        <div className='select-invalid-feedback'>
+                          {!isSubmitting && signupState.error['error']['country']}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
 
-                <div className='formContainerOfTwoItem formContainterSelect'>
-                  {cityList.length > 0 && (
-                    <div>
-                      <label className='formLabel'>City</label>
+                  <div className='formContainerOfTwoItem formContainterSelect'>
+                    {cityList.length > 0 && (
+                      <div>
+                        <label className='formLabel'>City</label>
 
-                      <Select
-                        value={selectedCityValue}
-                        onChange={(value) => handleSelectCityChange(value)}
-                        options={cityList.map((city) => ({
-                          value: city['name'],
-                          label: city['name'],
-                        }))}
-                      />
-                      <div className='select-invalid-feedback'>
-                        {!isSubmitting && signupState.error['error']['city']}
+                        <Select
+                          value={selectedCityValue}
+                          onChange={(value) => handleSelectCityChange(value)}
+                          options={cityList.map((city) => ({
+                            value: city['name'],
+                            label: city['name'],
+                          }))}
+                        />
+                        <div className='select-invalid-feedback'>
+                          {!isSubmitting && signupState.error['error']['city']}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              <TextFeildGroup
-                label='Address'
-                name='address1'
-                placeholder='Address line 1'
-                type='text'
-                value={values.address1}
-                onChange={(e) => {
-                  handleChange(e);
-                  setFieldTouched('address1');
-                }}
-                errors={
-                  (touched.address1 && errors.address1) ||
-                  (!isSubmitting && signupState.error['error']['address1'])
-                }
-              />
-              <TextFeildGroup
-                name='address2'
-                placeholder='Address line 2'
-                type='text'
-                value={values.address2}
-                onChange={(e) => {
-                  handleChange(e);
-                  setFieldTouched('address2');
-                }}
-                errors={
-                  (touched.address2 && errors.address2) ||
-                  (!isSubmitting && signupState.error['error']['address2'])
-                }
-              />
+                <TextFeildGroup
+                  label='Address'
+                  name='address1'
+                  placeholder='Address line 1'
+                  type='text'
+                  value={values.address1}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldTouched('address1');
+                  }}
+                  errors={
+                    (touched.address1 && errors.address1) ||
+                    (!isSubmitting && signupState.error['error']['address1'])
+                  }
+                />
+                <TextFeildGroup
+                  name='address2'
+                  placeholder='Address line 2'
+                  type='text'
+                  value={values.address2}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldTouched('address2');
+                  }}
+                  errors={
+                    (touched.address2 && errors.address2) ||
+                    (!isSubmitting && signupState.error['error']['address2'])
+                  }
+                />
 
-              <div
-                className='block-title authTitle'
-                style={{
-                  margin: '20px 0',
-                }}
-              >
-                <span>Contact Information</span>
-              </div>
+                <div
+                  className='block-title authTitle'
+                  style={{
+                    margin: '20px 0',
+                  }}
+                >
+                  <span>Contact Information</span>
+                </div>
 
-              <TextFeildGroup
-                label='Phone'
-                name='phone'
-                placeholder='Mobile phone no'
-                type='text'
-                value={values.phone}
-                onChange={(e) => {
-                  handleChange(e);
-                  setFieldTouched('phone');
-                }}
-                errors={
-                  (touched.phone && errors.phone) ||
-                  (!isSubmitting && signupState.error['error']['phone'])
-                }
-              />
+                <TextFeildGroup
+                  label='Phone'
+                  name='phone'
+                  placeholder='Mobile phone no'
+                  type='text'
+                  value={values.phone}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldTouched('phone');
+                  }}
+                  errors={
+                    (touched.phone && errors.phone) ||
+                    (!isSubmitting && signupState.error['error']['phone'])
+                  }
+                />
 
-              <TextFeildGroup
-                label='Email'
-                name='email'
-                placeholder='Email address'
-                type='text'
-                value={values.email}
-                onChange={(e) => {
-                  handleChange(e);
-                  setFieldTouched('email');
-                }}
-                errors={
-                  (touched.email && errors.email) ||
-                  (!isSubmitting && signupState.error['error']['email'])
-                }
-              />
+                <TextFeildGroup
+                  label='Email'
+                  name='email'
+                  placeholder='Email address'
+                  type='text'
+                  value={values.email}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldTouched('email');
+                  }}
+                  errors={
+                    (touched.email && errors.email) ||
+                    (!isSubmitting && signupState.error['error']['email'])
+                  }
+                />
 
-              <TextFeildGroup
-                label='Password'
-                name='password'
-                placeholder='******'
-                type='password'
-                value={values.password}
-                onChange={(e) => {
-                  handleChange(e);
-                  setFieldTouched('password');
-                }}
-                errors={
-                  (touched.password && errors.password) ||
-                  (!isSubmitting && signupState.error['error']['password'])
-                }
-              />
+                <TextFeildGroup
+                  label='Password'
+                  name='password'
+                  placeholder='******'
+                  type='password'
+                  value={values.password}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldTouched('password');
+                  }}
+                  errors={
+                    (touched.password && errors.password) ||
+                    (!isSubmitting && signupState.error['error']['password'])
+                  }
+                />
 
-              <TextFeildGroup
-                label='Confirm Password'
-                name='passwordConfirmation'
-                placeholder='******'
-                type='password'
-                value={values.passwordConfirmation}
-                onChange={(e) => {
-                  handleChange(e);
-                  setFieldTouched('passwordConfirmation');
-                }}
-                errors={
-                  (touched.passwordConfirmation &&
-                    errors.passwordConfirmation) ||
-                  (!isSubmitting && signupState.error['error']['password2'])
-                }
-              />
+                <TextFeildGroup
+                  label='Confirm Password'
+                  name='passwordConfirmation'
+                  placeholder='******'
+                  type='password'
+                  value={values.passwordConfirmation}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldTouched('passwordConfirmation');
+                  }}
+                  errors={
+                    (touched.passwordConfirmation &&
+                      errors.passwordConfirmation) ||
+                    (!isSubmitting && signupState.error['error']['password2'])
+                  }
+                />
 
-              <AuthButton
-                onclick={handleSubmit}
-                disabled={
-                  !isValid ||
-                  !values.firstName ||
-                  !values.lastName ||
-                  !values.password ||
-                  !values.phone ||
-                  !values.passwordConfirmation ||
-                  !values.address1
-                }
-              >
-                {isSubmitting ? 'Registering...' : 'Register'}
-              </AuthButton>
-            </>
-          )}
+                <AuthButton
+                  onclick={handleSubmit}
+                  disabled={
+                    !isValid ||
+                    !values.firstName ||
+                    !values.lastName ||
+                    !values.password ||
+                    !values.phone ||
+                    !values.passwordConfirmation ||
+                    !values.address1
+                  }
+                >
+                  {isSubmitting ? 'Registering...' : 'Register'}
+                </AuthButton>
+              </>
+            )}
         </Formik>
       </div>
       <p className='lead text-center authtextInfo'>

@@ -137,3 +137,34 @@ export const getCity = async () => {
 }
 
 
+export const deleteCustomerData = async () => {
+  await localStorage.removeItem('customerData');
+}
+
+
+export const saveCustomerData = async (customerData) => {
+  if (customerData) {
+    const preCustomerData = await localStorage.getItem('customerData');
+    // @ts-ignore
+    if (!JSON.parse(preCustomerData)) {
+      await localStorage.setItem('customerData', JSON.stringify(customerData));
+    }
+    else {
+      await deleteCustomerData();
+      await localStorage.setItem('customerData', JSON.stringify(customerData));
+    }
+
+  }
+}
+
+
+export const getCustomerData = async () => {
+  const customerData = await localStorage.getItem('customerData');
+  // @ts-ignore
+  if (!JSON.parse(customerData)) {
+    return false;
+  }
+  // @ts-ignore
+
+  return JSON.parse(customerData);
+}

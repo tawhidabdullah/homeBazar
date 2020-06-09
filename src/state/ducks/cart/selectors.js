@@ -8,7 +8,7 @@ export const getTotalPriceOfCartItems = (cartItems) => {
   }
 
   const prices = cartItems.map((cartItem) => {
-    return cartItem.quantity * parseInt(cartItem.product['price']);
+    return cartItem.quantity * parseInt(cartItem.product['price']) || 0;
   });
 
   const totalPrice = prices.reduce((a, b) => {
